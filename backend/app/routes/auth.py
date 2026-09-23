@@ -1,9 +1,5 @@
 """
-Rotas de autenticação.
-
-Observação: login e logout são realizados diretamente pelo cliente
-via Firebase Authentication SDK. O backend expõe apenas operações
-administrativas (ex.: cadastro).
+Rotas de autenticacao.
 """
 from app.services import auth_service
 from app.middlewares.auth_middleware import autenticar
@@ -17,4 +13,4 @@ def rotear(metodo, caminho, corpo, headers):
         usuario = autenticar(headers)
         return 200, usuario
 
-    return 404, {"erro": "Rota de autenticação não encontrada."}
+    return 404, {"erro": "Rota de autenticacao nao encontrada."}

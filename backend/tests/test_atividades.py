@@ -6,7 +6,7 @@ from app.models.atividade import Atividade
 
 
 def test_validar_sem_titulo_deve_falhar():
-    with pytest.raises(ValueError, match="Campo obrigatório ausente: titulo"):
+    with pytest.raises(ValueError, match="Campo obrigatorio ausente: titulo"):
         Atividade.validar({
             "licaoId": "lic001",
             "descricao": "abc",
@@ -16,7 +16,7 @@ def test_validar_sem_titulo_deve_falhar():
 
 
 def test_tipo_invalido_deve_falhar():
-    with pytest.raises(ValueError, match="Tipo inválido"):
+    with pytest.raises(ValueError, match="Tipo invalido"):
         Atividade.validar({
             "licaoId": "lic001",
             "titulo": "Atividade 1",

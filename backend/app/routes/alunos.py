@@ -1,10 +1,5 @@
 """
 Rotas de alunos.
-
-GET    /api/alunos           — lista alunos (professor ou administrador)
-GET    /api/alunos/{id}      — consulta aluno
-PUT    /api/alunos/{id}      — atualiza aluno
-DELETE /api/alunos/{id}      — remove/desativa aluno (administrador)
 """
 from app.services import aluno_service
 from app.middlewares.auth_middleware import autenticar, exigir_perfil
@@ -36,4 +31,4 @@ def rotear(metodo, caminho, corpo, headers):
             exigir_perfil(usuario, ["administrador"])
             return 200, aluno_service.remover_aluno(aluno_id)
 
-    return 404, {"erro": "Rota de alunos não encontrada."}
+    return 404, {"erro": "Rota de alunos nao encontrada."}
