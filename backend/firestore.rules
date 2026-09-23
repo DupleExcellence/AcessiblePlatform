@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================
+    // Funções auxiliares
+    // ============================================
+
+    function autenticado() {
+      return request.auth != null;
+    }
+
+    function perfilUsuario() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.perfil;
+    }
+
+    function proprio(uid) {
+      return autenticado() && request.auth.uid == uid;
+    }
+
+    function professor() {
+      return autenticado() && perfilUsuario() ==
+        /databases/$(database)/documents/perfis/professor;
+    }
+
+    function admin() {
+      return autenticado() && perfilUsuario() ==
+        /databases/$(database)/documents/perfis/administrador;
+    }
+
+    // ============================================
+    // Coleções do MVP
+    // ============================================
+
+    match /usuarios/{uid} {
+      allow read: if proprio(uid) || professor() || admin();
+      allow create: if proprio(uid);
+      allow update: if proprio(uid) || admin();
+      allow delete: if admin();
+    }
+
+    match /perfis/{id} {
+      allow read: if autenticado();
+      allow write: if admin();
+    }
+
+    match /alunos/{alunoId} {
+      allow read: if proprio(alunoId) || professor() || admin();
+      allow create: if proprio(alunoId);
+      allow update: if proprio(alunoId) || professor() || admin();
+      allow delete: if admin();
+    }
+
+    match /professores/{profId} {
+      allow read: if autenticado();
+      allow write: if admin();
+    }
+
+    match /licoes/{licaoId} {
+      allow read: if autenticado();
+      allow create: if professor() || admin();
+      allow update, delete: if professor() || admin();
+    }
+
+    match /atividades/{id} {
+      allow read: if autenticado();
+      allow write: if professor() || admin();
+    }
+
+    match /entregas/{entregaId} {
+      allow read: if autenticado();
+      allow create: if autenticado();
+      allow update: if autenticado();
+      allow delete: if professor() || admin();
+    }
+
+    match /notas/{notaId} {
+      allow read: if autenticado();
+      allow write: if professor() || admin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
