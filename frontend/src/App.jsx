@@ -1,8 +1,13 @@
-import Home from "./pages/home.jsx";
+import Cadastro from "./pages/Cadastro.jsx";
+
 
 function App() {
   return (
-    <Home/>
+    
+    <div>
+      <Cadastro/>
+    </div>
+    
   );
 }
 
