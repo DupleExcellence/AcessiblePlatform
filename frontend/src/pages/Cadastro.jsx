@@ -1,5 +1,6 @@
 import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
+import Select from "../components/Select/Select";
 
 function Cadastro() {
   return (
@@ -13,6 +14,19 @@ function Cadastro() {
             type="text"
             placeholder="Digite seu nome"
           />
+          <div>
+            <Label htmlFor="nivel" required>
+              Nível
+            </Label>
+
+            <Select id="nivel" name="nivel" required>
+              <option value="">Selecione uma opção</option>
+              <option value="iniciante">Iniciante</option>
+              <option value="intermediario">Intermediário</option>
+              <option value="avancado">Avançado</option>
+            </Select>
+         </div>
+  
       
 
       <Input
