@@ -3,6 +3,7 @@ import Label from "../components/Label/Label";
 import Select from "../components/Select/Select";
 import Checkbox from "../components/Checkbox/Checkbox";
 import Radio from "../components/Radio/Radio";
+import Textarea from "../components/Textarea/Textarea";
 
 function Cadastro() {
   return (
@@ -86,7 +87,19 @@ function Cadastro() {
         </Checkbox>
       
 
+    <div>
+      <Label htmlFor="resposta" required>
+        Sua resposta
+      </Label>
 
+      <Textarea
+        id="resposta"
+        name="resposta"
+        placeholder="Digite sua resposta..."
+        rows={5}
+        required
+      />
+    </div>
 
 
 
