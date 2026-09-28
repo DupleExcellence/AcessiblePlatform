@@ -1,13 +1,19 @@
 import Input from "../components/Input/Input";
+import Label from "../components/Label/Label";
 
 function Cadastro() {
   return (
     <div>
-      <Input
-        label="Nome completo"
-        placeholder="Digite seu nome"
-        required
-      />
+        <Label htmlFor="nome" required>
+          Nome
+        </Label>
+
+          <input
+            id="nome"
+            type="text"
+            placeholder="Digite seu nome"
+          />
+      
 
       <Input
         label="E-mail"
