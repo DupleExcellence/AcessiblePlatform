@@ -1,6 +1,7 @@
 import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
 import Select from "../components/Select/Select";
+import Checkbox from "../components/Checkbox/Checkbox";
 
 function Cadastro() {
   return (
@@ -48,6 +49,25 @@ function Cadastro() {
         placeholder="Digite seu usuário"
         error="Este usuário já está cadastrado."
       />
+
+      
+
+   
+     
+        <Checkbox
+          id="termos"
+          name="termos"
+          required
+        >
+          Aceito os termos de uso
+        </Checkbox>
+      
+
+
+
+
+
+
     </div>
   );
 }
