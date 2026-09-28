@@ -2,6 +2,7 @@ import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
 import Select from "../components/Select/Select";
 import Checkbox from "../components/Checkbox/Checkbox";
+import Radio from "../components/Radio/Radio";
 
 function Cadastro() {
   return (
@@ -50,7 +51,29 @@ function Cadastro() {
         error="Este usuário já está cadastrado."
       />
 
-      
+          <Radio
+        id="facil"
+        name="dificuldade"
+        value="facil"
+      >
+        Fácil
+      </Radio>
+
+      <Radio
+        id="medio"
+        name="dificuldade"
+        value="medio"
+      >
+        Médio
+      </Radio>
+
+      <Radio
+        id="dificil"
+        name="dificuldade"
+        value="dificil"
+      >
+        Difícil
+      </Radio>
 
    
      
