@@ -1,14 +1,25 @@
-import Button from "../components/Button/Button.jsx"
+import FormGroup from "../components/Formgroup/Formgroup.jsx";
+import Label from "../components/Label/Label"
+import Input from "../components/Input/Input.jsx";
+import FormMessage from "../components/Form/FormMessage.jsx";
 
 
 function Home() {
   return (
     <main>
-     <h1>O primeiro Botão</h1>
+     <FormGroup>
+      <Label htmlFor="email">E-mail</Label>
 
-      <Button onClick={() => alert("Funcionou!")}>
-        Salvar
-      </Button>
+      <Input
+        id="email"
+        type="email"
+        error={true}
+      />
+
+      <FormMessage type="error">
+        Informe um e-mail válido.
+      </FormMessage>
+    </FormGroup>
     </main>
   );
 }

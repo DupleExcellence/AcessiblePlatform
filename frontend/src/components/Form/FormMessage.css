@@ -1,0 +1,17 @@
+.form-message {
+  display: block;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.form-message--error {
+  color: #dc2626;
+}
+
+.form-message--success {
+  color: #16a34a;
+}
+
+.form-message--helper {
+  color: #6b7280;
+}
