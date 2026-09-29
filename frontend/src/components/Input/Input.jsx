@@ -3,47 +3,39 @@ import "./Input.css";
 function Input({
   label,
   type = "text",
-  placeholder = "",
+  name,
   value,
   onChange,
-  error = "",
-  helperText = "",
+  placeholder,
   disabled = false,
-  required = false,
-  id,
+  error = "",
+  success = false,
 }) {
-  const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
-
   return (
-    <div className="input-container">
-      {label && (
-        <label htmlFor={inputId} className="input-label">
-          {label}
-          {required && <span className="required"> *</span>}
-        </label>
-      )}
+    <div className="input-group">
+      {label && <label htmlFor={name}>{label}</label>}
 
       <input
-        id={inputId}
-        className={`input-field ${error ? "input-error" : ""}`}
+        id={name}
+        name={name}
         type={type}
-        placeholder={placeholder}
         value={value}
         onChange={onChange}
+        placeholder={placeholder}
         disabled={disabled}
-        required={required}
+        className={`
+          input
+          ${error ? "input-error" : ""}
+          ${success ? "input-success" : ""}
+        `}
         aria-invalid={!!error}
-        aria-describedby={
-          error || helperText ? `${inputId}-message` : undefined
-        }
       />
 
-      {(error || helperText) && (
-        <span
-          id={`${inputId}-message`}
-          className={error ? "input-message error" : "input-message"}
-        >
-          {error || helperText}
+      {error && <span className="input-message error-message">{error}</span>}
+
+      {!error && success && (
+        <span className="input-message success-message">
+          Campo preenchido corretamente.
         </span>
       )}
     </div>
