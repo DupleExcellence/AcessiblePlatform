@@ -1,109 +1,27 @@
 import Input from "../components/Input/Input";
 import Label from "../components/Label/Label";
-import Select from "../components/Select/Select";
-import Checkbox from "../components/Checkbox/Checkbox";
-import Radio from "../components/Radio/Radio";
-import Textarea from "../components/Textarea/Textarea";
+import Form from "../components/Form/Form";
+import Button from "../components/Button/Button";
 
 function Cadastro() {
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log("Formulário enviado");
+  }
+
   return (
     <div>
-        <Label htmlFor="nome" required>
-          Nome
-        </Label>
+      <Form onSubmit={handleSubmit}>
+        <Label>Nome</Label>
+        <Input type="text" />
 
-          <input
-            id="nome"
-            type="text"
-            placeholder="Digite seu nome"
-          />
-          <div>
-            <Label htmlFor="nivel" required>
-              Nível
-            </Label>
+        <Label>E-mail</Label>
+        <Input type="email" />
 
-            <Select id="nivel" name="nivel" required>
-              <option value="">Selecione uma opção</option>
-              <option value="iniciante">Iniciante</option>
-              <option value="intermediario">Intermediário</option>
-              <option value="avancado">Avançado</option>
-            </Select>
-         </div>
-  
-      
-
-      <Input
-        label="E-mail"
-        type="email"
-        placeholder="Digite seu e-mail"
-        required
-      />
-
-      <Input
-        label="Senha"
-        type="password"
-        placeholder="Digite sua senha"
-        required
-      />
-
-      <Input
-        label="Usuário"
-        placeholder="Digite seu usuário"
-        error="Este usuário já está cadastrado."
-      />
-
-          <Radio
-        id="facil"
-        name="dificuldade"
-        value="facil"
-      >
-        Fácil
-      </Radio>
-
-      <Radio
-        id="medio"
-        name="dificuldade"
-        value="medio"
-      >
-        Médio
-      </Radio>
-
-      <Radio
-        id="dificil"
-        name="dificuldade"
-        value="dificil"
-      >
-        Difícil
-      </Radio>
-
-   
-     
-        <Checkbox
-          id="termos"
-          name="termos"
-          required
-        >
-          Aceito os termos de uso
-        </Checkbox>
-      
-
-    <div>
-      <Label htmlFor="resposta" required>
-        Sua resposta
-      </Label>
-
-      <Textarea
-        id="resposta"
-        name="resposta"
-        placeholder="Digite sua resposta..."
-        rows={5}
-        required
-      />
-    </div>
-
-
-
-
+        <Button type="submit">
+          Enviar
+        </Button>
+      </Form>
     </div>
   );
 }

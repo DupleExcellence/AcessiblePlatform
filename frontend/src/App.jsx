@@ -1,6 +1,7 @@
 import Cadastro from "./pages/Cadastro.jsx";
 
 
+
 function App() {
   return (
     
