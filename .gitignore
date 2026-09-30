@@ -90,3 +90,8 @@ Desktop.ini
 # ===========================
 *.log
 logs/
+# Documentos e ferramentas locais
+Relatorio_Parcial.docx
+gerar_relatorio.py
+*.docx
+*.pdf
