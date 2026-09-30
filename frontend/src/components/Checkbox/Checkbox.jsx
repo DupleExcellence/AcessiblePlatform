@@ -1,4 +1,5 @@
 import "./Checkbox.css";
+import "./Checkbox.css";
 
 function Checkbox({
   id,
@@ -9,10 +10,17 @@ function Checkbox({
   children,
   disabled = false,
   required = false,
+  error = false,
+  success = false,
   ...props
 }) {
   return (
-    <label htmlFor={id} className="checkbox">
+    <label
+      htmlFor={id}
+      className={`checkbox ${error ? "error" : ""} ${
+        success ? "success" : ""
+      }`}
+    >
       <input
         id={id}
         name={name}
