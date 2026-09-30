@@ -66,3 +66,19 @@
   color: #6b7280;
   cursor: not-allowed;
 }
+
+.checkbox.error .checkbox-box {
+  border-color: #dc2626;
+}
+
+.checkbox.error {
+  color: #dc2626;
+}
+
+.checkbox.success .checkbox-box {
+  border-color: #16a34a;
+}
+
+.checkbox.success {
+  color: #166534;
+}

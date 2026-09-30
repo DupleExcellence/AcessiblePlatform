@@ -4,11 +4,13 @@ function Button({
   children,
   onClick,
   variant = "primary",
+  disabled = false,
 }) {
   return (
     <button
       onClick={onClick}
       className={`button ${variant}`}
+      disabled={disabled}
     >
       {children}
     </button>
