@@ -67,3 +67,19 @@
   color: #6b7280;
   cursor: not-allowed;
 }
+
+.radio.error .radio-circle {
+  border-color: #dc2626;
+}
+
+.radio.error {
+  color: #dc2626;
+}
+
+.radio.success .radio-circle {
+  border-color: #16a34a;
+}
+
+.radio.success {
+  color: #166534;
+}
