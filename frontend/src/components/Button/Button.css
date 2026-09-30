@@ -6,6 +6,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s;
+  font-family: Arial, sans-serif;
+  min-height: 44px;
 }
 
 .button:focus-visible {

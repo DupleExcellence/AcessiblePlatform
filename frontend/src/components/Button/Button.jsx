@@ -8,6 +8,7 @@ function Button({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`button ${variant}`}
       disabled={disabled}

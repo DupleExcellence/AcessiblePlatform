@@ -1,5 +1,4 @@
 import "./Select.css";
-import "./Select.css";
 
 function Select({
   label,
@@ -11,9 +10,15 @@ function Select({
   error = "",
   success = false,
 }) {
+  const messageId = `${name}-message`;
+
   return (
     <div className="select-group">
-      {label && <label htmlFor={name}>{label}</label>}
+      {label && (
+        <label htmlFor={name} className="select-label">
+          {label}
+        </label>
+      )}
 
       <select
         id={name}
@@ -21,12 +26,11 @@ function Select({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className={`
-          select
-          ${error ? "select-error" : ""}
-          ${success ? "select-success" : ""}
-        `}
-        aria-invalid={!!error}
+        className={`select ${error ? "select-error" : ""} ${
+          success ? "select-success" : ""
+        }`}
+        aria-invalid={error ? "true" : "false"}
+        aria-describedby={error || success ? messageId : undefined}
       >
         <option value="">Selecione uma opção</option>
 
@@ -38,13 +42,13 @@ function Select({
       </select>
 
       {error && (
-        <span className="select-message error-message">
+        <span id={messageId} className="select-message error-message">
           {error}
         </span>
       )}
 
       {!error && success && (
-        <span className="select-message success-message">
+        <span id={messageId} className="select-message success-message">
           Campo preenchido corretamente.
         </span>
       )}

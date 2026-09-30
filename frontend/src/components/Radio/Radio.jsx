@@ -1,6 +1,5 @@
 import "./Radio.css";
 
-
 function Radio({
   id,
   name,
@@ -25,7 +24,7 @@ function Radio({
         id={id}
         name={name}
         type="radio"
-        value={value}
+        value={""}
         checked={checked}
         onChange={onChange}
         disabled={disabled}
