@@ -6,18 +6,18 @@
   font-family: Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #1f2937;
 
+  color: #1f2937;
   background-color: #ffffff;
+
   border: 1px solid #9ca3af;
   border-radius: 6px;
 
   resize: vertical;
   outline: none;
+  box-sizing: border-box;
 
   transition: border-color 0.2s, box-shadow 0.2s;
-
-  box-sizing: border-box;
 }
 
 .textarea::placeholder {
@@ -45,7 +45,19 @@
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
 }
 
+.textarea.error:hover,
+.textarea.error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
 .textarea.success {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.textarea.success:hover,
+.textarea.success:focus {
   border-color: #16a34a;
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
