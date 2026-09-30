@@ -1,0 +1,373 @@
+# Backend — Plataforma Web Gamificada e Acessível para o Ensino de Informática
+
+API REST em Python puro responsável pelas regras de negócio da plataforma. Utiliza **Firebase Authentication** para autenticação e **Firebase Firestore** para persistência dos dados.
+
+---
+
+## 📋 Sumário
+
+- [Tecnologias utilizadas](#-tecnologias-utilizadas)
+- [Estrutura do projeto](#-estrutura-do-projeto)
+- [Pré-requisitos](#-pré-requisitos)
+- [Configuração do ambiente](#-configuração-do-ambiente)
+- [Como rodar o servidor](#-como-rodar-o-servidor)
+- [Como rodar os testes](#-como-rodar-os-testes)
+- [Endpoints da API](#-endpoints-da-api)
+- [Regras de segurança do Firestore](#-regras-de-segurança-do-firestore)
+- [Boas práticas adotadas](#-boas-práticas-adotadas)
+
+---
+
+## 🛠 Tecnologias utilizadas
+
+| Camada | Tecnologia | Função |
+|--------|-----------|--------|
+| Linguagem | Python 3.12 | Regras de negócio e processamento |
+| Autenticação | Firebase Authentication | Login, cadastro e identificação de usuário |
+| Banco de dados | Firebase Firestore | Armazenamento NoSQL dos dados |
+| Servidor HTTP | `http.server` (biblioteca padrão) | Servidor em Python puro |
+| Testes | Pytest | Testes automatizados |
+| Variáveis de ambiente | python-dotenv | Gerenciamento de credenciais |
+
+---
+
+## 📁 Estrutura do projeto
+
+```
+backend/
+├── app/
+│   ├── routes/                  # Rotas da API REST
+│   │   ├── auth.py
+│   │   ├── alunos.py
+│   │   ├── cursos.py
+│   │   ├── licoes.py
+│   │   ├── atividades.py
+│   │   ├── entregas.py
+│   │   ├── notas.py
+│   │   └── progresso.py
+│   ├── services/                # Regras de negócio
+│   │   ├── auth_service.py
+│   │   ├── aluno_service.py
+│   │   ├── curso_service.py
+│   │   ├── licao_service.py
+│   │   ├── atividade_service.py
+│   │   ├── entrega_service.py
+│   │   ├── nota_service.py
+│   │   └── progresso_service.py
+│   ├── models/                  # Modelos e validações
+│   │   ├── aluno.py
+│   │   ├── curso.py
+│   │   ├── licao.py
+│   │   ├── atividade.py
+│   │   ├── entrega.py
+│   │   ├── nota.py
+│   │   └── progresso.py
+│   ├── database/                # Conexão com Firestore + seed
+│   │   ├── firebase.py
+│   │   └── seed.py
+│   ├── middlewares/             # Autenticação e tratamento de erros
+│   │   ├── auth_middleware.py
+│   │   └── error_handler.py
+│   └── main.py                  # Servidor HTTP (ponto de entrada)
+├── tests/                       # Testes automatizados
+│   ├── test_auth.py
+│   ├── test_alunos.py
+│   ├── test_cursos.py
+│   ├── test_licoes.py
+│   ├── test_atividades.py
+│   ├── test_entregas.py
+│   └── test_notas.py
+├── requirements.txt
+├── .env.example                 # Modelo de variáveis de ambiente
+└── README.md
+```
+
+---
+
+## ✅ Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado:
+
+- **Python 3.10 ou superior** — [python.org](https://www.python.org/downloads/)
+- **Git** — [git-scm.com](https://git-scm.com/)
+- **Conta no Firebase** — [console.firebase.google.com](https://console.firebase.google.com/)
+
+---
+
+## ⚙️ Configuração do ambiente
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/DupleExcellence/AcessiblePlatform.git
+cd AcessiblePlatform/backend
+```
+
+### 2. Criar ambiente virtual
+
+```bash
+python -m venv venv
+```
+
+Ativar:
+- **Windows (PowerShell):** `.\venv\Scripts\Activate`
+- **Linux/Mac:** `source venv/bin/activate`
+
+### 3. Instalar dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configurar o Firebase
+
+#### 4.1. Criar o projeto no Firebase
+1. Acesse [console.firebase.google.com](https://console.firebase.google.com/);
+2. Clique em **Adicionar projeto** e dê um nome;
+3. Desative o Google Analytics (opcional).
+
+#### 4.2. Ativar o Firestore
+1. Menu lateral → **Firestore Database** → **Criar banco de dados**;
+2. Escolha o modo **Produção**;
+3. Localização: **`southamerica-east1` (São Paulo)**.
+
+#### 4.3. Ativar o Authentication
+1. Menu lateral → **Authentication** → **Vamos começar**;
+2. Aba **Sign-in method** → ativar **E-mail/senha**.
+
+#### 4.4. Gerar a chave de serviço
+1. Engrenagem → **Configurações do projeto** → aba **Contas de serviço**;
+2. Clique em **Gerar nova chave privada** → **Gerar chave**;
+3. Renomeie o arquivo baixado para **`firebase-service-account.json`**;
+4. Mova para `backend/app/database/`.
+
+### 5. Criar o arquivo `.env`
+
+Copie o `.env.example` e renomeie para `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Preencha com suas credenciais:
+
+```env
+FIREBASE_CREDENTIALS_PATH=./app/database/firebase-service-account.json
+FIREBASE_API_KEY=sua_api_key
+FIREBASE_AUTH_DOMAIN=seu_projeto.firebaseapp.com
+FIREBASE_PROJECT_ID=seu_projeto_id
+FIREBASE_STORAGE_BUCKET=seu_projeto.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=000000000000
+FIREBASE_APP_ID=1:000000000000:web:xxxxxxxxxxxx
+
+HOST=0.0.0.0
+PORT=8000
+```
+
+> ⚠️ **Atenção:** o arquivo `.env` **NÃO** deve ser versionado no Git. Ele já está no `.gitignore`.
+
+### 6. Popular o banco com dados iniciais
+
+```bash
+python -m app.database.seed
+```
+
+Isso cria:
+- 3 perfis: `aluno`, `professor`, `administrador`;
+- 1 curso de exemplo: `informatica-basica`;
+- 1 lição de exemplo: `licao-01-introducao`.
+
+---
+
+## 🚀 Como rodar o servidor
+
+Com o ambiente virtual ativo:
+
+```bash
+python -m app.main
+```
+
+Saída esperada:
+
+```
+Servidor rodando em http://0.0.0.0:8000
+```
+
+### Testar a API
+
+Em outro terminal:
+
+```bash
+curl http://localhost:8000/api/cursos
+```
+
+Como a rota exige autenticação, o retorno esperado é:
+
+```json
+{"status": 401, "erro": "Token de autenticação ausente ou inválido."}
+```
+
+Isso significa que o servidor está funcionando corretamente.
+
+Para **parar** o servidor: `Ctrl + C`.
+
+---
+
+## 🧪 Como rodar os testes
+
+```bash
+pytest
+```
+
+Saída esperada:
+
+```
+============================= test session starts =============================
+collected 15 items
+...
+============================== 15 passed in 1.40s =============================
+```
+
+Para ver a cobertura de testes:
+
+```bash
+pytest --cov=app --cov-report=html
+```
+
+O relatório HTML é gerado em `htmlcov/index.html`.
+
+---
+
+## 🔌 Endpoints da API
+
+### Autenticação
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| POST | `/api/auth/cadastro` | público | Cadastra um novo usuário |
+| GET | `/api/auth/me` | autenticado | Retorna dados do usuário logado |
+
+### Alunos
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/alunos` | professor/admin | Lista todos os alunos |
+| GET | `/api/alunos/{id}` | próprio/professor/admin | Consulta um aluno |
+| PUT | `/api/alunos/{id}` | professor/admin | Atualiza dados de um aluno |
+| DELETE | `/api/alunos/{id}` | admin | Remove/desativa um aluno |
+
+### Cursos
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/cursos` | autenticado | Lista cursos |
+| GET | `/api/cursos/{id}` | autenticado | Consulta um curso |
+
+### Lições
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/licoes` | autenticado | Lista lições |
+| GET | `/api/licoes/{id}` | autenticado | Consulta uma lição |
+| POST | `/api/licoes` | professor/admin | Cria uma lição |
+| PUT | `/api/licoes/{id}` | professor/admin | Atualiza uma lição |
+| DELETE | `/api/licoes/{id}` | professor/admin | Remove uma lição |
+
+### Atividades
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/atividades` | autenticado | Lista atividades |
+| GET | `/api/atividades/{id}` | autenticado | Consulta uma atividade |
+| POST | `/api/atividades` | professor/admin | Cria uma atividade |
+| PUT | `/api/atividades/{id}` | professor/admin | Atualiza uma atividade |
+| DELETE | `/api/atividades/{id}` | professor/admin | Remove uma atividade |
+
+### Entregas
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/entregas` | aluno/professor | Lista entregas |
+| GET | `/api/entregas/{id}` | próprio/professor | Consulta uma entrega |
+| POST | `/api/entregas` | aluno | Envia resposta a uma atividade |
+
+### Notas
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/notas` | aluno/professor | Lista notas |
+| GET | `/api/notas/{id}` | próprio/professor | Consulta uma nota |
+| POST | `/api/notas` | professor/admin | Corrige entrega e cria nota |
+
+### Progresso
+
+| Método | Endpoint | Perfil | Descrição |
+|--------|----------|--------|-----------|
+| GET | `/api/progresso` | aluno | Progresso do aluno logado |
+| GET | `/api/progresso/{alunoId}` | professor/admin | Progresso de um aluno específico |
+
+### Autenticação nas requisições
+
+Todas as rotas autenticadas exigem o cabeçalho:
+
+```
+Authorization: Bearer <token>
+```
+
+O token é obtido pelo **Firebase Authentication** no frontend (via SDK JS).
+
+---
+
+## 🔒 Regras de segurança do Firestore
+
+As regras de segurança estão no arquivo `firestore.rules` (raiz do projeto). Elas devem ser publicadas no console do Firebase em:
+
+**Firestore Database → Regras → Publicar**
+
+As regras garantem que:
+- **Alunos** só leem/escrevem seus próprios dados;
+- **Professores** podem ler dados de alunos e gerenciar lições/atividades;
+- **Administradores** podem gerenciar usuários;
+- Qualquer outra coleção fica **bloqueada** por padrão.
+
+---
+
+## 📐 Boas práticas adotadas
+
+### Arquitetura em camadas
+
+O backend segue uma separação clara de responsabilidades:
+
+- **Routes** — recebem as requisições HTTP e direcionam para os serviços;
+- **Services** — contêm as regras de negócio;
+- **Models** — definem a estrutura e validações dos dados;
+- **Middlewares** — autenticação e tratamento centralizado de erros;
+- **Database** — comunicação com o Firestore.
+
+### Segurança
+
+- Autenticação via **Firebase Authentication** (tokens JWT);
+- Senhas nunca armazenadas diretamente (gerenciadas pelo Firebase);
+- Controle de acesso por perfil (**Aluno**, **Professor**, **Administrador**);
+- Regras de segurança do Firestore publicadas;
+- Credenciais sensíveis em variáveis de ambiente (`.env`).
+
+### Qualidade
+
+- **15 testes automatizados** com Pytest;
+- Validação de dados no backend antes de qualquer operação;
+- Tratamento centralizado de erros com códigos HTTP apropriados.
+
+### Versionamento
+
+- Padrão **Conventional Commits** (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `a11y`);
+- Estratégia de branches: `main`, `develop`, `feature/*`.
+
+---
+
+## 👥 Autores
+
+- **Raphael Bott Riquete**
+- **Vanessa da Silva**
+
+**Projeto Integrador — UNIVESP** — Curso de Engenharia da Computação — 2026.
