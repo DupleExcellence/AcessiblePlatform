@@ -1,5 +1,6 @@
 import "./Radio.css";
 
+
 function Radio({
   id,
   name,
@@ -9,10 +10,17 @@ function Radio({
   children,
   disabled = false,
   required = false,
+  error = false,
+  success = false,
   ...props
 }) {
   return (
-    <label htmlFor={id} className="radio">
+    <label
+      htmlFor={id}
+      className={`radio ${error ? "error" : ""} ${
+        success ? "success" : ""
+      }`}
+    >
       <input
         id={id}
         name={name}

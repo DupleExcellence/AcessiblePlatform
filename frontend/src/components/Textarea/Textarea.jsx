@@ -1,5 +1,7 @@
 import "./Textarea.css";
 
+import "./Textarea.css";
+
 function Textarea({
   id,
   name,
@@ -9,6 +11,8 @@ function Textarea({
   rows = 4,
   disabled = false,
   required = false,
+  error = false,
+  success = false,
   ...props
 }) {
   return (
@@ -21,7 +25,9 @@ function Textarea({
       rows={rows}
       disabled={disabled}
       required={required}
-      className="textarea"
+      className={`textarea ${error ? "error" : ""} ${
+        success ? "success" : ""
+      }`}
       {...props}
     />
   );
