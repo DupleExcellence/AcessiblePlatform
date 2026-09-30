@@ -95,3 +95,12 @@ Relatorio_Parcial.docx
 gerar_relatorio.py
 *.docx
 *.pdf
+
+# Evidências e arquivos locais
+docs/evidencias/
+*.png
+*.jpg
+*.jpeg
+Relatorio_Parcial.docx
+gerar_relatorio.py
+*.pdf
