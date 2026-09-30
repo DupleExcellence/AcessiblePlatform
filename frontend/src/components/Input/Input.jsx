@@ -1,5 +1,7 @@
 import "./Input.css";
 
+
+
 function Input({
   label,
   type = "text",
@@ -11,9 +13,15 @@ function Input({
   error = "",
   success = false,
 }) {
+  const messageId = `${name}-message`;
+
   return (
     <div className="input-group">
-      {label && <label htmlFor={name}>{label}</label>}
+      {label && (
+        <label htmlFor={name} className="input-label">
+          {label}
+        </label>
+      )}
 
       <input
         id={name}
@@ -23,18 +31,21 @@ function Input({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        className={`
-          input
-          ${error ? "input-error" : ""}
-          ${success ? "input-success" : ""}
-        `}
-        aria-invalid={!!error}
+        className={`input ${error ? "input-error" : ""} ${
+          success ? "input-success" : ""
+        }`}
+        aria-invalid={error ? "true" : "false"}
+        aria-describedby={error || success ? messageId : undefined}
       />
 
-      {error && <span className="input-message error-message">{error}</span>}
+      {error && (
+        <span id={messageId} className="input-message error-message">
+          {error}
+        </span>
+      )}
 
       {!error && success && (
-        <span className="input-message success-message">
+        <span id={messageId} className="input-message success-message">
           Campo preenchido corretamente.
         </span>
       )}

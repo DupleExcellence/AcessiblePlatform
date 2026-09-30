@@ -6,6 +6,7 @@ import Radio from "../components/Radio/Radio.jsx";
 import Textarea from "../components/Textarea/Textarea.jsx";
 
 
+
 function Home() {
   return (
     <main>
@@ -53,6 +54,27 @@ function Home() {
         onChange={""}
         success
       />
+
+
+      
+
+        <div>
+          <Radio
+            name="perfil"
+            value="aluno"
+            label="Aluno"
+          />
+          Aluno 
+          <Radio/>
+          
+          <Radio
+            name="perfil"
+            value="professor"
+            label="Professor"
+          />
+        </div>
+      
+        
 
     </main>
   );

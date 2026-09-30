@@ -1,63 +1,56 @@
-.radio {
+span.radio {
   display: flex;
   align-items: center;
   gap: 8px;
-
   width: fit-content;
-
   font-family: Arial, sans-serif;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.5;
   color: #1f2937;
-
   cursor: pointer;
 }
 
+/* Input nativo oculto, mas continua acessível pelo teclado */
 .radio input {
   position: absolute;
   opacity: 0;
-  pointer-events: none;
 }
 
-.radio-circle {
+/* Círculo do Radio */
+span.radio-circle {
   width: 20px;
   height: 20px;
-
   border: 2px solid #9ca3af;
   border-radius: 50%;
   background-color: #ffffff;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   flex-shrink: 0;
-  transition: 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* Selecionado */
 .radio input:checked + .radio-circle {
   border-color: #16a34a;
 }
 
+/* Bolinha interna quando selecionado */
 .radio input:checked + .radio-circle::after {
   content: "";
-
   width: 10px;
   height: 10px;
-
   border-radius: 50%;
   background-color: #16a34a;
 }
 
+/* Foco pelo teclado */
 .radio input:focus-visible + .radio-circle {
-  outline: 3px solid rgba(22, 163, 74, 0.25);
+  outline: 3px solid rgba(37, 99, 235, 0.25);
   outline-offset: 2px;
 }
 
-.radio:hover .radio-circle {
-  border-color: #16a34a;
-}
-
+/* Desabilitado */
 .radio input:disabled + .radio-circle {
   background-color: #f3f4f6;
   border-color: #d1d5db;
@@ -68,6 +61,7 @@
   cursor: not-allowed;
 }
 
+/* Erro */
 .radio.error .radio-circle {
   border-color: #dc2626;
 }
@@ -76,6 +70,7 @@
   color: #dc2626;
 }
 
+/* Sucesso */
 .radio.success .radio-circle {
   border-color: #16a34a;
 }

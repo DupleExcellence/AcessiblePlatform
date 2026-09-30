@@ -1,5 +1,4 @@
 import "./Checkbox.css";
-import "./Checkbox.css";
 
 function Checkbox({
   id,
