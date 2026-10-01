@@ -97,7 +97,8 @@ gerar_relatorio.py
 *.pdf
 
 # Evidências e arquivos locais
-docs/evidencias/
+docs/evidencias/*
+!docs/evidencias/README.md
 *.png
 *.jpg
 *.jpeg
