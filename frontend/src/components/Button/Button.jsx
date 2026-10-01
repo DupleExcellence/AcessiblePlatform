@@ -2,16 +2,13 @@ import "./Button.css";
 
 function Button({
   children,
-  onClick,
   variant = "primary",
-  disabled = false,
+  ...props
 }) {
   return (
     <button
-      type="button"
-      onClick={onClick}
-      className={`button ${variant}`}
-      disabled={disabled}
+      className={`button button-${variant}`}
+      {...props}
     >
       {children}
     </button>
