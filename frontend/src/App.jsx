@@ -1,9 +1,9 @@
 
-import HomeAluno from "./pages/HomeAluno/HomeAluno";
+import HomeProfessor from "./pages/HomeProfessor/HomeProfessor";
 
 
 function App() {
-  return <HomeAluno/>;
+  return <HomeProfessor/>;
 }
 
 export default App;
