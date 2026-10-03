@@ -1,8 +1,9 @@
-import Cadastro from "./pages/Cadastro/Cadastro";
-import Login from "./pages/Login/Login";
+
+import HomeAluno from "./pages/HomeAluno/HomeAluno";
+
 
 function App() {
-  return <Cadastro />;
+  return <HomeAluno/>;
 }
 
 export default App;
