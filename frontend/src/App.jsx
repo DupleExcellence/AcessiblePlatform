@@ -1,9 +1,10 @@
 
-import HomeProfessor from "./pages/HomeProfessor/HomeProfessor";
+import LicaoAluno from "./components/LicaoAluno/LicaoAluno";
+
 
 
 function App() {
-  return <HomeProfessor/>;
+  return <LicaoAluno/>;
 }
 
 export default App;
