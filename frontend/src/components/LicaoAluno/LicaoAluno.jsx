@@ -1,248 +1,180 @@
-import React, { useState } from "react";
-import Select from "../Select/Select.jsx";
-import Input from "../Input/Input.jsx";
-import Button from "../Button/Button.jsx";
-import Label from "../Label/Label.jsx";
-import Textarea from "../Textarea/Textarea.jsx"
-import Form from "../Form/Form.jsx"
-import "../LicaoAluno/LicaoAluno.css"
+
+import "../LicaoAluno/LicaoAluno.css";
 
 function LicaoAluno() {
-  const [formData, setFormData] = useState({
-    curso: "",
-    ordem: "1",
-    titulo: "",
-    videoUrl: "",
-    conteudo: "",
-    duracao: "",
-    gabarito: "",
-    arquivo: null,
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      arquivo: e.target.files[0],
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log("Dados da lição:", formData);
-
-    // Aqui depois você pode conectar com o backend
-  };
-
-  const handleCancel = () => {
-    setFormData({
-      curso: "",
-      ordem: "1",
-      titulo: "",
-      videoUrl: "",
-      conteudo: "",
-      duracao: "",
-      gabarito: "",
-      arquivo: null,
-    });
-  };
+  const lessons = [
+    {
+      icon: "▣",
+      title: "Introdução ao HTML",
+      subtitle: "Curso: Desenvolvimento Web",
+      progress: 80,
+    },
+    {
+      icon: "▤",
+      title: "CSS na prática",
+      subtitle: "Curso: Desenvolvimento Web",
+      progress: 50,
+    },
+    {
+      icon: "▣",
+      title: "JavaScript básico",
+      subtitle: "Curso: Programação",
+      progress: 0,
+    },
+  ];
 
   return (
-    <div className="criar-licao-page">
+    <div className="lessons-page">
 
-      {/* Cabeçalho */}
-      <header className="criar-licao-header">
-
-        <div className="logo-area">
-          <div className="logo-icon">◆</div>
-          <span>Aprender</span>
+      {/* Barra superior */}
+      <header className="topbar">
+        <div className="topbar-left">
+          <span className="home-icon">◆</span>
+          <span className="system-name">Aprender</span>
         </div>
 
-        <div className="header-icons">
-          <Button className="header-button" aria-label="Notificações">
+        <div className="topbar-right">
+          <button
+            className="notification-button"
+            aria-label="Notificações"
+          >
             🔔
-          </Button>
+          </button>
 
-          <Button className="profile-button" aria-label="Perfil">
-            👤
-          </Button>
+          <div className="profile-avatar" aria-label="Perfil">
+            V
+          </div>
         </div>
-
       </header>
 
-      {/* Conteúdo */}
-      <main className="criar-licao-container">
+      {/* Conteúdo principal */}
+      <main className="lessons-content">
 
-        <h1>Criar Lição</h1>
+        {/* Título */}
+        <h1 className="page-title">6. Lições (Aluno)</h1>
 
-        <Form onSubmit={handleSubmit}>
+        <div className="content-grid">
 
-          <div className="form-grid">
+          {/* Coluna principal */}
+          <section className="lessons-section">
 
-            {/* Curso */}
-            <div className="form-group curso">
-              <Label htmlFor="curso">Curso</Label>
+            <h2>Lições</h2>
 
-              <Select
-                id="curso"
-                name="curso"
-                value={formData.curso}
-                onChange={handleChange}
-              >
-                <option value="">Selecione o curso</option>
-                <option value="informatica">Informática Básica</option>
-                <option value="word">Microsoft Word</option>
-                <option value="excel">Microsoft Excel</option>
-                <option value="internet">Internet</option>
-              </Select>
+            {/* Lista de lições */}
+            <div className="lessons-list">
+
+              {lessons.map((lesson, index) => (
+                <article className="lesson-card" key={index}>
+
+                  <div className="lesson-icon">
+                    {lesson.icon}
+                  </div>
+
+                  <div className="lesson-info">
+                    <h3>{lesson.title}</h3>
+
+                    <p>{lesson.subtitle}</p>
+
+                    <div className="progress-row">
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{
+                            width: `${lesson.progress}%`,
+                          }}
+                        />
+                      </div>
+
+                      <span className="progress-value">
+                        {lesson.progress}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <button className="access-button">
+                    Acessar
+                  </button>
+
+                </article>
+              ))}
+
             </div>
 
-            {/* Ordem */}
-            <div className="form-group ordem">
-              <Label htmlFor="ordem">Ordem</Label>
+            {/* Material da lição */}
+            <section className="material-section">
 
-              <Input
-                type="number"
-                id="ordem"
-                name="ordem"
-                min="1"
-                value={formData.ordem}
-                onChange={handleChange}
-              />
-            </div>
+              <h3>Material da lição</h3>
 
-            {/* Título */}
-            <div className="form-group titulo">
-              <Label htmlFor="titulo">Título da lição</Label>
+              <div className="material-file">
 
-              <Input
-                type="text"
-                id="titulo"
-                name="titulo"
-                placeholder="Ex.: Introdução ao HTML"
-                value={formData.titulo}
-                onChange={handleChange}
-              />
-            </div>
+                <div className="file-icon">
+                  PDF
+                </div>
 
-            {/* Vídeo */}
-            <div className="form-group video">
-              <Label htmlFor="videoUrl">Vídeo URL</Label>
+                <div className="file-info">
+                  <strong>exemplo.pdf</strong>
+                  <span>2,4 KB</span>
+                </div>
 
-              <Input
-                type="url"
-                id="videoUrl"
-                name="videoUrl"
-                placeholder="https://..."
-                value={formData.videoUrl}
-                onChange={handleChange}
-              />
-            </div>
+                <button
+                  className="download-button"
+                  aria-label="Baixar material"
+                >
+                  ↓
+                </button>
 
-            {/* Conteúdo */}
-            <div className="form-group conteudo">
-              <Label htmlFor="conteudo">Conteúdo</Label>
+              </div>
 
-              <Textarea
-                id="conteudo"
-                name="conteudo"
-                placeholder="Descreva o conteúdo da lição..."
-                value={formData.conteudo}
-                onChange={handleChange}
-              />
-            </div>
+            </section>
 
-            {/* Duração */}
-            <div className="form-group duracao">
-              <Label htmlFor="duracao">Duração</Label>
+            {/* Resposta */}
+            <section className="answer-section">
 
-              <Input
-                type="text"
-                id="duracao"
-                name="duracao"
-                placeholder="Ex.: 10 min"
-                value={formData.duracao}
-                onChange={handleChange}
-              />
-            </div>
+              <h3>Sua resposta</h3>
 
-            {/* Material de apoio */}
-            <div className="form-group material">
-              <Label>Material de apoio</Label>
-
-              <Label htmlFor="arquivo" className="upload-box">
-
-                <span className="upload-icon">📁</span>
-
-                <span>
-                  {formData.arquivo
-                    ? formData.arquivo.name
-                    : "Adicionar arquivo"}
-                </span>
-
-              </Label>
-
-              <Input
-                type="file"
-                id="arquivo"
-                onChange={handleFileChange}
-                hidden
-                accept=".pdf,.doc,.docx,.ppt,.pptx"
+              <textarea
+                className="answer-input"
+                placeholder="Digite sua resposta..."
+                aria-label="Digite sua resposta"
               />
 
-              <small>Formatos: PDF, DOC, PPT, etc.</small>
+              <div className="answer-actions">
+                <button className="send-button">
+                  Enviar
+                </button>
+              </div>
+
+            </section>
+
+          </section>
+
+          {/* Ranking */}
+          <aside className="ranking-card">
+
+            <h2>Ranking / Pontos</h2>
+
+            <div className="trophy">
+              🏆
             </div>
 
-            {/* Gabarito */}
-            <div className="form-group gabarito">
-              <Label htmlFor="gabarito">Gabarito</Label>
+            <p className="ranking-label">
+              Sua pontuação
+            </p>
 
-              <Textarea
-                id="gabarito"
-                name="gabarito"
-                placeholder="Digite o gabarito da lição..."
-                value={formData.gabarito}
-                onChange={handleChange}
-              />
-            </div>
+            <strong className="points">
+              320 pontos
+            </strong>
 
-          </div>
+            <button className="ranking-button">
+              Ver ranking
+            </button>
 
-          {/* Botões */}
-          <div className="form-actions">
+          </aside>
 
-            <Button
-              type="button"
-              variant="danger"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              type="submit"
-              className="btn-salvar"
-            >
-              Salvar
-            </Button>
-
-          </div>
-
-        </Form>
-
+        </div>
       </main>
-
     </div>
   );
 }
 
-export default LicaoAluno;
+export default LiçãoAluno;
