@@ -1,0 +1,189 @@
+/* =================================
+   CONTAINER
+================================= */
+
+.feedback {
+  width: 100%;
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  padding: 9px 12px;
+
+  margin-bottom: 8px;
+
+  border-radius: 5px;
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =================================
+   ÍCONE
+================================= */
+
+.feedback-icon {
+  width: 25px;
+  height: 25px;
+
+  min-width: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  margin-right: 11px;
+
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+/* =================================
+   CONTEÚDO
+================================= */
+
+.feedback-content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 2px;
+}
+
+.feedback-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.feedback-message {
+  font-size: 12px;
+  line-height: 12px;
+}
+
+
+/* =================================
+   BOTÃO FECHAR
+================================= */
+
+.feedback-close {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+
+  padding: 0;
+
+  color: #555555;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  border-radius: 4px;
+}
+
+.feedback-close:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.feedback-close:focus-visible {
+  outline: 2px solid #333333;
+  outline-offset: 2px;
+}
+
+
+/* =================================
+   SUCESSO
+================================= */
+
+.feedback-success {
+  background-color: #eaf8f2;
+
+  border: 1px solid #b8e5d2;
+}
+
+.feedback-icon-success {
+  background-color: #20a875;
+}
+
+.feedback-success .feedback-title {
+  color: #18865e;
+}
+
+.feedback-success .feedback-message {
+  color: #39745e;
+}
+
+
+/* =================================
+   ATENÇÃO
+================================= */
+
+.feedback-warning {
+  background-color: #fff8e8;
+
+  border: 1px solid #f0dfa9;
+}
+
+.feedback-icon-warning {
+  background-color: #f5a623;
+}
+
+.feedback-warning .feedback-title {
+  color: #c5860c;
+}
+
+.feedback-warning .feedback-message {
+  color: #806b3b;
+}
+
+
+/* =================================
+   ERRO
+================================= */
+
+.feedback-error {
+  background-color: #fff0f1;
+
+  border: 1px solid #f0c4c8;
+}
+
+.feedback-icon-error {
+  background-color: #dc3545;
+}
+
+.feedback-error .feedback-title {
+  color: #c52f3d;
+}
+
+.feedback-error .feedback-message {
+  color: #88434a;
+}
+
+
+/* =================================
+   ACESSIBILIDADE
+================================= */
+
+.feedback-close:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
