@@ -43,7 +43,7 @@ def obter_nota(nota_id):
 def corrigir_entrega(dados, professor_id):
     """
     Cria uma nota a partir de uma entrega e atualiza o status da entrega
-    para 'corrigida'.
+    para 'corrigida'. Também incrementa o XP do aluno.
     """
     Nota.validar(dados)
 
@@ -73,12 +73,13 @@ def corrigir_entrega(dados, professor_id):
     # Atualiza o status da entrega
     entrega_ref.update({"status": "corrigida"})
 
-    # Atualiza a pontuação total do aluno
+    # Atualiza a pontuação total e o XP do aluno
     aluno_ref = COLECAO_ALUNOS.document(dados["alunoId"])
     aluno_doc = aluno_ref.get()
     if aluno_doc.exists:
         aluno_ref.update({
-            "pontuacaoTotal": firestore.Increment(dados["pontuacao"])
+            "pontuacaoTotal": firestore.Increment(dados["pontuacao"]),
+            "xpTotal": firestore.Increment(dados["pontuacao"] * 10),
         })
 
     return obter_nota(doc_ref.id)

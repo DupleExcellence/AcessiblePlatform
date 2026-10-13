@@ -10,11 +10,11 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 
-from app.routes import auth, alunos, cursos, licoes, atividades, entregas, notas, progresso
+from app.routes import auth, alunos, cursos, licoes, atividades, entregas, notas, progresso, xp, ranking
 from app.middlewares.error_handler import tratar_excecao
 
 # Recursos que recebem "query" como parâmetro
-RECURSOS_COM_QUERY = {"licoes", "atividades", "entregas", "notas"}
+RECURSOS_COM_QUERY = {"licoes", "atividades", "entregas", "notas", "ranking"}
 
 ROTAS = {
     "auth": auth.rotear,
@@ -25,6 +25,8 @@ ROTAS = {
     "entregas": entregas.rotear,
     "notas": notas.rotear,
     "progresso": progresso.rotear,
+    "xp": xp.rotear,
+    "ranking": ranking.rotear,
 }
 
 
