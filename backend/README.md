@@ -13,6 +13,7 @@ API REST em Python puro responsável pelas regras de negócio da plataforma. Uti
 - [Como rodar o servidor](#-como-rodar-o-servidor)
 - [Como rodar os testes](#-como-rodar-os-testes)
 - [Endpoints da API](#-endpoints-da-api)
+- [Estrutura do banco](#-estrutura-do-banco-equivalente-a-migrations)
 - [Gamificação](#-gamificação)
 - [Regras de segurança do Firestore](#-regras-de-segurança-do-firestore)
 - [Boas práticas adotadas](#-boas-práticas-adotadas)
@@ -66,8 +67,9 @@ backend/
 │ │ ├── entrega.py
 │ │ ├── nota.py
 │ │ └── progresso.py
-│ ├── database/ # Conexão com Firestore + seed
+│ ├── database/ # Conexão com Firestore + seed + schema
 │ │ ├── firebase.py
+│ │ ├── schema.py
 │ │ └── seed.py
 │ ├── middlewares/ # Autenticação e tratamento de erros
 │ │ ├── auth_middleware.py
