@@ -24,7 +24,9 @@ Este diretório contém os prints das requisições feitas à API pública do ba
 | 10 | `10_cadastro_professor_201.png` | Cadastro de professor | ✅ |
 | 11 | `11_login_professor_idToken.png` | Login do professor e obtenção do `idToken` | ✅ |
 | 12 | `12_professor_cria_licao_201.png` | Professor cria lição com sucesso (201) | ✅ |
-
+| 13 | `13_api_xp_200.png` | Consulta de XP e nível do aluno | ✅ |
+| 14 | `14_api_ranking_200.png` | Ranking de alunos por XP | ✅ |
+| 15 | `15_api_ranking_eu_200.png` | Posição do aluno no ranking | ✅ |
 ---
 
 ## Como os testes foram executados
