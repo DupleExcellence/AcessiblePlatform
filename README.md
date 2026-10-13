@@ -153,6 +153,8 @@ O `idToken` é obtido via **Firebase Authentication** no frontend.
 | **Entregas** | `GET/POST /api/entregas`, `GET /api/entregas/{id}` |
 | **Notas** | `GET/POST /api/notas`, `GET /api/notas/{id}` |
 | **Progresso** | `GET /api/progresso`, `GET /api/progresso/{alunoId}` |
+| **XP** | `GET /api/xp`, `GET /api/xp/{alunoId}` |
+| **Ranking** | `GET /api/ranking`, `GET /api/ranking/eu` |
 
 📘 **Documentação completa:** [backend/README.md](backend/README.md)
 
@@ -191,6 +193,8 @@ Além disso, foram executados testes manuais da API pública com o Insomnia, cob
 - Cadastro e gerenciamento de lições;
 - Realização de atividades;
 - Sistema de pontuação;
+- Sistema de XP e níveis;
+  Ranking de alunos;
 - Registro e consulta de resultados;
 - Recursos de acessibilidade;
 - Integração via API REST;

@@ -52,6 +52,7 @@ def cadastrar_usuario(dados):
             "idade": dados.get("idade"),
             "turma": dados.get("turma"),
             "pontuacaoTotal": 0,
+            "xpTotal": 0,
             "criadoEm": firestore.SERVER_TIMESTAMP,
         })
     elif perfil_id == "professor":
