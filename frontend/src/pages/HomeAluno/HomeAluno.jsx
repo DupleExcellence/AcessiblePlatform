@@ -1,3 +1,4 @@
+import React from "react";
 import "./HomeAluno.css";
 import Button from "../../components/Button/Button"
 function HomeAluno() {

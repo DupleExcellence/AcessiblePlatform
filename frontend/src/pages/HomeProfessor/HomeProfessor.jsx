@@ -1,3 +1,5 @@
+
+import React from "react";
 import "./HomeProfessor.css";
 
 function HomeProfessor() {
