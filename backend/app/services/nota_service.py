@@ -43,7 +43,7 @@ def obter_nota(nota_id):
 def corrigir_entrega(dados, professor_id):
     """
     Cria uma nota a partir de uma entrega e atualiza o status da entrega
-    para 'corrigida'. Também incrementa o XP do aluno.
+    para 'corrigida'. Também incrementa o XP e a pontuação do aluno.
     """
     Nota.validar(dados)
 
@@ -53,6 +53,14 @@ def corrigir_entrega(dados, professor_id):
     if not entrega_doc.exists:
         raise LookupError("Entrega não encontrada.")
 
+    # Normaliza o alunoId (aceita "abc123" ou "alunos/abc123")
+    aluno_id_raw = dados["alunoId"]
+    aluno_id = aluno_id_raw.split("/")[-1] if "/" in aluno_id_raw else aluno_id_raw
+
+    # Normaliza o atividadeId (aceita "abc123" ou "atividades/abc123")
+    atividade_id_raw = dados["atividadeId"]
+    atividade_id = atividade_id_raw.split("/")[-1] if "/" in atividade_id_raw else atividade_id_raw
+
     # Evita correção duplicada
     existentes = COLECAO_NOTAS.where("entregaId", "==", entrega_ref).limit(1).stream()
     if any(existentes):
@@ -61,8 +69,8 @@ def corrigir_entrega(dados, professor_id):
     doc_ref = COLECAO_NOTAS.document()
     doc_ref.set({
         "entregaId": entrega_ref,
-        "alunoId": COLECAO_ALUNOS.document(dados["alunoId"]),
-        "atividadeId": COLECAO_ATIVIDADES.document(dados["atividadeId"]),
+        "alunoId": COLECAO_ALUNOS.document(aluno_id),
+        "atividadeId": COLECAO_ATIVIDADES.document(atividade_id),
         "pontuacao": dados["pontuacao"],
         "pontuacaoMaxima": dados["pontuacaoMaxima"],
         "feedback": dados.get("feedback", ""),
@@ -73,13 +81,28 @@ def corrigir_entrega(dados, professor_id):
     # Atualiza o status da entrega
     entrega_ref.update({"status": "corrigida"})
 
-    # Atualiza a pontuação total e o XP do aluno
-    aluno_ref = COLECAO_ALUNOS.document(dados["alunoId"])
+    # Atualiza o XP e a pontuação do aluno
+    aluno_ref = COLECAO_ALUNOS.document(aluno_id)
     aluno_doc = aluno_ref.get()
     if aluno_doc.exists:
+        # Garante que os campos existam
+        dados_aluno = aluno_doc.to_dict()
+        if "pontuacaoTotal" not in dados_aluno:
+            aluno_ref.update({"pontuacaoTotal": 0})
+        if "xpTotal" not in dados_aluno:
+            aluno_ref.update({"xpTotal": 0})
+
+        # Incrementa
         aluno_ref.update({
             "pontuacaoTotal": firestore.Increment(dados["pontuacao"]),
             "xpTotal": firestore.Increment(dados["pontuacao"] * 10),
+        })
+    else:
+        # Se o documento não existir, cria com os valores iniciais
+        aluno_ref.set({
+            "pontuacaoTotal": dados["pontuacao"],
+            "xpTotal": dados["pontuacao"] * 10,
+            "criadoEm": firestore.SERVER_TIMESTAMP,
         })
 
     return obter_nota(doc_ref.id)
