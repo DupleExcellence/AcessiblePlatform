@@ -1,3 +1,4 @@
+import React from "react";
 import "./Label.css";
 
 function Label({ htmlFor, children, required = false }) {

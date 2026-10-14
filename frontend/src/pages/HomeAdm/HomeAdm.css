@@ -1,10 +1,19 @@
-* {
+*{
   box-sizing: border-box;
+ 
+}
+div.dashboard{
+  display: flex;
 }
 
 .dashboard {
+  
   width: 100%;
-  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  
   background: #f5f8fa;
   color: #24343d;
   font-family: Arial, Helvetica, sans-serif;
@@ -13,12 +22,19 @@
 /* =========================
    BARRA SUPERIOR
 ========================= */
+header.topbar{
+  display: flex;
+  width: 100%;
+  position: fixed;
+  
+
+}
 
 .topbar {
   height: 58px;
   background: #087d6d;
   color: white;
-
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,71 +77,139 @@
 /* =========================
    CONTEÚDO
 ========================= */
+div.dashboard-header{
+  height: 200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
 
-.dashboard-content {
-  max-width: 1100px;
-  margin: 0 auto;
 
-  padding: 30px 40px 100px;
+}
+h1{
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ margin-top: 24px;
+ align-items: center;
+ justify-content: center;
+ 
+  
+  
+}
+p{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+ 
+
+}
+main.dashboard-content{
+  width: 100%;
+  display: flex;
+ 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 80px;
+  
 }
 
+.dashboard-header{
+  width: 100%;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+  margin-bottom: 24px;
+  
+}
 .dashboard-header h1 {
-  margin: 0;
-
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
   font-size: 28px;
   font-weight: 700;
+  margin-top: 80px;
+  
 }
 
 .dashboard-header p {
-  margin-top: 5px;
-
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  align-items: center;
   font-size: 14px;
   color: #71808a;
+  margin-bottom: 20px;
+
 }
 
-/* =========================
-   GRID PRINCIPAL
-========================= */
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 25px;
-
-  margin-top: 25px;
+div.dashboard-grid{
+ 
+  margin-left: 80px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+ 
+  height: 400px;
+  margin-bottom: 60px;
 }
+
 
 /* =========================
    CARDS
 ========================= */
-
+section.statistics{
+  width: 100%;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  
+}
 .statistics {
+  margin-top: 80px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
+div.stat-card{
+  display: flex;
+  
+}
 .stat-card {
-  min-height: 105px;
-
+  
+ 
   background: white;
 
   border: 1px solid #dfe7ea;
   border-radius: 10px;
-
-  padding: 20px;
-
+  width:160px;
+  
   display: flex;
-  align-items: center;
+  height: 60px;
+  
   gap: 15px;
 
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .stat-icon {
-  width: 42px;
-  height: 42px;
-
+  width: 60px;
+  height: 60px;
+  
   border-radius: 8px;
 
   display: flex;
@@ -174,7 +258,12 @@
 /* =========================
    ATIVIDADES
 ========================= */
-
+section.activities{
+  
+  width: 680px;
+  height: 350px;
+  font-size: 20px;
+}
 .activities {
   background: white;
 
@@ -187,19 +276,19 @@
 }
 
 .activities h2 {
-  margin: 0 0 18px;
-
-  font-size: 15px;
+  
+  margin-top: 0;
+  font-size: 25px;
   color: #24343d;
 }
 
 .activity {
   display: flex;
   align-items: flex-start;
-
+  font-size: 20px;
   gap: 10px;
 
-  padding: 10px 0;
+  padding: 20px 0;
 
   border-bottom: 1px solid #edf1f3;
 }
@@ -209,8 +298,8 @@
 }
 
 .activity-icon {
-  width: 27px;
-  height: 27px;
+  width: 32px;
+  height: 32px;
 
   border-radius: 50%;
 
@@ -221,7 +310,7 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 12px;
+  font-size: 18px;
 
   flex-shrink: 0;
 }
@@ -305,21 +394,3 @@
   outline-offset: 3px;
 }
 
-/* =========================
-   RESPONSIVIDADE
-========================= */
-
-@media (max-width: 800px) {
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-content {
-    padding: 25px 20px 100px;
-  }
-
-  .bottom-menu {
-    gap: 20px;
-  }
-}

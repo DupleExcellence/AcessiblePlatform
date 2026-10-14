@@ -1,10 +1,11 @@
+import React from "react";
 import "./Login.css";
 
 import Input from "../../components/Input/Input";
 import Label from "../../components/Label/Label";
 import Radio from "../../components/Radio/Radio";
 import Button from "../../components/Button/Button";
-import Formgroup from "../../components/Formgroup/Formgroup"
+import Formgroup from "../../components/Formgroup/Formgroup";
 
 function Login() {
   return (

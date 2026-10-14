@@ -1,5 +1,6 @@
-import ".HomeAdm.css";
-import Button from "../../components/Button/Button"
+import React from "react";
+import "../HomeAdm/HomeAdm.css"
+import Button from "../../components/Button/Button";
 
 function HomeAdm() {
   return (
