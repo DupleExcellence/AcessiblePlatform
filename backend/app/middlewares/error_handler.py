@@ -1,8 +1,5 @@
 """
 Tratamento centralizado de erros da aplicação.
-
-Converte exceções em respostas JSON padronizadas com o código HTTP
-apropriado, conforme a seção 2.11.5 do relatório.
 """
 from app.middlewares.auth_middleware import AuthError, PermissionError
 
