@@ -40,6 +40,9 @@ def obter_entrega(entrega_id):
 
 
 def enviar_entrega(dados, aluno_id):
+    # Injeta o alunoId (que vem do token, não do body)
+    dados = {**dados, "alunoId": aluno_id}
+
     Entrega.validar(dados)
 
     atividade_id = dados["atividadeId"]
