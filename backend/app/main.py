@@ -91,7 +91,17 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    host = os.getenv("HOST", "0.0.0.0")
-    porta = int(os.getenv("PORT", 8000))
-    print(f"Servidor rodando em http://{host}:{porta}")
-    HTTPServer((host, porta), Handler).serve_forever()
+    import sys
+    print(">>> Iniciando servidor...", flush=True)
+
+    host = "0.0.0.0"
+    porta = int(os.getenv("PORT", 10000))
+    print(f">>> Host: {host} | Porta: {porta}", flush=True)
+
+    try:
+        servidor = HTTPServer((host, porta), Handler)
+        print(f">>> Servidor rodando em http://{host}:{porta}", flush=True)
+        servidor.serve_forever()
+    except Exception as e:
+        print(f">>> ERRO ao iniciar servidor: {e}", flush=True)
+        sys.exit(1)
