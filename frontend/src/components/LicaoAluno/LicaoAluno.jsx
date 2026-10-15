@@ -1,5 +1,6 @@
-
+import React from "react";
 import "../LicaoAluno/LicaoAluno.css";
+import Button from "../Button/Button";
 
 function LicaoAluno() {
   const lessons = [
@@ -173,8 +174,37 @@ function LicaoAluno() {
 
         </div>
       </main>
+      {/* Menu inferior */}
+      <nav className="bottom-navigation">
+
+        <Button className="nav-item active">
+          <span>⌂</span>
+          <small>Início</small>
+        </Button>
+
+        <Button className="nav-item">
+          <span>▣</span>
+          <small>Lições</small>
+        </Button>
+
+        <Button className="nav-item">
+          <span>▤</span>
+          <small>Cursos</small>
+        </Button>
+
+        <Button className="nav-item">
+          <span>🏆</span>
+          <small>Ranking</small>
+        </Button>
+
+        <Button className="nav-item">
+          <span>👤</span>
+          <small>Perfil</small>
+        </Button>
+
+      </nav>
     </div>
   );
 }
 
-export default LiçãoAluno;
+export default LicaoAluno;

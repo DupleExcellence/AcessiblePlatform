@@ -12,16 +12,16 @@ import HomeAluno from "./pages/HomeAluno/HomeAluno";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import HomeProfessor from "./pages/HomeProfessor/HomeProfessor";
 
-
+import LicaoAluno from "../src/components/LicaoAluno/LicaoAluno"
 
 function App() {
   return (
     <Routes>
-      {/* Rota inicial */}
+      {/* Rota inicial */} 
       {/* <Route
         path="/"
         element={<Navigate to="/login" replace />}
-      /> */}
+      />
 
       {/* Acesso público */}
       <Route path="/login" element={<Login />} />
@@ -35,9 +35,13 @@ function App() {
       {/* Página não encontrada */}
       {/* <Route
         path="*"
-        element={<Navigate to="/login" replace />}
-      /> */}
+        element={<Navigate to="/login" replace />} */}
+    
     </Routes>
+    
+    
+  
+    
   );
 }
 
