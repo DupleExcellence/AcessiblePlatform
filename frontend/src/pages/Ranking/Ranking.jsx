@@ -1,10 +1,14 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import "./Ranking.css";
+import "../Ranking/Ranking.css";
 
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
+// Buscar ranking geral
+fetch(`${API_URL}/api/ranking`);
+
+// Buscar posição do aluno logado
+fetch(`${API_URL}/api/ranking/eu`);
 export default function Ranking() {
   const [alunos, setAlunos] = useState([]);
   const [minhaPosicao, setMinhaPosicao] = useState(null);
@@ -24,9 +28,11 @@ export default function Ranking() {
           ? { Authorization: `Bearer ${token}` }
           : {};
 
-        const resposta = await fetch(`${API_URL}/ranking`, {
-          headers,
+        
+        const resposta = await fetch(`${API_URL}/api/ranking`, {
+        headers,
         });
+
 
         if (!resposta.ok) {
           throw new Error(
@@ -41,9 +47,12 @@ export default function Ranking() {
 
         // A posição pessoal só está disponível para alunos.
         if (token) {
-          const respostaEu = await fetch(`${API_URL}/ranking/eu`, {
-            headers,
-          });
+          
+          
+        const respostaEu = await fetch(`${API_URL}/api/ranking/eu`, {
+        headers,
+        });
+
 
           if (respostaEu.ok) {
             setMinhaPosicao(await respostaEu.json());
@@ -97,8 +106,8 @@ export default function Ranking() {
         </div>
 
         <div className="ranking-total">
-          <span>Participantes</span>
-          <strong>{alunos.length}</strong>
+            <span>Alunos no ranking</span>
+            <strong>{alunos.length}</strong>
         </div>
       </header>
 
