@@ -12,8 +12,10 @@ import HomeAluno from "./pages/HomeAluno/HomeAluno";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import HomeProfessor from "./pages/HomeProfessor/HomeProfessor";
 import Ranking from "./pages/Ranking/Ranking";
-
-import LicaoAluno from "../src/components/LicaoAluno/LicaoAluno"
+import PerfilProfessorPage from "./pages/PerfilProfessor/PerfilProfessor";
+import PerfilAlunoPage from "./pages/PerfilAluno/PerfilAluno";
+import LicaoAlunoPage from "./pages/LicaoAluno/LicaoAluno";
+import LicaoProfessorPage from "./pages/LicaoProfessor/LicaoProfessor";
 
 function App() {
   return (
@@ -29,11 +31,14 @@ function App() {
       <Route path="/cadastro" element={<Cadastro />} />
 
       {/* Áreas dos usuários */}
-      <Route path="/HomeAluno" element={<HomeAluno />} />
-      <Route path="/HomeProfessor" element={<HomeProfessor />} />
+      <Route path="/homeAluno" element={<HomeAluno />} />
+      <Route path="/homeProfessor" element={<HomeProfessor />} />
       <Route path="/admin" element={<HomeAdm />} />
-      <Route path="/ranking" element={<Ranking />} /> 
-
+      <Route path="api/ranking" element={<Ranking />} /> 
+      <Route path="/perfilProfessor" element={<PerfilProfessorPage/>}/>
+      <Route path="/licaoAluno" element={<LicaoAlunoPage/>}/>
+      <Route path="/licaoProfessor" element={<LicaoProfessorPage/>}/>
+      <Route path="/PerfilAluno" element={<PerfilAlunoPage/>}/>
       {/* Página não encontrada */}
       {/* <Route
         path="*"
