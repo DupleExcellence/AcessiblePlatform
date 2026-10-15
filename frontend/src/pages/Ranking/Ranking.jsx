@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "../Ranking/Ranking.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
+console.log("URL da API:", API_URL);
 
 // Buscar ranking geral
 fetch(`${API_URL}/api/ranking`);
