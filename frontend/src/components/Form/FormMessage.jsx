@@ -1,3 +1,4 @@
+import React from "react";
 function FormMessage({ children, type = "error" }) {
   if (!children) return null;
 
