@@ -12,7 +12,7 @@ import HomeAluno from "./pages/HomeAluno/HomeAluno";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import HomeProfessor from "./pages/HomeProfessor/HomeProfessor";
 
-import LicaoAluno from "../src/components/LicaoAluno/LicaoAluno"
+import LicaoProfessor from "../src/components/LicaoProfessor/LicaoProfessor"
 
 function App() {
   return (
@@ -30,12 +30,13 @@ function App() {
       {/* Áreas dos usuários */}
       <Route path="/HomeAluno" element={<HomeAluno />} />
       <Route path="/HomeProfessor" element={<HomeProfessor />} />
-      <Route path="/admin" element={<HomeAdm />} />
+      <Route path="/admin" element={<HomeAdm />} /> 
 
       {/* Página não encontrada */}
       {/* <Route
         path="*"
         element={<Navigate to="/login" replace />} */}
+        
     
     </Routes>
     

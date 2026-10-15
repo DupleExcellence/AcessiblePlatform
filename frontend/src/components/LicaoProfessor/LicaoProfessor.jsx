@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React from "react";
 import Select from "../Select/Select.jsx";
 import Input from "../Input/Input.jsx";
 import Button from "../Button/Button.jsx";
@@ -6,6 +7,7 @@ import Label from "../Label/Label.jsx";
 import Textarea from "../Textarea/Textarea.jsx"
 import Form from "../Form/Form.jsx"
 import "../LicaoProfessor/LicaoProfessor.css"
+import { useState } from "react";
 
 function LicaoProfessor() {
   const [formData, setFormData] = useState({
@@ -236,6 +238,45 @@ function LicaoProfessor() {
             </Button>
 
           </div>
+          {/* MENU INFERIOR */}
+      <nav className="bottom-menu" aria-label="Menu principal">
+
+        <a href="#" className="menu-item active">
+          <span>⌂</span>
+          <small>Início</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>▣</span>
+          <small>Lições</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>▤</span>
+          <small>Cursos</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>♟</span>
+          <small>Alunos</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>🏆</span>
+          <small>Ranking</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>♙</span>
+          <small>Perfil</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>⚙</span>
+          <small>Configurações</small>
+        </a>
+
+      </nav>
 
         </Form>
 
