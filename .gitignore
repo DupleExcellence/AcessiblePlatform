@@ -106,3 +106,7 @@ docs/evidencias/*
 Relatorio_Parcial.docx
 gerar_relatorio.py
 *.pdf
+
+.env
+.env.*
+!.env.example
