@@ -11,8 +11,9 @@ import HomeAdm from "./pages/HomeAdm/HomeAdm";
 import HomeAluno from "./pages/HomeAluno/HomeAluno";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import HomeProfessor from "./pages/HomeProfessor/HomeProfessor";
+import Ranking from "./pages/Ranking/Ranking";
 
-import LicaoProfessor from "../src/components/LicaoProfessor/LicaoProfessor"
+import LicaoAluno from "../src/components/LicaoAluno/LicaoAluno"
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function App() {
       {/* Áreas dos usuários */}
       <Route path="/HomeAluno" element={<HomeAluno />} />
       <Route path="/HomeProfessor" element={<HomeProfessor />} />
-      <Route path="/admin" element={<HomeAdm />} /> 
+      <Route path="/admin" element={<HomeAdm />} />
+      <Route path="/ranking" element={<Ranking />} /> 
 
       {/* Página não encontrada */}
       {/* <Route
@@ -40,7 +42,7 @@ function App() {
     
     </Routes>
     
-    
+    // <LicaoAluno/>
   
     
   );
