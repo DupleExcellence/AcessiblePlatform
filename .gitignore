@@ -110,3 +110,4 @@ gerar_relatorio.py
 .env
 .env.*
 !.env.example
+node_modules/

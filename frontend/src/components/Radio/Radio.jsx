@@ -1,3 +1,4 @@
+
 import React from "react";
 import "./Radio.css";
 
@@ -25,7 +26,7 @@ function Radio({
         id={id}
         name={name}
         type="radio"
-        value={""}
+        value={value}
         checked={checked}
         onChange={onChange}
         disabled={disabled}
@@ -33,7 +34,7 @@ function Radio({
         {...props}
       />
 
-      <span className="radio-circle"></span>
+      <span className="radio-circle" aria-hidden="true"></span>
 
       <span className="radio-label">{children}</span>
     </label>
