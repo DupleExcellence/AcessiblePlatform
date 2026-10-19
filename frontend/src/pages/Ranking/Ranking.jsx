@@ -1,255 +1,109 @@
-import React from "react";
-import { useEffect, useState } from "react";
+﻿
+
 import "../Ranking/Ranking.css";
+import React from "react";
+import { auth } from "../../services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
-const API_URL = import.meta.env.VITE_API_URL;
-console.log("URL da API:", API_URL);
+import { useEffect, useState } from "react";
+import {
+  buscarRanking,
+  buscarMinhaPosicao,
+} from "../../services/rankingServices";
 
-// Buscar ranking geral
-fetch(`${API_URL}/api/ranking`);
 
-// Buscar posição do aluno logado
-fetch(`${API_URL}/api/ranking/eu`);
+
+
 export default function Ranking() {
-  const [alunos, setAlunos] = useState([]);
-  const [minhaPosicao, setMinhaPosicao] = useState(null);
+  const [ranking, setRanking] = useState([]);
+  const [posicao, setPosicao] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
 
+ useEffect(() => {
+  console.log(
+    "UsuÃ¡rio autenticado:",
+    auth.currentUser?.uid ?? null
+  );
+}, []);
+
+
+
   useEffect(() => {
-    async function carregarRanking() {
+    let ativo = true;
+
+    async function carregar() {
       try {
         setCarregando(true);
         setErro("");
 
-        // Ajuste a chave caso seu login use outro nome.
-        const token = localStorage.getItem("token");
+        const [dadosRanking, dadosPosicao] =
+          await Promise.all([
+            buscarRanking(),
+            buscarMinhaPosicao(),
+          ]);
 
-        const headers = token
-          ? { Authorization: `Bearer ${token}` }
-          : {};
+        if (!ativo) return;
 
-        
-        const resposta = await fetch(`${API_URL}/api/ranking`, {
-        headers,
-        });
+        // Ajuste ao formato real retornado pelo backend.
+        setRanking(
+          Array.isArray(dadosRanking)
+            ? dadosRanking
+            : dadosRanking?.ranking ?? []
+        );
 
-
-        if (!resposta.ok) {
-          throw new Error(
-            resposta.status === 401
-              ? "Faça login para consultar o ranking."
-              : "Não foi possível carregar o ranking."
-          );
+        setPosicao(dadosPosicao);
+      } catch (erro) {
+        if (ativo) {
+          setErro(erro.message);
         }
-
-        const dados = await resposta.json();
-        setAlunos(Array.isArray(dados) ? dados : []);
-
-        // A posição pessoal só está disponível para alunos.
-        if (token) {
-          
-          
-        const respostaEu = await fetch(`${API_URL}/api/ranking/eu`, {
-        headers,
-        });
-
-
-          if (respostaEu.ok) {
-            setMinhaPosicao(await respostaEu.json());
-          }
-        }
-      } catch (error) {
-        setErro(error.message || "Erro ao conectar com o servidor.");
       } finally {
-        setCarregando(false);
+        if (ativo) {
+          setCarregando(false);
+        }
       }
     }
 
-    carregarRanking();
+    carregar();
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
-  const primeiros = alunos.slice(0, 3);
-  const demais = alunos.slice(3);
-
   if (carregando) {
-    return (
-      <main className="ranking-page">
-        <p className="ranking-status">Carregando ranking...</p>
-      </main>
-    );
+    return <p>Carregando ranking...</p>;
   }
 
   if (erro) {
-    return (
-      <main className="ranking-page">
-        <section className="ranking-mensagem" role="alert">
-          <h2>Não foi possível carregar o ranking</h2>
-          <p>{erro}</p>
-          <button
-            className="ranking-botao"
-            onClick={() => window.location.reload()}
-          >
-            Tentar novamente
-          </button>
-        </section>
-      </main>
-    );
+    return <p role="alert">Erro ao carregar: {erro}</p>;
   }
 
   return (
-    <main className="ranking-page">
-      <header className="ranking-header">
-        <div>
-          <span className="ranking-etiqueta">GAMIFICAÇÃO</span>
-          <h1>Ranking de alunos</h1>
-          <p>Aprenda, conquiste XP e avance na classificação!</p>
-        </div>
+    <section>
+      <h1>Ranking Alfabits</h1>
 
-        <div className="ranking-total">
-            <span>Alunos no ranking</span>
-            <strong>{alunos.length}</strong>
-        </div>
-      </header>
+      <h2>Minha posiÃ§Ã£o</h2>
+      <pre>{JSON.stringify(posicao, null, 2)}</pre>
 
-      {minhaPosicao && (
-        <section className="ranking-minha-posicao">
-          <div>
-            <span className="ranking-etiqueta">SUA CLASSIFICAÇÃO</span>
-            <h2>
-              Você está em {minhaPosicao.posicao}º lugar!
-            </h2>
-          </div>
+      <h2>Melhores alunos</h2>
 
-          <div className="ranking-meus-xp">
-            <strong>{minhaPosicao.xpTotal} XP</strong>
-            <span>de experiência</span>
-          </div>
-        </section>
-      )}
-
-      {alunos.length === 0 ? (
-        <section className="ranking-vazio">
-          <h2>A classificação está começando!</h2>
-          <p>Conclua atividades para conquistar seus primeiros pontos.</p>
-        </section>
+      {ranking.length === 0 ? (
+        <p>Nenhum resultado retornado.</p>
       ) : (
-        <>
-          <section className="ranking-podio">
-            <div className="ranking-secao-titulo">
-              <h2>🏆 Os destaques</h2>
-              <p>Quem está liderando a jornada?</p>
-            </div>
-
-            <div className="ranking-podio-grid">
-              {primeiros.map((aluno, indice) => {
-                const posicao = indice + 1;
-                const medalhas = ["🥇", "🥈", "🥉"];
-
-                return (
-                  <article
-                    key={aluno.id}
-                    className={`ranking-card ranking-card-${posicao}`}
-                  >
-                    <span className="ranking-medalha">
-                      {medalhas[indice]}
-                    </span>
-
-                    <div className="ranking-avatar">
-                      {(
-                        aluno.nome?.trim()?.charAt(0) || "A"
-                      ).toUpperCase()}
-                    </div>
-
-                    <span className="ranking-colocacao">
-                      {posicao}º lugar
-                    </span>
-
-                    <h3>{aluno.nome || "Aluno"}</h3>
-
-                    {aluno.turma && (
-                      <span className="ranking-turma">
-                        Turma {aluno.turma}
-                      </span>
-                    )}
-
-                    <strong className="ranking-xp">
-                      {aluno.xpTotal ?? 0} XP
-                    </strong>
-
-                    <span className="ranking-pontos">
-                      {aluno.pontuacaoTotal ?? 0} pontos
-                    </span>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="ranking-lista">
-            <div className="ranking-secao-titulo">
-              <h2>Classificação geral</h2>
-              <p>Confira o desempenho dos participantes.</p>
-            </div>
-
-            <div className="ranking-tabela">
-              <div className="ranking-linha ranking-cabecalho">
-                <span>Posição</span>
-                <span>Aluno</span>
-                <span>Pontos</span>
-                <span>Experiência</span>
-              </div>
-
-              {alunos.map((aluno, indice) => {
-                const posicao = aluno.posicao ?? indice + 1;
-                const ehDestaque =
-                  minhaPosicao?.alunoId === aluno.id;
-
-                return (
-                  <div
-                    key={aluno.id}
-                    className={`ranking-linha ${
-                      ehDestaque ? "ranking-linha-atual" : ""
-                    }`}
-                  >
-                    <span className="ranking-numero">
-                      {posicao <= 3
-                        ? ["🥇", "🥈", "🥉"][posicao - 1]
-                        : `${posicao}º`}
-                    </span>
-
-                    <div className="ranking-aluno">
-                      <div className="ranking-avatar ranking-avatar-pequeno">
-                        {(
-                          aluno.nome?.trim()?.charAt(0) || "A"
-                        ).toUpperCase()}
-                      </div>
-
-                      <div>
-                        <strong>{aluno.nome || "Aluno"}</strong>
-                        {aluno.turma && (
-                          <span>Turma {aluno.turma}</span>
-                        )}
-                        {ehDestaque && (
-                          <span className="ranking-voce">Você</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <span>
-                      {aluno.pontuacaoTotal ?? 0}
-                    </span>
-
-                    <strong className="ranking-xp-lista">
-                      {aluno.xpTotal ?? 0} XP
-                    </strong>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        </>
+        <ol>
+          {ranking.map((aluno, indice) => (
+            <li key={aluno.uid ?? aluno.id ?? indice}>
+              {aluno.nome ?? aluno.name ?? "Aluno"} â€”{" "}
+              {aluno.xp ?? 0} XP
+            </li>
+          ))}
+        </ol>
       )}
-    </main>
+    </section>
+
+
+
   );
+
 }

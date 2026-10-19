@@ -2,6 +2,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import { AuthProvider } from "./contexts/AuthContext";
+
 import Login from "./pages/Login/Login";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import HomeAdm from "./pages/HomeAdm/HomeAdm";
@@ -15,26 +17,25 @@ import LicaoProfessorPage from "./pages/LicaoProfessor/LicaoProfessor";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* Acesso público */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
 
-      {/* Áreas dos usuários */}
-      <Route path="/homeAluno" element={<HomeAluno />} />
-      <Route path="/homeProfessor" element={<HomeProfessor />} />
-      <Route path="/admin" element={<HomeAdm />} />
-      <Route path="/ranking" element={<Ranking />} />
-      <Route path="/perfilProfessor" element={<PerfilProfessorPage />} />
-      <Route path="/licaoAluno" element={<LicaoAlunoPage />} />
-      <Route path="/licaoProfessor" element={<LicaoProfessorPage />} />
-      <Route path="/perfilAluno" element={<PerfilAlunoPage />} />
+        <Route path="/homeAluno" element={<HomeAluno />} />
+        <Route path="/homeProfessor" element={<HomeProfessor />} />
+        <Route path="/admin" element={<HomeAdm />} />
+        <Route path="/ranking" element={<Ranking />} />
+        <Route path="/perfilProfessor" element={<PerfilProfessorPage />} />
+        <Route path="/perfilAluno" element={<PerfilAlunoPage />} />
+        <Route path="/licaoAluno" element={<LicaoAlunoPage />} />
+        <Route path="/licaoProfessor" element={<LicaoProfessorPage />} />
 
-      {/* Página não encontrada */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
