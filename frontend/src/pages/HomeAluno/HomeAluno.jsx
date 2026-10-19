@@ -1,7 +1,13 @@
 import React from "react";
 import "./HomeAluno.css";
 import Button from "../../components/Button/Button"
+import { useAuth } from "../../contexts/AuthContext";
 function HomeAluno() {
+ const { perfil, tipoPerfil, autenticado } = useAuth();
+ const { logout } = useAuth();
+  console.log("Perfil:", perfil);
+  console.log("Tipo normalizado:", tipoPerfil);
+  console.log("Autenticado:", autenticado);
   const licoes = [
     {
       icon: "▣",
@@ -25,7 +31,7 @@ function HomeAluno() {
 
   return (
     <div className="home-aluno">
-      {/* Cabeçalho */}
+      {/* CabeÃ§alho */}
       <header className="home-header">
         <div className="logo-area">
           <div className="logo-icon">◆</div>
@@ -43,10 +49,10 @@ function HomeAluno() {
         </div>
       </header>
 
-      {/* Conteúdo */}
+      {/* ConteÃºdo */}
       <main className="home-content">
 
-        {/* Saudação */}
+        {/* SaudaÃ§Ã£o */}
         <section className="welcome-section">
           <div className="avatar">
             👤
@@ -71,7 +77,7 @@ function HomeAluno() {
           </div>
 
           <div className="summary-card blue-card">
-            <div className="summary-icon">🏆</div>
+            <div className="summary-icon">&#127942;</div>
 
             <div>
               <span>Ranking/Pontos</span>
@@ -80,7 +86,7 @@ function HomeAluno() {
           </div>
 
           <div className="summary-card purple-card">
-            <div className="summary-icon">♧</div>
+            <div className="summary-icon">&#9827;</div>
 
             <div>
               <span>Cursos</span>
@@ -136,10 +142,9 @@ function HomeAluno() {
 
       {/* Menu inferior */}
       <nav className="bottom-navigation">
-
         <Button className="nav-item active">
-          <span>⌂</span>
-          <small>Início</small>
+          <span>&#8962;</span>
+          <small>In&#237;cio</small>
         </Button>
 
         <Button className="nav-item">
@@ -153,7 +158,7 @@ function HomeAluno() {
         </Button>
 
         <Button className="nav-item">
-          <span>🏆</span>
+          <span>&#127942;</span>
           <small>Ranking</small>
         </Button>
 
@@ -161,10 +166,12 @@ function HomeAluno() {
           <span>👤</span>
           <small>Perfil</small>
         </Button>
-
+        <button onClick={logout}>
+          Sair da conta
+        </button>
       </nav>
-
     </div>
+
   );
 }
 

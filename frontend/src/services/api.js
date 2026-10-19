@@ -1,8 +1,8 @@
 
+
 import { auth } from "./firebase";
 
 const API_URL = import.meta.env.VITE_API_URL;
-console.log("URL da API:", API_URL);
 
 export async function apiRequest(
   caminho,
@@ -15,9 +15,7 @@ export async function apiRequest(
   } = {}
 ) {
   if (!API_URL) {
-    throw new Error(
-      "Configure VITE_API_URL no arquivo .env"
-    );
+    throw new Error("Configure VITE_API_URL no arquivo .env");
   }
 
   const cabecalhos = {
@@ -29,31 +27,33 @@ export async function apiRequest(
     cabecalhos["Content-Type"] = "application/json";
   }
 
-  // Permite token explícito ou usa o usuário Firebase atual.
   const usuario = auth.currentUser;
+  const idToken = token
+    ? token
+    : usuario
+      ? await usuario.getIdToken()
+      : null;
 
-  if (token) {
-    cabecalhos.Authorization = `Bearer ${token}`;
-  } else if (usuario) {
-    const idToken = await usuario.getIdToken();
+  if (idToken) {
     cabecalhos.Authorization = `Bearer ${idToken}`;
   }
+
+  const baseURL = API_URL.replace(/\/+$/, "");
+  const endpoint = caminho.replace(/^\/+/, "");
+  const url = `${baseURL}/${endpoint}`;
 
   let resposta;
 
   try {
-    resposta = await fetch(
-      `${API_URL.replace(/\/+$/, "")}/${caminho.replace(/^\/+/, "")}`,
-      {
-        ...opcoes,
-        method,
-        headers: cabecalhos,
-        body:
-          body === undefined
-            ? undefined
-            : JSON.stringify(body),
-      }
-    );
+    resposta = await fetch(url, {
+      ...opcoes,
+      method,
+      headers: cabecalhos,
+      body:
+        body === undefined
+          ? undefined
+          : JSON.stringify(body),
+    });
   } catch (erro) {
     throw new Error(
       `Não foi possível conectar à API: ${erro.message}`
@@ -103,9 +103,5 @@ export function apiPost(caminho, body, token) {
 }
 
 export async function testarConexaoAPI() {
-  const resultado = await apiGet("/api/cursos");
-
-  console.log("Resposta da API:", resultado);
-
-  return resultado;
+  return apiGet("/api/cursos");
 }

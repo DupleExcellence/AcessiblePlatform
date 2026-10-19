@@ -1,4 +1,6 @@
 span.radio {
+  .radio {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -9,11 +11,16 @@ span.radio {
   color: #1f2937;
   cursor: pointer;
 }
+}
 
 /* Input nativo oculto, mas continua acessível pelo teclado */
 .radio input {
   position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: 0;
   opacity: 0;
+  cursor: inherit;
 }
 
 /* Círculo do Radio */
