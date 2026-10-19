@@ -8,7 +8,7 @@ import {
 
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import Cursos from "./pages/Cursos/Cursos";
 import Login from "./pages/Login/Login";
 import Cadastro from "./pages/Cadastro/Cadastro";
 import HomeAdm from "./pages/HomeAdm/HomeAdm";
@@ -66,6 +66,16 @@ function App() {
           <Route path="/homeAluno" element={<HomeAluno />} />
           <Route path="/perfilAluno" element={<PerfilAlunoPage />} />
           <Route path="/licaoAluno" element={<LicaoAlunoPage />} />
+        </Route>
+
+        <Route
+          element={
+            <ProtectedRoute
+              perfisPermitidos={["aluno", "professor"]}
+            />
+          }
+        >
+          <Route path="/cursos" element={<Cursos />} />
         </Route>
 
         {/* Área do professor */}

@@ -1,0 +1,129 @@
+
+.cursos-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f4f7f6;
+  color: #24332d;
+  font-family: Arial, sans-serif;
+}
+
+.cursos-header {
+  margin-bottom: 28px;
+}
+
+.cursos-eyebrow {
+  margin: 0 0 8px;
+  color: #21865b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.cursos-header h1 {
+  margin: 0 0 10px;
+  font-size: 2rem;
+}
+
+.cursos-subtitulo {
+  margin: 0;
+  color: #5f6e66;
+  line-height: 1.6;
+}
+
+.cursos-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.curso-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e0e9e4;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgb(30 70 50 / 6%);
+}
+
+.curso-card-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #e1f4e9;
+  color: #18794e;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.curso-card-conteudo {
+  min-width: 0;
+}
+
+.curso-card-conteudo h2 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+}
+
+.curso-card-conteudo p {
+  margin: 0 0 16px;
+  color: #5f6e66;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.curso-status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #e1f4e9;
+  color: #18794e;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.curso-status-badge.inativo {
+  background: #fce8e6;
+  color: #a12c24;
+}
+
+.cursos-status,
+.cursos-vazio {
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  color: #5f6e66;
+}
+
+.cursos-erro {
+  padding: 20px;
+  border: 1px solid #f0c4c0;
+  border-radius: 12px;
+  background: #fff5f4;
+  color: #8f2922;
+}
+
+.cursos-erro button {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #18794e;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .cursos-page {
+    padding: 20px 16px;
+  }
+
+  .cursos-header h1 {
+    font-size: 1.6rem;
+  }
+}

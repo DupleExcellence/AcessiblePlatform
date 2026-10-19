@@ -446,23 +446,7 @@ button.nav-item span {
  
   
 
-.nav-item {
-  border: none;
-  background: transparent;
 
-  min-width: 80px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 6px;
-
-  cursor: pointer;
-
-  color: #78909c;
-}
 
 .nav-item span {
   font-size: 22px;

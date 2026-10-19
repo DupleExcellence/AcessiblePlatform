@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import "./HomeAluno.css";
 import Button from "../../components/Button/Button"
 import { useAuth } from "../../contexts/AuthContext";
@@ -10,20 +10,20 @@ function HomeAluno() {
   console.log("Autenticado:", autenticado);
   const licoes = [
     {
-      icon: "â–£",
-      titulo: "IntroduÃ§Ã£o ao HTML",
+      icon: "▣",
+      titulo: "Introdução ao HTML",
       progresso: 80,
       classe: "verde",
     },
     {
-      icon: "â–¤",
-      titulo: "CSS na prÃ¡tica",
+      icon: "▤",
+      titulo: "CSS na prática",
       progresso: 50,
       classe: "azul",
     },
     {
       icon: "</>",
-      titulo: "JavaScript bÃ¡sico",
+      titulo: "JavaScript básico",
       progresso: 0,
       classe: "azul",
     },
@@ -34,17 +34,17 @@ function HomeAluno() {
       {/* CabeÃ§alho */}
       <header className="home-header">
         <div className="logo-area">
-          <div className="logo-icon">â—†</div>
+          <div className="logo-icon">◆</div>
           <span>Aprender</span>
         </div>
 
         <div className="header-icons">
-          <Button className="header-button" aria-label="NotificaÃ§Ãµes">
-            ðŸ””
+          <Button className="header-button" aria-label="Notificações">
+            🔔
           </Button>
 
           <Button className="profile-button" aria-label="Perfil">
-            ðŸ‘¤
+            👤
           </Button>
         </div>
       </header>
@@ -55,11 +55,11 @@ function HomeAluno() {
         {/* SaudaÃ§Ã£o */}
         <section className="welcome-section">
           <div className="avatar">
-            ðŸ‘¤
+            👤
           </div>
 
           <div>
-            <h1>OlÃ¡, JoÃ£o!</h1>
+            <h1>Olá, João!</h1>
             <p>Continue firme nos seus objetivos!</p>
           </div>
         </section>
@@ -68,16 +68,16 @@ function HomeAluno() {
         <section className="summary-cards">
 
           <div className="summary-card green-card">
-            <div className="summary-icon">â–£</div>
+            <div className="summary-icon">▣</div>
 
             <div>
-              <span>LiÃ§Ãµes</span>
+              <span>Lições</span>
               <strong>5/10</strong>
             </div>
           </div>
 
           <div className="summary-card blue-card">
-            <div className="summary-icon">ðŸ†</div>
+            <div className="summary-icon">&#127942;</div>
 
             <div>
               <span>Ranking/Pontos</span>
@@ -86,7 +86,7 @@ function HomeAluno() {
           </div>
 
           <div className="summary-card purple-card">
-            <div className="summary-icon">â™§</div>
+            <div className="summary-icon">&#9827;</div>
 
             <div>
               <span>Cursos</span>
@@ -96,14 +96,14 @@ function HomeAluno() {
 
         </section>
 
-        {/* Minhas liÃ§Ãµes */}
+        {/* Minhas lições */}
         <section className="lessons-section">
 
           <div className="section-title">
-            <h2>Minhas liÃ§Ãµes</h2>
+            <h2>Minhas lições</h2>
 
             <button className="view-all">
-              Ver todas â†’
+              Ver todas →
             </button>
           </div>
 
@@ -143,27 +143,27 @@ function HomeAluno() {
       {/* Menu inferior */}
       <nav className="bottom-navigation">
         <Button className="nav-item active">
-          <span>âŒ‚</span>
-          <small>InÃ­cio</small>
+          <span>&#8962;</span>
+          <small>In&#237;cio</small>
         </Button>
 
         <Button className="nav-item">
-          <span>â–£</span>
-          <small>LiÃ§Ãµes</small>
+          <span>▣</span>
+          <small>Lições</small>
         </Button>
 
         <Button className="nav-item">
-          <span>â–¤</span>
+          <span>▤</span>
           <small>Cursos</small>
         </Button>
 
         <Button className="nav-item">
-          <span>ðŸ†</span>
+          <span>&#127942;</span>
           <small>Ranking</small>
         </Button>
 
         <Button className="nav-item">
-          <span>ðŸ‘¤</span>
+          <span>👤</span>
           <small>Perfil</small>
         </Button>
         <button onClick={logout}>
