@@ -81,7 +81,7 @@ export default function Ranking() {
 
   return (
     <section>
-      <h1>Ranking Alfabits</h1>
+      <h1>Ranking</h1>
 
       <h2>Minha posiÃ§Ã£o</h2>
       <pre>{JSON.stringify(posicao, null, 2)}</pre>

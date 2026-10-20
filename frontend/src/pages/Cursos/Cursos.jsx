@@ -1,12 +1,16 @@
 
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { buscarCursos } from "../../services/cursoServices";
+import { useAuth } from "../../contexts/AuthContext";
 import "./Cursos.css";
 
 function Cursos() {
+  const navegar = useNavigate();
   const [cursos, setCursos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+  const { tipoPerfil, loading } = useAuth();
 
   useEffect(() => {
     let ativo = true;
@@ -19,12 +23,17 @@ function Cursos() {
         const resultado = await buscarCursos();
 
         if (ativo) {
-          setCursos(resultado);
+          setCursos(
+            Array.isArray(resultado)
+              ? resultado
+              : resultado?.cursos ?? []
+          );
         }
       } catch (error) {
         if (ativo) {
           setErro(
-            error.message || "Nao foi possivel carregar os cursos."
+            error.message ||
+              "Não foi possível carregar os cursos."
           );
         }
       } finally {
@@ -47,7 +56,7 @@ function Cursos() {
         <div>
           <h1>Meus cursos</h1>
           <p className="cursos-subtitulo">
-            Explore os cursos disponiveis e continue aprendendo.
+            Explore os cursos disponíveis e continue aprendendo.
           </p>
         </div>
       </header>
@@ -72,12 +81,15 @@ function Cursos() {
 
       {!carregando && !erro && cursos.length === 0 && (
         <p className="cursos-vazio">
-          Nenhum curso disponivel no momento.
+          Nenhum curso disponível no momento.
         </p>
       )}
 
       {!carregando && !erro && cursos.length > 0 && (
-        <section className="cursos-lista" aria-label="Cursos disponíveis">
+        <section
+          className="cursos-lista"
+          aria-label="Cursos disponíveis"
+        >
           {cursos.map((curso) => (
             <article className="curso-card" key={curso.id}>
               <div className="curso-card-icon" aria-hidden="true">
@@ -85,18 +97,40 @@ function Cursos() {
               </div>
 
               <div className="curso-card-conteudo">
-                <h2>{curso.titulo || "Curso sem titulo"}</h2>
+                <h2>{curso.titulo || "Curso sem título"}</h2>
+
                 <p>
-                  {curso.descricao || "Descricao nao disponivel."}
+                  {curso.descricao ||
+                    "Descrição não disponível."}
                 </p>
 
                 <span
                   className={`curso-status-badge ${
-                    curso.ativo === false ? "inativo" : "ativo"
+                    curso.ativo === false
+                      ? "inativo"
+                      : "ativo"
                   }`}
                 >
-                  {curso.ativo === false ? "Indisponivel" : "Disponivel"}
+                  {curso.ativo === false
+                    ? "Indisponível"
+                    : "Disponível"}
                 </span>
+
+                {!loading && tipoPerfil === "aluno" && (
+                  <button
+                    type="button"
+                    disabled={curso.ativo === false}
+                    onClick={() =>
+                      navegar(
+                        `/licaoAluno?cursoId=${encodeURIComponent(
+                          curso.id
+                        )}`
+                      )
+                    }
+                  >
+                    Ver lições
+                  </button>
+                )}
               </div>
             </article>
           ))}
