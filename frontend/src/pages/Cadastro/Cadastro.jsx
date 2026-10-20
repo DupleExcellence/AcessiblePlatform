@@ -214,6 +214,18 @@ function Cadastro() {
             >
               Professor
             </Radio>
+            
+            <Radio
+              id="adm"
+              name="perfil"
+              value="administrador"
+              checked={perfil === "administrador"}
+              onChange={(event) => setPerfil(event.target.value)}
+              required
+            >
+              ADM
+            </Radio>
+
           </div>
 
           {/* Mensagens de resultado */}

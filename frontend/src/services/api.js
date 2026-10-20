@@ -1,10 +1,9 @@
 
-
+ 
 import { auth } from "./firebase";
-
 const API_URL = import.meta.env.VITE_API_URL;
-
 export async function apiRequest(
+
   caminho,
   {
     method = "GET",
@@ -13,6 +12,7 @@ export async function apiRequest(
     token,
     ...opcoes
   } = {}
+  
 ) {
   if (!API_URL) {
     throw new Error("Configure VITE_API_URL no arquivo .env");
@@ -28,6 +28,7 @@ export async function apiRequest(
   }
 
   const usuario = auth.currentUser;
+
   const idToken = token
     ? token
     : usuario

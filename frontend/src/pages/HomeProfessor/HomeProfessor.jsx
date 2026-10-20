@@ -1,11 +1,16 @@
 
 import React from "react";
 import "./HomeProfessor.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 function HomeProfessor() {
+  const { perfil, tipoPerfil, autenticado } = useAuth();
+         const { logout } = useAuth();
+          console.log("Perfil:", perfil);
+          console.log("Tipo normalizado:", tipoPerfil);
+          console.log("Autenticado:", autenticado);
   return (
     <div className="professor-page">
-
       {/* HEADER */}
       <header className="top-header">
         <div className="logo">
@@ -173,7 +178,9 @@ function HomeProfessor() {
           <span>⚙</span>
           <small>Configurações</small>
         </a>
-
+        <button onClick={logout}>
+          Sair da conta
+        </button>
       </nav>
 
     </div>

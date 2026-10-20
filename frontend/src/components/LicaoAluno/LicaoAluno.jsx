@@ -1,210 +1,239 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import "../LicaoAluno/LicaoAluno.css";
 import Button from "../Button/Button";
+import {
+  buscarLicoes,
+  buscarLicaoPorId,
+} from "../../services/licaoServices";
 
 function LicaoAluno() {
-  const lessons = [
-    {
-      icon: "▣",
-      title: "Introdução ao HTML",
-      subtitle: "Curso: Desenvolvimento Web",
-      progress: 80,
-    },
-    {
-      icon: "▤",
-      title: "CSS na prática",
-      subtitle: "Curso: Desenvolvimento Web",
-      progress: 50,
-    },
-    {
-      icon: "▣",
-      title: "JavaScript básico",
-      subtitle: "Curso: Programação",
-      progress: 0,
-    },
-  ];
 
-  return (
+  const [searchParams] = useSearchParams();
+  const navegar = useNavigate();
+
+  const cursoId = searchParams.get("cursoId");
+
+  const [licoes, setLicoes] = useState([]);
+  const [licaoSelecionada, setLicaoSelecionada] = useState(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+    
+
+  useEffect(() => {
+  async function carregarLicoes() {
+    setCarregando(true);
+    setErro("");
+
+    try {
+      const resultado = await buscarLicoes(cursoId);
+      setLicoes(resultado);
+    } catch (error) {
+      console.error("Erro ao carregar lições:", error);
+      setErro(error.message || "Não foi possível carregar as lições.");
+    } finally {
+      setCarregando(false);
+    }
+    const resultado = await buscarLicoes(cursoId);
+
+      console.log("Curso selecionado:", cursoId);
+      console.log("Lições recebidas:", resultado);
+      console.log("Primeira lição:", resultado[0]);
+      console.table(
+        resultado.map((licao) => ({
+          id: licao.id,
+          titulo: licao.titulo,
+          descricao: licao.descricao,
+          cursoId: licao.cursoId,
+        }))
+      );
+
+      setLicoes(resultado);
+      }
+
+    carregarLicoes();
+    }, [cursoId]);
+
+    async function abrirLicao(licao) {
+      setErro("");
+
+      console.log("Lição selecionada:", licao);
+
+      try {
+        const completa = await buscarLicaoPorId(licao.id);
+        console.log("Conteúdo retornado pela API:", completa);
+        setLicaoSelecionada(completa);
+      } catch (error) {
+        console.error("Erro ao abrir lição:", error);
+        setErro(error.message || "Não foi possível abrir a lição.");
+      }
+    }
+
+    return (
+      
     <div className="lessons-page">
-
-      {/* Barra superior */}
       <header className="topbar">
         <div className="topbar-left">
-          <span className="home-icon">◆</span>
-          <span className="system-name">Aprender</span>
+          <span className="home-icon" aria-hidden="true">
+            ◆
+          </span>
         </div>
 
         <div className="topbar-right">
-          <button
-            className="notification-button"
-            aria-label="Notificações"
-          >
-            🔔
-          </button>
-
-          <div className="profile-avatar" aria-label="Perfil">
-            V
+          <div className="profile-avatar" aria-label="Perfil do aluno">
+            
           </div>
         </div>
       </header>
 
-      {/* Conteúdo principal */}
       <main className="lessons-content">
-
-        {/* Título */}
-        <h1 className="page-title">6. Lições (Aluno)</h1>
+        <h1 className="page-title">Lições do aluno</h1>
 
         <div className="content-grid">
-
-          {/* Coluna principal */}
           <section className="lessons-section">
+            <h2>Lições disponíveis</h2>
 
-            <h2>Lições</h2>
+            {carregando && (
+              <p role="status">Carregando lições...</p>
+            )}
 
-            {/* Lista de lições */}
-            <div className="lessons-list">
+            {!carregando && erro && (
+              <section className="lessons-error" role="alert">
+                <p>{erro}</p>
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                >
+                  Tentar novamente
+                </button>
+              </section>
+            )}
 
-              {lessons.map((lesson, index) => (
-                <article className="lesson-card" key={index}>
+            {!carregando && !erro && licoes.length === 0 && (
+              <p>
+                Nenhuma lição encontrada para este curso.
+              </p>
+            )}
 
-                  <div className="lesson-icon">
-                    {lesson.icon}
-                  </div>
-
-                  <div className="lesson-info">
-                    <h3>{lesson.title}</h3>
-
-                    <p>{lesson.subtitle}</p>
-
-                    <div className="progress-row">
-                      <div className="progress-bar">
-                        <div
-                          className="progress-fill"
-                          style={{
-                            width: `${lesson.progress}%`,
-                          }}
-                        />
-                      </div>
-
-                      <span className="progress-value">
-                        {lesson.progress}%
-                      </span>
+            {!carregando && !erro && licoes.length > 0 && (
+              <div className="lessons-list">
+                {licoes.map((licao) => (
+                  <article className="lesson-card" key={licao.id}>
+                    <div className="lesson-icon" aria-hidden="true">
+                      {"</>"}
                     </div>
-                  </div>
 
-                  <button className="access-button">
-                    Acessar
-                  </button>
+                    <div className="lesson-info">
+                      <h3>{licao.titulo || "Lição sem título"}</h3>
+                      <p>
+                        {licao.descricao || "Sem descrição disponível."}
+                      </p>
+                    </div>
 
-                </article>
-              ))}
+                     <button
+                      type="button"
+                      className="access-button"
+                      onClick={() => abrirLicao(licao)}
+                    >
+                      Acessar
+                    </button>
+                  </article>
+                ))}
+              </div>
+            )}
 
-            </div>
+            {licaoSelecionada && (
+              <section
+                className="material-section"
+                aria-labelledby="titulo-conteudo"
+              >
+                <h2 id="titulo-conteudo">
+                  {licaoSelecionada.titulo}
+                </h2>
 
-            {/* Material da lição */}
-            <section className="material-section">
-
-              <h3>Material da lição</h3>
-
-              <div className="material-file">
-
-                <div className="file-icon">
-                  PDF
-                </div>
-
-                <div className="file-info">
-                  <strong>exemplo.pdf</strong>
-                  <span>2,4 KB</span>
+                <div className="lesson-content">
+                  {licaoSelecionada.conteudo ? (
+                    <p style={{ whiteSpace: "pre-wrap" }}>
+                      {licaoSelecionada.conteudo}
+                    </p>
+                  ) : (
+                    <p>
+                      Esta lição ainda não possui conteúdo cadastrado.
+                    </p>
+                  )}
                 </div>
 
                 <button
-                  className="download-button"
-                  aria-label="Baixar material"
+                  type="button"
+                  onClick={() => setLicaoSelecionada(null)}
                 >
-                  ↓
+                  Voltar à lista
                 </button>
-
-              </div>
-
-            </section>
-
-            {/* Resposta */}
-            <section className="answer-section">
-
-              <h3>Sua resposta</h3>
-
-              <textarea
-                className="answer-input"
-                placeholder="Digite sua resposta..."
-                aria-label="Digite sua resposta"
-              />
-
-              <div className="answer-actions">
-                <button className="send-button">
-                  Enviar
-                </button>
-              </div>
-
-            </section>
-
+              </section>
+            )}
           </section>
 
-          {/* Ranking */}
           <aside className="ranking-card">
-
             <h2>Ranking / Pontos</h2>
 
-            <div className="trophy">
+            <div className="trophy" aria-hidden="true">
               🏆
             </div>
 
             <p className="ranking-label">
-              Sua pontuação
+              Pontuação demonstrativa
             </p>
 
             <strong className="points">
-              320 pontos
+              Dados reais ainda não integrados
             </strong>
 
-            <button className="ranking-button">
+            <button
+              type="button"
+              className="ranking-button"
+              onClick={() => navegar("/ranking")}
+            >
               Ver ranking
             </button>
-
           </aside>
-
         </div>
       </main>
-      {/* Menu inferior */}
-      <nav className="bottom-navigation">
 
-        <Button className="nav-item active">
-          <span>⌂</span>
+      <nav className="bottom-navigation" aria-label="Navegação principal">
+        <Button className="nav-item" onClick={() => navegar("/homeAluno")}>
+          <span aria-hidden="true">⌂</span>
           <small>Início</small>
         </Button>
 
-        <Button className="nav-item">
-          <span>▣</span>
+        <Button
+          className="nav-item active"
+          onClick={() => navegar("/licaoAluno")}
+        >
+          <span aria-hidden="true">▣</span>
           <small>Lições</small>
         </Button>
 
-        <Button className="nav-item">
-          <span>▤</span>
+        <Button className="nav-item" onClick={() => navegar("/cursos")}>
+          <span aria-hidden="true">▤</span>
           <small>Cursos</small>
         </Button>
 
-        <Button className="nav-item">
-          <span>🏆</span>
+        <Button className="nav-item" onClick={() => navegar("/ranking")}>
+          <span aria-hidden="true">🏆</span>
           <small>Ranking</small>
         </Button>
 
-        <Button className="nav-item">
-          <span>👤</span>
+        <Button
+          className="nav-item"
+          onClick={() => navegar("/perfilAluno")}
+        >
+          <span aria-hidden="true">♙</span>
           <small>Perfil</small>
         </Button>
-
       </nav>
     </div>
   );
 }
 
-export default LicaoAluno;
+ export default LicaoAluno;
