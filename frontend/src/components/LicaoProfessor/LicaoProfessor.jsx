@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useEffect } from "react";
+import React from "react";
 import Select from "../Select/Select.jsx";
 import Input from "../Input/Input.jsx";
 import Button from "../Button/Button.jsx";
@@ -6,110 +7,177 @@ import Label from "../Label/Label.jsx";
 import Textarea from "../Textarea/Textarea.jsx"
 import Form from "../Form/Form.jsx"
 import "../LicaoProfessor/LicaoProfessor.css"
+import { useState } from "react";
+
+import { buscarCursos } from "../../services/cursoServices";
+import {
+  buscarLicoes,
+  criarLicao,
+} from "../../services/licaoServices";
 
 function LicaoProfessor() {
-  const [formData, setFormData] = useState({
-    curso: "",
+  const formularioInicial = {
+    cursoId: "",
     ordem: "1",
     titulo: "",
-    videoUrl: "",
+    descricao: "",
     conteudo: "",
-    duracao: "",
-    gabarito: "",
-    arquivo: null,
-  });
+  };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const [formData, setFormData] = useState(formularioInicial);
+  const [cursos, setCursos] = useState([]);
+  const [licoes, setLicoes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
+  const [mensagem, setMensagem] = useState("");
 
-    setFormData({
-      ...formData,
+  
+
+async function carregarDados() {
+  setCarregando(true);
+  setErro("");
+
+  try {
+    const listaCursos = await buscarCursos();
+    console.log("Cursos retornados pela API:", listaCursos);
+
+    if (!Array.isArray(listaCursos)) {
+      throw new Error("A API não retornou uma lista válida de cursos.");
+    }
+
+    setCursos(listaCursos);
+  } catch (error) {
+    console.error("Erro ao carregar cursos:", error);
+    setCursos([]);
+    setErro(`Erro ao carregar cursos: ${error.message}`);
+  }
+
+  try {
+    const listaLicoes = await buscarLicoes();
+    setLicoes(listaLicoes);
+  } catch (error) {
+    console.error("Erro ao carregar lições:", error);
+    setLicoes([]);
+
+    setErro((anterior) =>
+      [anterior, `Erro ao carregar lições: ${error.message}`]
+        .filter(Boolean)
+        .join(" | ")
+    );
+  } finally {
+    setCarregando(false);
+  }
+}
+
+ 
+
+
+  useEffect(() => {
+    carregarDados();
+  }, []);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setFormData((anterior) => ({
+      ...anterior,
       [name]: value,
-    });
-  };
+    }));
+  }
 
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      arquivo: e.target.files[0],
-    });
-  };
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setErro("");
+    setMensagem("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    if (
+      !formData.cursoId ||
+      !formData.titulo.trim() ||
+      !formData.conteudo.trim()
+    ) {
+      setErro("Selecione um curso e preencha título e conteúdo.");
+      return;
+    }
 
-    console.log("Dados da lição:", formData);
+    const ordem = Number(formData.ordem);
 
-    // Aqui depois você pode conectar com o backend
-  };
+    if (!Number.isInteger(ordem) || ordem < 1) {
+      setErro("A ordem deve ser um número inteiro maior que zero.");
+      return;
+    }
 
-  const handleCancel = () => {
-    setFormData({
-      curso: "",
-      ordem: "1",
-      titulo: "",
-      videoUrl: "",
-      conteudo: "",
-      duracao: "",
-      gabarito: "",
-      arquivo: null,
-    });
-  };
+    setSalvando(true);
+
+    try {
+      await criarLicao({
+        cursoId: formData.cursoId,
+        titulo: formData.titulo.trim(),
+        descricao: formData.descricao.trim(),
+        conteudo: formData.conteudo.trim(),
+        ordem,
+      });
+
+      setMensagem("Lição cadastrada com sucesso!");
+      setFormData(formularioInicial);
+
+      const listaAtualizada = await buscarLicoes();
+      setLicoes(listaAtualizada);
+    } catch (error) {
+      setErro(error.message || "Não foi possível salvar a lição.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  function handleCancel() {
+    setFormData(formularioInicial);
+    setErro("");
+    setMensagem("");
+  }
 
   return (
     <div className="criar-licao-page">
-
-      {/* Cabeçalho */}
       <header className="criar-licao-header">
-
         <div className="logo-area">
           <div className="logo-icon">◆</div>
-          <span>Aprender</span>
         </div>
-
-        <div className="header-icons">
-          <Button className="header-button" aria-label="Notificações">
-            🔔
-          </Button>
-
-          <Button className="profile-button" aria-label="Perfil">
-            👤
-          </Button>
-        </div>
-
       </header>
 
-      {/* Conteúdo */}
       <main className="criar-licao-container">
+        <h1>Criar lição</h1>
 
-        <h1>Criar Lição</h1>
+        {erro && <p role="alert">{erro}</p>}
+        {mensagem && <p role="status">{mensagem}</p>}
 
         <Form onSubmit={handleSubmit}>
-
           <div className="form-grid">
-
-            {/* Curso */}
             <div className="form-group curso">
-              <Label htmlFor="curso">Curso</Label>
+              <Label htmlFor="cursoId">Curso</Label>
+              {!carregando && cursos.length === 0 && (
+                <p role="status">
+                  Nenhum curso carregado. Confira a mensagem de erro acima.
+                </p>
+              )}
 
-              <Select
-                id="curso"
-                name="curso"
-                value={formData.curso}
+             <Select
+                id="cursoId"
+                name="cursoId"
+                value={formData.cursoId}
                 onChange={handleChange}
               >
                 <option value="">Selecione o curso</option>
-                <option value="informatica">Informática Básica</option>
-                <option value="word">Microsoft Word</option>
-                <option value="excel">Microsoft Excel</option>
-                <option value="internet">Internet</option>
+
+                {cursos.map((curso) => (
+                  <option key={curso.id} value={curso.id}>
+                    {curso.titulo || curso.nome || curso.id}
+                  </option>
+                ))}
               </Select>
             </div>
 
-            {/* Ordem */}
             <div className="form-group ordem">
               <Label htmlFor="ordem">Ordem</Label>
-
               <Input
                 type="number"
                 id="ordem"
@@ -120,128 +188,124 @@ function LicaoProfessor() {
               />
             </div>
 
-            {/* Título */}
             <div className="form-group titulo">
               <Label htmlFor="titulo">Título da lição</Label>
-
               <Input
                 type="text"
                 id="titulo"
                 name="titulo"
-                placeholder="Ex.: Introdução ao HTML"
                 value={formData.titulo}
                 onChange={handleChange}
+                placeholder="Ex.: Introdução ao HTML"
               />
             </div>
 
-            {/* Vídeo */}
-            <div className="form-group video">
-              <Label htmlFor="videoUrl">Vídeo URL</Label>
-
-              <Input
-                type="url"
-                id="videoUrl"
-                name="videoUrl"
-                placeholder="https://..."
-                value={formData.videoUrl}
+            <div className="form-group descricao">
+              <Label htmlFor="descricao">Descrição</Label>
+              <Textarea
+                id="descricao"
+                name="descricao"
+                value={formData.descricao}
                 onChange={handleChange}
+                placeholder="Resumo da lição..."
               />
             </div>
 
-            {/* Conteúdo */}
             <div className="form-group conteudo">
               <Label htmlFor="conteudo">Conteúdo</Label>
-
               <Textarea
                 id="conteudo"
                 name="conteudo"
-                placeholder="Descreva o conteúdo da lição..."
                 value={formData.conteudo}
                 onChange={handleChange}
+                placeholder="Digite o conteúdo da lição..."
               />
             </div>
-
-            {/* Duração */}
-            <div className="form-group duracao">
-              <Label htmlFor="duracao">Duração</Label>
-
-              <Input
-                type="text"
-                id="duracao"
-                name="duracao"
-                placeholder="Ex.: 10 min"
-                value={formData.duracao}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Material de apoio */}
-            <div className="form-group material">
-              <Label>Material de apoio</Label>
-
-              <Label htmlFor="arquivo" className="upload-box">
-
-                <span className="upload-icon">📁</span>
-
-                <span>
-                  {formData.arquivo
-                    ? formData.arquivo.name
-                    : "Adicionar arquivo"}
-                </span>
-
-              </Label>
-
-              <Input
-                type="file"
-                id="arquivo"
-                onChange={handleFileChange}
-                hidden
-                accept=".pdf,.doc,.docx,.ppt,.pptx"
-              />
-
-              <small>Formatos: PDF, DOC, PPT, etc.</small>
-            </div>
-
-            {/* Gabarito */}
-            <div className="form-group gabarito">
-              <Label htmlFor="gabarito">Gabarito</Label>
-
-              <Textarea
-                id="gabarito"
-                name="gabarito"
-                placeholder="Digite o gabarito da lição..."
-                value={formData.gabarito}
-                onChange={handleChange}
-              />
-            </div>
-
           </div>
 
-          {/* Botões */}
           <div className="form-actions">
-
             <Button
               type="button"
               variant="danger"
               onClick={handleCancel}
+              disabled={salvando}
             >
-              Cancelar
+              Limpar
             </Button>
 
-            <Button
-              type="submit"
-              className="btn-salvar"
-            >
-              Salvar
+            <Button type="submit" disabled={salvando || carregando}>
+              {salvando ? "Salvando..." : "Salvar lição"}
             </Button>
-
           </div>
-
         </Form>
 
-      </main>
+        <section aria-labelledby="lista-licoes">
+          <h2 id="lista-licoes">Lições cadastradas</h2>
 
-    </div>
+          {carregando && <p role="status">Carregando...</p>}
+
+          {!carregando && licoes.length === 0 && (
+            <p>Nenhuma lição cadastrada.</p>
+          )}
+
+          {!carregando && licoes.length > 0 && (
+            <ul>
+              {licoes.map((licao) => (
+                <li key={licao.id}>
+                  <strong>{licao.titulo}</strong>
+                  {" — "}
+                  {licao.descricao || "Sem descrição"}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      
+          {/* MENU INFERIOR */}
+      <nav className="bottom-menu" aria-label="Menu principal">
+
+        <a href="#" className="menu-item active">
+          <span>⌂</span>
+          <small>Início</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>▣</span>
+          <small>Lições</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>▤</span>
+          <small>Cursos</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>♟</span>
+          <small>Alunos</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>🏆</span>
+          <small>Ranking</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>♙</span>
+          <small>Perfil</small>
+        </a>
+
+        <a href="#" className="menu-item">
+          <span>⚙</span>
+          <small>Configurações</small>
+        </a>
+
+      </nav>
+
+    
+
+   </main>
+
+  </div>
   );
 }
  export default LicaoProfessor;

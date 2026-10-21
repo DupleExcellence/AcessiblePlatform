@@ -1,11 +1,16 @@
 
 import React from "react";
 import "./HomeProfessor.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 function HomeProfessor() {
+  const { perfil, tipoPerfil, autenticado } = useAuth();
+         const { logout } = useAuth();
+          console.log("Perfil:", perfil);
+          console.log("Tipo normalizado:", tipoPerfil);
+          console.log("Autenticado:", autenticado);
   return (
     <div className="professor-page">
-
       {/* HEADER */}
       <header className="top-header">
         <div className="logo">
@@ -14,11 +19,12 @@ function HomeProfessor() {
         </div>
 
         <div className="header-actions">
-          <button className="icon-button" aria-label="Notificações">
+          <button  className="icon-button" aria-label="Notificações">
             🔔
           </button>
 
           <button className="profile-button" aria-label="Perfil">
+            <a href="/PerfilProfessor"/>
             👤
           </button>
         </div>
@@ -52,7 +58,7 @@ function HomeProfessor() {
 
               <strong>8</strong>
 
-              <a href="#">
+              <a href="/licoes">
                 Ver todas →
               </a>
             </div>
@@ -76,7 +82,7 @@ function HomeProfessor() {
 
               <strong>45</strong>
 
-              <a href="#">
+              <a href="/alunos">
                 Ver todos →
               </a>
             </div>
@@ -138,41 +144,43 @@ function HomeProfessor() {
       {/* MENU INFERIOR */}
       <nav className="bottom-menu" aria-label="Menu principal">
 
-        <a href="#" className="menu-item active">
+        <a href="/HomeProfessor" className="menu-item active">
           <span>⌂</span>
           <small>Início</small>
         </a>
 
-        <a href="#" className="menu-item">
+        <a href="/licaoProfessor" className="menu-item">
           <span>▣</span>
           <small>Lições</small>
         </a>
 
-        <a href="#" className="menu-item">
+        <a href="/cursos" className="menu-item">
           <span>▤</span>
           <small>Cursos</small>
         </a>
 
-        <a href="#" className="menu-item">
+        <a href="/Alunos" className="menu-item">
           <span>♟</span>
           <small>Alunos</small>
         </a>
 
-        <a href="#" className="menu-item">
+        <a href="/ranking" className="menu-item">
           <span>🏆</span>
           <small>Ranking</small>
         </a>
 
-        <a href="#" className="menu-item">
+        <a href="/perfil" className="menu-item">
           <span>♙</span>
           <small>Perfil</small>
         </a>
 
-        <a href="#" className="menu-item">
+        <a href="/configuracoes" className="menu-item">
           <span>⚙</span>
           <small>Configurações</small>
         </a>
-
+        <button onClick={logout}>
+          Sair da conta
+        </button>
       </nav>
 
     </div>

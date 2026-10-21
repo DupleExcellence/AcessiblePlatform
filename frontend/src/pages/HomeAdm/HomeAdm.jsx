@@ -1,8 +1,14 @@
 import React from "react";
 import "../HomeAdm/HomeAdm.css"
 import Button from "../../components/Button/Button";
+import { useAuth } from "../../contexts/AuthContext";
 
 function HomeAdm() {
+  const { perfil, tipoPerfil, autenticado } = useAuth();
+  const { logout } = useAuth();
+  console.log("Perfil:", perfil);
+  console.log("Tipo normalizado:", tipoPerfil);
+  console.log("Autenticado:", autenticado);
   return (
     <div className="dashboard">
 
@@ -156,6 +162,9 @@ function HomeAdm() {
           <span>⚙</span>
           <small>Configurações</small>
         </Button>
+        <button onClick={logout}>
+          Sair da conta
+        </button>
 
       </nav>
 
