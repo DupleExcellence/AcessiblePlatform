@@ -2,18 +2,21 @@
 Modelo de Lição.
 """
 
-
 class Licao:
     COLECAO = "licoes"
 
     CAMPOS = {
         "id": str,
+        "cursoId": str,          # ID do curso ou referência
         "titulo": str,
         "descricao": str,
         "conteudo": str,
-        "cursoId": str,
-        "professorId": str,
         "ordem": int,
+        "videoUrl": str,         # Campo novo
+        "duracao": str,          # Campo novo
+        "gabarito": str,         # Campo novo
+        "arquivo": str,          # Campo novo
+        "professorId": str,
         "ativa": bool,
         "criadoEm": "timestamp",
         "atualizadoEm": "timestamp",

@@ -4,7 +4,6 @@ Serviço de lições.
 from firebase_admin import firestore
 from app.database.firebase import COLECAO_LICOES, COLECAO_PROFESSORES
 
-
 def listar_licoes(curso_id=None):
     query = COLECAO_LICOES
     if curso_id:
@@ -18,7 +17,6 @@ def listar_licoes(curso_id=None):
         licoes.append(_serializar(dados))
     return licoes
 
-
 def obter_licao(licao_id):
     doc = COLECAO_LICOES.document(licao_id).get()
     if not doc.exists:
@@ -26,7 +24,6 @@ def obter_licao(licao_id):
     dados = doc.to_dict()
     dados["id"] = doc.id
     return _serializar(dados)
-
 
 def criar_licao(dados, professor_id):
     titulo = dados.get("titulo")
@@ -40,15 +37,18 @@ def criar_licao(dados, professor_id):
         "titulo": titulo,
         "descricao": dados.get("descricao", ""),
         "conteudo": conteudo,
-        "cursoId": dados.get("cursoId"),
+        "cursoId": dados.get("cursoId", dados.get("curso", "")), # Aceita 'cursoId' ou 'curso'
         "professorId": COLECAO_PROFESSORES.document(professor_id),
         "ordem": dados.get("ordem", 1),
+        "videoUrl": dados.get("videoUrl", ""),
+        "duracao": dados.get("duracao", ""),
+        "gabarito": dados.get("gabarito", ""),
+        "arquivo": dados.get("arquivo", ""),
         "ativa": True,
         "criadoEm": firestore.SERVER_TIMESTAMP,
     })
 
     return obter_licao(doc_ref.id)
-
 
 def atualizar_licao(licao_id, dados, professor_id):
     ref = COLECAO_LICOES.document(licao_id)
@@ -62,7 +62,10 @@ def atualizar_licao(licao_id, dados, professor_id):
     if professor_ref and professor_ref.id != professor_id:
         raise PermissionError("Você só pode editar suas próprias lições.")
 
-    campos_permitidos = {"titulo", "descricao", "conteudo", "ordem", "ativa"}
+    campos_permitidos = {
+        "titulo", "descricao", "conteudo", "ordem", "ativa", "cursoId", "curso",
+        "videoUrl", "duracao", "gabarito", "arquivo"
+    }
     atualizacao = {k: v for k, v in dados.items() if k in campos_permitidos}
 
     if not atualizacao:
@@ -71,7 +74,6 @@ def atualizar_licao(licao_id, dados, professor_id):
     atualizacao["atualizadoEm"] = firestore.SERVER_TIMESTAMP
     ref.update(atualizacao)
     return obter_licao(licao_id)
-
 
 def remover_licao(licao_id, professor_id):
     ref = COLECAO_LICOES.document(licao_id)
@@ -86,7 +88,6 @@ def remover_licao(licao_id, professor_id):
 
     ref.delete()
     return {"id": licao_id, "removido": True}
-
 
 def _serializar(dados):
     for campo in ("professorId", "cursoId"):
