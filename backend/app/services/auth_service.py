@@ -1,9 +1,5 @@
 """
 Serviço de autenticação.
-
-Cadastro e login são delegados ao Firebase Authentication (client SDK
-no frontend). O backend apenas valida tokens e mantém dados complementares
-no Firestore (coleção usuarios).
 """
 from firebase_admin import auth, firestore
 from app.database.firebase import (
@@ -13,16 +9,12 @@ from app.database.firebase import (
     COLECAO_PROFESSORES,
 )
 
-
 def cadastrar_usuario(dados):
-    """
-    Cadastra o usuário no Firebase Auth e cria o documento complementar
-    no Firestore (colecao usuarios + perfil específico).
-    """
     nome = dados.get("nome")
     email = dados.get("email")
     senha = dados.get("senha")
     perfil_id = dados.get("perfil", "aluno")
+    telefone = dados.get("telefone", "") # <-- NOVO CAMPO AQUI
 
     if not nome or not email or not senha:
         raise ValueError("Nome, e-mail e senha são obrigatórios.")
@@ -36,10 +28,11 @@ def cadastrar_usuario(dados):
 
     perfil_ref = COLECAO_PERFIS.document(perfil_id)
 
-    # Documento base
+    # Documento base (agora com telefone)
     COLECAO_USUARIOS.document(uid).set({
         "nome": nome,
         "email": email,
+        "telefone": telefone, # <-- SALVANDO AQUI
         "perfil": perfil_ref,
         "ativo": True,
         "criadoEm": firestore.SERVER_TIMESTAMP,
