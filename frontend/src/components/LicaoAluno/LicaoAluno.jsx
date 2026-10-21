@@ -9,7 +9,7 @@ import {
 } from "../../services/licaoServices";
 
 function LicaoAluno() {
-
+  const [tentativa, setTentativa] = useState(0);
   const [searchParams] = useSearchParams();
   const navegar = useNavigate();
 
@@ -21,25 +21,28 @@ function LicaoAluno() {
   const [erro, setErro] = useState("");
     
 
-  useEffect(() => {
+  
+useEffect(() => {
+  let cancelado = false;
+
   async function carregarLicoes() {
     setCarregando(true);
     setErro("");
 
     try {
       const resultado = await buscarLicoes(cursoId);
-      setLicoes(resultado);
-    } catch (error) {
-      console.error("Erro ao carregar lições:", error);
-      setErro(error.message || "Não foi possível carregar as lições.");
-    } finally {
-      setCarregando(false);
-    }
-    const resultado = await buscarLicoes(cursoId);
+
+      if (cancelado) return;
 
       console.log("Curso selecionado:", cursoId);
       console.log("Lições recebidas:", resultado);
-      console.log("Primeira lição:", resultado[0]);
+
+      if (!Array.isArray(resultado)) {
+        throw new Error(
+          "A API não retornou uma lista de lições no formato esperado."
+        );
+      }
+
       console.table(
         resultado.map((licao) => ({
           id: licao.id,
@@ -50,10 +53,24 @@ function LicaoAluno() {
       );
 
       setLicoes(resultado);
-      }
+    } catch (error) {
+      if (cancelado) return;
 
-    carregarLicoes();
-    }, [cursoId]);
+      console.error("Erro ao carregar lições:", error);
+      setErro(error.message || "Não foi possível carregar as lições.");
+    } finally {
+      if (!cancelado) {
+        setCarregando(false);
+      }
+    }
+  }
+
+  carregarLicoes();
+
+  return () => {
+    cancelado = true;
+  };
+}, [cursoId, tentativa]);
 
     async function abrirLicao(licao) {
       setErro("");
@@ -166,7 +183,7 @@ function LicaoAluno() {
 
                 <button
                   type="button"
-                  onClick={() => setLicaoSelecionada(null)}
+                  onClick={() => setTentativa((atual) => atual + 1)}
                 >
                   Voltar à lista
                 </button>

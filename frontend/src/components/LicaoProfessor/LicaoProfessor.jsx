@@ -8,7 +8,7 @@ import Textarea from "../Textarea/Textarea.jsx"
 import Form from "../Form/Form.jsx"
 import "../LicaoProfessor/LicaoProfessor.css"
 import { useState } from "react";
-
+import { enviarArquivo } from "../../services/arquivoServices";
 import { buscarCursos } from "../../services/cursoServices";
 import {
   buscarLicoes,
@@ -16,13 +16,19 @@ import {
 } from "../../services/licaoServices";
 
 function LicaoProfessor() {
-  const formularioInicial = {
-    cursoId: "",
-    ordem: "1",
-    titulo: "",
-    descricao: "",
-    conteudo: "",
-  };
+  
+const formularioInicial = {
+  cursoId: "",
+  ordem: "1",
+  titulo: "",
+  descricao: "",
+  conteudo: "",
+  videoUrl: "",
+  duracao: "",
+  gabarito: "",
+  arquivo: null,
+ };
+
 
   const [formData, setFormData] = useState(formularioInicial);
   const [cursos, setCursos] = useState([]);
@@ -34,7 +40,7 @@ function LicaoProfessor() {
 
   
 
-async function carregarDados() {
+ async function carregarDados() {
   setCarregando(true);
   setErro("");
 
@@ -68,7 +74,7 @@ async function carregarDados() {
   } finally {
     setCarregando(false);
   }
-}
+ }
 
  
 
@@ -86,6 +92,7 @@ async function carregarDados() {
     }));
   }
 
+ 
   async function handleSubmit(event) {
     event.preventDefault();
     setErro("");
@@ -121,22 +128,25 @@ async function carregarDados() {
       setMensagem("Lição cadastrada com sucesso!");
       setFormData(formularioInicial);
 
-      const listaAtualizada = await buscarLicoes();
-      setLicoes(listaAtualizada);
+      const listaLicoes = await buscarLicoes();
+      setLicoes(listaLicoes);
     } catch (error) {
-      setErro(error.message || "Não foi possível salvar a lição.");
+      console.error("Erro ao criar lição:", error);
+      setErro(error.message || "Não foi possível cadastrar a lição.");
     } finally {
       setSalvando(false);
     }
   }
+
+
+ 
 
   function handleCancel() {
     setFormData(formularioInicial);
     setErro("");
     setMensagem("");
   }
-
-  return (
+ return (
     <div className="criar-licao-page">
       <header className="criar-licao-header">
         <div className="logo-area">
@@ -221,7 +231,65 @@ async function carregarDados() {
                 placeholder="Digite o conteúdo da lição..."
               />
             </div>
+            
+          <div className="form-group">
+            <Label htmlFor="videoUrl">URL do vídeo</Label>
+            <Input
+              type="url"
+              id="videoUrl"
+              name="videoUrl"
+              value={formData.videoUrl}
+              onChange={handleChange}
+              placeholder="https://..."
+            />
           </div>
+
+          <div className="form-group">
+            <Label htmlFor="duracao">Duração</Label>
+            <Input
+              type="number"
+              id="duracao"
+              name="duracao"
+              min="0"
+              value={formData.duracao}
+              onChange={handleChange}
+              placeholder="Duração conforme o formato da API"
+            />
+          </div>
+
+          <div className="form-group">
+            <Label htmlFor="gabarito">Gabarito</Label>
+            <Textarea
+              id="gabarito"
+              name="gabarito"
+              value={formData.gabarito}
+              onChange={handleChange}
+              placeholder="Informe o gabarito, se aplicável..."
+            />
+          </div>
+
+          
+            
+          <div className="form-group">
+            <Label htmlFor="arquivo">Arquivo da lição</Label>
+            <Input
+              type="file"
+              id="arquivo"
+              name="arquivo"
+              onChange={(event) => {
+                const arquivoSelecionado = event.target.files?.[0] || null;
+
+                setFormData((anterior) => ({
+                  ...anterior,
+                  arquivo: arquivoSelecionado,
+                }));
+              }}
+            />
+          </div>
+
+        </div>
+
+          
 
           <div className="form-actions">
             <Button
@@ -300,12 +368,13 @@ async function carregarDados() {
         </a>
 
       </nav>
-
+    
     
 
-   </main>
+    </main>
 
   </div>
   );
+
 }
- export default LicaoProfessor;
+  export default LicaoProfessor;
