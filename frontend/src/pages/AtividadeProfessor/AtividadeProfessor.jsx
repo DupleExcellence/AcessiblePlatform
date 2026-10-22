@@ -7,11 +7,15 @@ import Label from "../../components/Label/Label.jsx";
 import Textarea from "../../components/Textarea/Textarea.jsx";
 import Form from "../../components/Form/Form.jsx";
 import Select from "../../components/Select/Select.jsx";
+
 import { buscarLicoes } from "../../services/licaoServices.js";
 import { criarAtividade } from "../../services/atividadeServices.js";
 
-const criarQuestao = () => ({
-  id: crypto.randomUUID(),
+const criarFormularioInicial = () => ({
+  licaoId: "",
+  titulo: "",
+  descricao: "",
+  valorTotal: "10",
   enunciado: "",
   alternativas: [
     { id: "A", texto: "" },
@@ -22,14 +26,6 @@ const criarQuestao = () => ({
   respostaCorreta: "A",
 });
 
-const criarFormularioInicial = () => ({
-  licaoId: "",
-  titulo: "",
-  descricao: "",
-  valorTotal: "10",
-  questoes: [criarQuestao()],
-});
-
 function AtividadeProfessor() {
   const [formData, setFormData] = useState(criarFormularioInicial);
   const [erro, setErro] = useState("");
@@ -37,6 +33,7 @@ function AtividadeProfessor() {
   const [licoes, setLicoes] = useState([]);
   const [carregandoLicoes, setCarregandoLicoes] = useState(true);
   const [erroLicoes, setErroLicoes] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
     let ativo = true;
@@ -94,54 +91,13 @@ function AtividadeProfessor() {
     limparMensagens();
   }
 
-  function atualizarQuestao(id, campo, valor) {
+  function atualizarAlternativa(alternativaId, texto) {
     setFormData((anterior) => ({
       ...anterior,
-      questoes: anterior.questoes.map((questao) =>
-        questao.id === id
-          ? { ...questao, [campo]: valor }
-          : questao
-      ),
-    }));
-
-    limparMensagens();
-  }
-
-  function atualizarAlternativa(questaoId, alternativaId, texto) {
-    setFormData((anterior) => ({
-      ...anterior,
-      questoes: anterior.questoes.map((questao) =>
-        questao.id === questaoId
-          ? {
-              ...questao,
-              alternativas: questao.alternativas.map(
-                (alternativa) =>
-                  alternativa.id === alternativaId
-                    ? { ...alternativa, texto }
-                    : alternativa
-              ),
-            }
-          : questao
-      ),
-    }));
-
-    limparMensagens();
-  }
-
-  function adicionarQuestao() {
-    setFormData((anterior) => ({
-      ...anterior,
-      questoes: [...anterior.questoes, criarQuestao()],
-    }));
-
-    limparMensagens();
-  }
-
-  function removerQuestao(id) {
-    setFormData((anterior) => ({
-      ...anterior,
-      questoes: anterior.questoes.filter(
-        (questao) => questao.id !== id
+      alternativas: anterior.alternativas.map((alternativa) =>
+        alternativa.id === alternativaId
+          ? { ...alternativa, texto }
+          : alternativa
       ),
     }));
 
@@ -177,103 +133,89 @@ function AtividadeProfessor() {
       return "Preencha as instruções da atividade.";
     }
 
+    if (!formData.enunciado.trim()) {
+      return "Preencha o enunciado da pergunta.";
+    }
+
     const valorTotal = Number(formData.valorTotal);
 
     if (
       formData.valorTotal.trim() === "" ||
-      !Number.isFinite(valorTotal) ||
+      !Number.isInteger(valorTotal) ||
       valorTotal <= 0
     ) {
-      return "Informe uma pontuação total maior que zero.";
+      return "Informe uma pontuação total inteira maior que zero.";
     }
 
-    if (formData.questoes.length === 0) {
-      return "Adicione pelo menos uma questão.";
+    if (
+      formData.alternativas.length < 2 ||
+      formData.alternativas.some(
+        (alternativa) => !alternativa.texto.trim()
+      )
+    ) {
+      return "Preencha pelo menos duas alternativas.";
     }
 
-    for (let i = 0; i < formData.questoes.length; i += 1) {
-      const questao = formData.questoes[i];
-      const numero = i + 1;
+    const respostaExiste = formData.alternativas.some(
+      (alternativa) => alternativa.id === formData.respostaCorreta
+    );
 
-      if (!questao.enunciado.trim()) {
-        return `Preencha o enunciado da questão ${numero}.`;
-      }
-
-      if (
-        questao.alternativas.some(
-          (alternativa) => !alternativa.texto.trim()
-        )
-      ) {
-        return `Preencha todas as alternativas da questão ${numero}.`;
-      }
-
-      const respostaExiste = questao.alternativas.some(
-        (alternativa) =>
-          alternativa.id === questao.respostaCorreta
-      );
-
-      if (!respostaExiste) {
-        return `Selecione a resposta correta da questão ${numero}.`;
-      }
+    if (!respostaExiste) {
+      return "Selecione a resposta correta.";
     }
 
     return "";
   }
 
-  
-    async function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    limparMensagens();
+
+    if (enviando) {
+      return;
+    }
+
+    setErro("");
+    setMensagem("");
 
     const erroValidacao = validarFormulario();
 
     if (erroValidacao) {
-        setErro(erroValidacao);
-        return;
+      setErro(erroValidacao);
+      return;
     }
 
     const dadosAtividade = {
-        tipo: "multipla_escolha",
-        licaoId: formData.licaoId,
-        titulo: formData.titulo.trim(),
-        descricao: formData.descricao.trim(),
-        valorTotal: Number(formData.valorTotal),
-        pontuacaoMaxima: Number(formData.valorTotal),
-        questoes: formData.questoes.map((questao) => ({
-        enunciado: questao.enunciado.trim(),
-        alternativas: questao.alternativas.map((alternativa) => ({
-            id: alternativa.id,
-            texto: alternativa.texto.trim(),
-        })),
-        respostaCorreta: questao.respostaCorreta,
-        })),
+      licaoId: formData.licaoId,
+      titulo: formData.titulo.trim(),
+      descricao: formData.descricao.trim(),
+      tipo: "multipla_escolha",
+      alternativas: formData.alternativas.map((alternativa) => ({
+        id: alternativa.id,
+        texto: alternativa.texto.trim(),
+        correta: alternativa.id === formData.respostaCorreta,
+      })),
+      pontuacaoMaxima: Number(formData.valorTotal),
     };
-       
-
-        console.log(
-        "Payload enviado para criar atividade:",
-        JSON.stringify(dadosAtividade, null, 2)
-        );
 
     try {
-        const resultado = await criarAtividade(dadosAtividade);
+      setEnviando(true);
 
-        console.log("Resposta da API ao criar atividade:", resultado);
+      await criarAtividade(dadosAtividade);
 
-        setMensagem(
-        "A API recebeu a solicitação de criação da atividade."
-        );
+      setMensagem("Atividade criada com sucesso!");
+      setFormData(criarFormularioInicial());
     } catch (error) {
-        console.error("Erro ao criar atividade:", error);
+      console.error("Erro ao criar atividade:", error);
 
-        setErro(
+      setErro(
         error instanceof Error
-            ? `Não foi possível salvar a atividade: ${error.message}`
-            : "Não foi possível salvar a atividade. Tente novamente."
-        );
+          ? error.message
+          : "Não foi possível criar a atividade. Tente novamente."
+      );
+    } finally {
+      setEnviando(false);
     }
-    }
-
+  }
 
   function handleLimpar() {
     const confirmou = window.confirm(
@@ -291,8 +233,10 @@ function AtividadeProfessor() {
   return (
     <main className="criar-licao-container">
       <h1>Criar atividade</h1>
-        <p>Monte um questionário para os alunos responderem.</p>
-        
+
+      <p>
+        Monte uma pergunta de múltipla escolha para os alunos responderem.
+      </p>
 
       {erro && (
         <p role="alert" aria-live="assertive">
@@ -346,6 +290,7 @@ function AtividadeProfessor() {
 
           <div className="form-group">
             <Label htmlFor="titulo">Título da atividade</Label>
+
             <Input
               id="titulo"
               name="titulo"
@@ -358,6 +303,7 @@ function AtividadeProfessor() {
 
           <div className="form-group">
             <Label htmlFor="descricao">Instruções</Label>
+
             <Textarea
               id="descricao"
               name="descricao"
@@ -371,108 +317,87 @@ function AtividadeProfessor() {
             <Label htmlFor="valorTotal">
               Valor total em pontos
             </Label>
+
             <Input
               id="valorTotal"
               name="valorTotal"
               type="number"
-              min="0.01"
-              step="0.01"
+              min="1"
+              step="1"
               value={formData.valorTotal}
               onChange={handleChange}
             />
           </div>
         </div>
 
-        <section aria-labelledby="questoes-titulo">
-          <h2 id="questoes-titulo">Questões</h2>
+        <section aria-labelledby="pergunta-titulo">
+          <h2 id="pergunta-titulo">Pergunta</h2>
 
-          {formData.questoes.map((questao, indice) => (
-            <fieldset key={questao.id}>
-              <legend>Questão {indice + 1}</legend>
+          <div className="form-group">
+            <Label htmlFor="enunciado">Enunciado</Label>
 
-              <div className="form-group">
-                <Label htmlFor={`enunciado-${questao.id}`}>
-                  Enunciado
-                </Label>
-                <Textarea
-                  id={`enunciado-${questao.id}`}
-                  value={questao.enunciado}
-                  onChange={(event) =>
-                    atualizarQuestao(
-                      questao.id,
-                      "enunciado",
-                      event.target.value
-                    )
-                  }
-                  placeholder="Digite a pergunta."
-                />
-              </div>
+            <Textarea
+              id="enunciado"
+              value={formData.enunciado}
+              onChange={(event) => {
+                setFormData((anterior) => ({
+                  ...anterior,
+                  enunciado: event.target.value,
+                }));
 
-              <p>Alternativas</p>
+                limparMensagens();
+              }}
+              placeholder="Digite a pergunta."
+            />
+          </div>
 
-              {questao.alternativas.map((alternativa) => (
-                <div className="form-group" key={alternativa.id}>
-                  <Label
-                    htmlFor={`alt-${questao.id}-${alternativa.id}`}
-                  >
-                    Alternativa {alternativa.id}
-                  </Label>
-                  <Input
-                    id={`alt-${questao.id}-${alternativa.id}`}
-                    type="text"
-                    value={alternativa.texto}
-                    onChange={(event) =>
-                      atualizarAlternativa(
-                        questao.id,
-                        alternativa.id,
-                        event.target.value
-                      )
-                    }
-                    placeholder={`Digite a alternativa ${alternativa.id}`}
-                  />
-                </div>
-              ))}
+          <p>Alternativas</p>
 
-              <div className="form-group">
-                <Label htmlFor={`correta-${questao.id}`}>
-                  Resposta correta (gabarito)
-                </Label>
-                <Select
-                  id={`correta-${questao.id}`}
-                  value={questao.respostaCorreta}
-                  onChange={(event) =>
-                    atualizarQuestao(
-                      questao.id,
-                      "respostaCorreta",
-                      event.target.value
-                    )
-                  }
-                >
-                  {questao.alternativas.map((alternativa) => (
-                    <option
-                      key={alternativa.id}
-                      value={alternativa.id}
-                    >
-                      Alternativa {alternativa.id}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+          {formData.alternativas.map((alternativa) => (
+            <div className="form-group" key={alternativa.id}>
+              <Label htmlFor={`alt-${alternativa.id}`}>
+                Alternativa {alternativa.id}
+              </Label>
 
-              <Button
-                type="button"
-                variant="danger"
-                disabled={formData.questoes.length === 1}
-                onClick={() => removerQuestao(questao.id)}
-              >
-                Remover questão
-              </Button>
-            </fieldset>
+              <Input
+                id={`alt-${alternativa.id}`}
+                type="text"
+                value={alternativa.texto}
+                onChange={(event) =>
+                  atualizarAlternativa(
+                    alternativa.id,
+                    event.target.value
+                  )
+                }
+                placeholder={`Digite a alternativa ${alternativa.id}`}
+              />
+            </div>
           ))}
 
-          <Button type="button" onClick={adicionarQuestao}>
-            Adicionar questão
-          </Button>
+          <div className="form-group">
+            <Label htmlFor="respostaCorreta">
+              Resposta correta (gabarito)
+            </Label>
+
+            <Select
+              id="respostaCorreta"
+              value={formData.respostaCorreta}
+              onChange={(event) => {
+                setFormData((anterior) => ({
+                  ...anterior,
+                  respostaCorreta: event.target.value,
+                }));
+
+                limparMensagens();
+              }}
+            >
+              {formData.alternativas.map((alternativa) => (
+                <option key={alternativa.id} value={alternativa.id}>
+                  Alternativa {alternativa.id}
+                </option>
+              ))}
+            </Select>
+          </div>
         </section>
 
         <div className="form-actions">
@@ -480,12 +405,13 @@ function AtividadeProfessor() {
             type="button"
             variant="danger"
             onClick={handleLimpar}
+            disabled={enviando}
           >
             Limpar formulário
           </Button>
 
-          <Button type="submit">
-            Validar atividade
+          <Button type="submit" disabled={enviando}>
+            {enviando ? "Criando atividade..." : "Criar atividade"}
           </Button>
         </div>
       </Form>
