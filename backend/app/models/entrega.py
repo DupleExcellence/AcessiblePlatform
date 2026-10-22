@@ -12,8 +12,8 @@ class Entrega:
 
     CAMPOS = {
         "id": str,
-        "atividadeId": str,        # referência: atividades/{id}
-        "alunoId": str,            # referência: alunos/{uid}
+        "atividadeId": "DocumentReference",
+        "alunoId": "DocumentReference",
         "resposta": "string|list",
         "status": str,
         "enviadoEm": "timestamp",

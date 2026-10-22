@@ -10,13 +10,13 @@ class Nota:
 
     CAMPOS = {
         "id": str,
-        "entregaId": str,          # referência: entregas/{id}
-        "alunoId": str,            # referência: alunos/{uid}
-        "atividadeId": str,        # referência: atividades/{id}
+        "entregaId": "DocumentReference",
+        "alunoId": "DocumentReference",
+        "atividadeId": "DocumentReference",
         "pontuacao": int,
         "pontuacaoMaxima": int,
         "feedback": str,
-        "corrigidoPor": str,       # referência: professores/{uid}
+        "corrigidoPor": "DocumentReference",
         "corrigidoEm": "timestamp",
     }
 
