@@ -19,6 +19,8 @@ import PerfilProfessorPage from "./pages/PerfilProfessor/PerfilProfessor";
 import PerfilAlunoPage from "./pages/PerfilAluno/PerfilAluno";
 import LicaoAlunoPage from "./pages/LicaoAluno/LicaoAluno";
 import LicaoProfessorPage from "./pages/LicaoProfessor/LicaoProfessor";
+import AtividadeProfessor from "./pages/AtividadeProfessor/AtividadeProfessor";
+import AtividadesProfessor from "./pages/AtividadesProfessor/AtividadesProfessor";
 
 function AppHomeRedirect() {
   const {
@@ -83,6 +85,8 @@ function App() {
           <Route path="/homeProfessor" element={<HomeProfessor />} />
           <Route path="/perfilProfessor" element={<PerfilProfessorPage />} />
           <Route path="/licaoProfessor" element={<LicaoProfessorPage />} />
+          <Route path="/atividadeProfessor" element={<AtividadeProfessor/>}/>
+          <Route path="/atividadesProfessor" element={<AtividadesProfessor/>}/>
         </Route>
 
         {/* Área administrativa */}
