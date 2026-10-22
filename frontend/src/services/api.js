@@ -39,9 +39,11 @@ export async function apiRequest(
     cabecalhos.Authorization = `Bearer ${idToken}`;
   }
 
+  
   const baseURL = API_URL.replace(/\/+$/, "");
   const endpoint = caminho.replace(/^\/+/, "");
   const url = `${baseURL}/${endpoint}`;
+
 
   let resposta;
 
