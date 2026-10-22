@@ -75,20 +75,22 @@ SCHEMA = {
         },
         "obrigatorios": ["titulo", "conteudo", "professorId"],
     },
-    "atividades": {
+        "atividades": {
         "campos": {
             "id": "string",
             "licaoId": "referência para licoes",
             "titulo": "string",
             "descricao": "string",
             "tipo": "string (multipla_escolha | resposta_aberta | verdadeiro_falso)",
-            "alternativas": "array de objetos",
+            "alternativas": "array de objetos ({id, texto, correta})",
             "pontuacaoMaxima": "number",
             "prazo": "timestamp",
             "criadoEm": "timestamp",
+            "criadoPor": "referência para usuarios (professor)",
         },
-        "obrigatorios": ["licaoId", "titulo", "tipo", "pontuacaoMaxima"],
+        "obrigatorios": ["licaoId", "titulo", "descricao", "tipo", "pontuacaoMaxima"],
     },
+    
     "entregas": {
         "campos": {
             "id": "string",

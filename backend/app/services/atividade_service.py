@@ -42,7 +42,7 @@ def criar_atividade(dados, professor_id):
         "titulo": dados["titulo"],
         "descricao": dados["descricao"],
         "tipo": dados["tipo"],
-        "alternativas": dados.get("alternativas", []),
+        "alternativas": _normalizar_alternativas(dados.get("alternativas", [])),
         "pontuacaoMaxima": dados["pontuacaoMaxima"],
         "prazo": dados.get("prazo"),
         "criadoEm": firestore.SERVER_TIMESTAMP,
@@ -58,6 +58,9 @@ def atualizar_atividade(atividade_id, dados):
 
     campos_permitidos = {"titulo", "descricao", "tipo", "alternativas", "pontuacaoMaxima", "prazo"}
     atualizacao = {k: v for k, v in dados.items() if k in campos_permitidos}
+
+    if "alternativas" in atualizacao:
+        atualizacao["alternativas"] = _normalizar_alternativas(atualizacao["alternativas"])
 
     if not atualizacao:
         raise ValueError("Nenhum campo válido para atualização.")
@@ -78,3 +81,29 @@ def _serializar(dados):
     if "licaoId" in dados and hasattr(dados["licaoId"], "path"):
         dados["licaoId"] = dados["licaoId"].path
     return dados
+
+def _normalizar_alternativas(alternativas):
+    """
+    Aceita alternativas em dois formatos:
+    - Lista de strings: ["a", "b"]
+    - Lista de objetos: [{"id": "A", "texto": "a", "correta": false}, ...]
+    Retorna sempre lista de objetos {id, texto, correta}.
+    """
+    if not alternativas:
+        return []
+
+    normalizadas = []
+    for i, alt in enumerate(alternativas):
+        if isinstance(alt, dict):
+            normalizadas.append({
+                "id": alt.get("id", chr(65 + i)),  # A, B, C...
+                "texto": alt.get("texto", ""),
+                "correta": bool(alt.get("correta", False)),
+            })
+        else:
+            normalizadas.append({
+                "id": chr(65 + i),
+                "texto": str(alt),
+                "correta": False,
+            })
+    return normalizadas
