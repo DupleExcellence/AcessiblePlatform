@@ -2,12 +2,13 @@
 Serviço de lições.
 """
 from firebase_admin import firestore
-from app.database.firebase import COLECAO_LICOES, COLECAO_PROFESSORES
+from app.database.firebase import COLECAO_LICOES, COLECAO_PROFESSORES, COLECAO_CURSOS
 
 def listar_licoes(curso_id=None):
     query = COLECAO_LICOES
     if curso_id:
-        query = query.where("cursoId", "==", curso_id)
+        # Agora espera o ID do curso e converte para referência
+        query = query.where("cursoId", "==", COLECAO_CURSOS.document(curso_id))
 
     docs = query.stream()
     licoes = []
@@ -32,16 +33,17 @@ def criar_licao(dados, professor_id):
     if not titulo or not conteudo:
         raise ValueError("Título e conteúdo são obrigatórios.")
 
+    # Pega o ID do curso (aceita 'cursoId' ou 'curso')
+    curso_id = dados.get("cursoId", dados.get("curso", ""))
+    
     doc_ref = COLECAO_LICOES.document()
     doc_ref.set({
         "titulo": titulo,
         "descricao": dados.get("descricao", ""),
         "conteudo": conteudo,
-        "cursoId": dados.get("cursoId", dados.get("curso", "")), # Aceita 'cursoId' ou 'curso'
+        "cursoId": COLECAO_CURSOS.document(curso_id) if curso_id else None,
         "professorId": COLECAO_PROFESSORES.document(professor_id),
         "ordem": dados.get("ordem", 1),
-        "videoUrl": dados.get("videoUrl", ""),
-        "duracao": dados.get("duracao", ""),
         "gabarito": dados.get("gabarito", ""),
         "arquivo": dados.get("arquivo", ""),
         "ativa": True,
@@ -64,9 +66,15 @@ def atualizar_licao(licao_id, dados, professor_id):
 
     campos_permitidos = {
         "titulo", "descricao", "conteudo", "ordem", "ativa", "cursoId", "curso",
-        "videoUrl", "duracao", "gabarito", "arquivo"
+        "gabarito", "arquivo"
     }
     atualizacao = {k: v for k, v in dados.items() if k in campos_permitidos}
+
+    if "cursoId" in atualizacao and atualizacao["cursoId"]:
+        atualizacao["cursoId"] = COLECAO_CURSOS.document(atualizacao["cursoId"])
+    elif "curso" in atualizacao and atualizacao["curso"]:
+        atualizacao["cursoId"] = COLECAO_CURSOS.document(atualizacao["curso"])
+        del atualizacao["curso"]
 
     if not atualizacao:
         raise ValueError("Nenhum campo válido para atualização.")

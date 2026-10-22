@@ -7,16 +7,14 @@ class Licao:
 
     CAMPOS = {
         "id": str,
-        "cursoId": str,          # ID do curso ou referência
+        "cursoId": "DocumentReference", # Padronizado
         "titulo": str,
         "descricao": str,
         "conteudo": str,
         "ordem": int,
-        "videoUrl": str,         # Campo novo
-        "duracao": str,          # Campo novo
-        "gabarito": str,         # Campo novo
-        "arquivo": str,          # Campo novo
-        "professorId": str,
+        "gabarito": str,
+        "arquivo": str,
+        "professorId": "DocumentReference", # Padronizado
         "ativa": bool,
         "criadoEm": "timestamp",
         "atualizadoEm": "timestamp",

@@ -60,7 +60,7 @@ SCHEMA = {
         },
         "obrigatorios": ["titulo"],
     },
-    "licoes": {
+        "licoes": {
         "campos": {
             "id": "string",
             "titulo": "string",
@@ -69,12 +69,15 @@ SCHEMA = {
             "cursoId": "DocumentReference para cursos",
             "professorId": "DocumentReference para professores",
             "ordem": "number",
+            "gabarito": "string",
+            "arquivo": "string",
             "ativa": "boolean",
             "criadoEm": "timestamp",
             "atualizadoEm": "timestamp",
         },
         "obrigatorios": ["titulo", "conteudo", "professorId"],
     },
+    
     "atividades": {
         "campos": {
             "id": "string",
