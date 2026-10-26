@@ -554,3 +554,43 @@ body {
     align-self: center;
   }
 }
+.clean-response-mode .lessons-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.clean-response-mode .content-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.clean-response-mode .content-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.clean-response-mode .lessons-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.clean-response-mode .lessons-section {
+  width: 100%;
+}

@@ -1,18 +1,11 @@
 ﻿
-
+import React, { useEffect, useState } from "react";
 import "../Ranking/Ranking.css";
-import React from "react";
-import { auth } from "../../services/firebase";
-import { onAuthStateChanged } from "firebase/auth";
 
-import { useEffect, useState } from "react";
 import {
   buscarRanking,
   buscarMinhaPosicao,
 } from "../../services/rankingServices";
-
-
-
 
 export default function Ranking() {
   const [ranking, setRanking] = useState([]);
@@ -20,42 +13,34 @@ export default function Ranking() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
 
- useEffect(() => {
-  console.log(
-    "UsuÃ¡rio autenticado:",
-    auth.currentUser?.uid ?? null
-  );
-}, []);
-
-
-
   useEffect(() => {
     let ativo = true;
 
-    async function carregar() {
+    async function carregarRanking() {
       try {
         setCarregando(true);
         setErro("");
 
-        const [dadosRanking, dadosPosicao] =
-          await Promise.all([
-            buscarRanking(),
-            buscarMinhaPosicao(),
-          ]);
+        const [dadosRanking, dadosPosicao] = await Promise.all([
+          buscarRanking(),
+          buscarMinhaPosicao(),
+        ]);
 
         if (!ativo) return;
 
-        // Ajuste ao formato real retornado pelo backend.
-        setRanking(
-          Array.isArray(dadosRanking)
-            ? dadosRanking
-            : dadosRanking?.ranking ?? []
-        );
+        const lista = Array.isArray(dadosRanking)
+          ? dadosRanking
+          : dadosRanking?.ranking ??
+            dadosRanking?.alunos ??
+            [];
 
+        setRanking(lista);
         setPosicao(dadosPosicao);
-      } catch (erro) {
+      } catch (error) {
         if (ativo) {
-          setErro(erro.message);
+          setErro(
+            error?.message || "Não foi possível carregar o ranking."
+          );
         }
       } finally {
         if (ativo) {
@@ -64,7 +49,7 @@ export default function Ranking() {
       }
     }
 
-    carregar();
+    carregarRanking();
 
     return () => {
       ativo = false;
@@ -72,38 +57,97 @@ export default function Ranking() {
   }, []);
 
   if (carregando) {
-    return <p>Carregando ranking...</p>;
+    return (
+      <main className="ranking-page">
+        <h1>Ranking</h1>
+        <p>Carregando ranking...</p>
+      </main>
+    );
   }
 
   if (erro) {
-    return <p role="alert">Erro ao carregar: {erro}</p>;
+    return (
+      <main className="ranking-page">
+        <h1>Ranking</h1>
+        <p role="alert">Erro ao carregar o ranking: {erro}</p>
+        <button type="button" onClick={() => window.location.reload()}>
+          Tentar novamente
+        </button>
+      </main>
+    );
   }
 
+  const minhaPosicao = posicao?.posicao;
+  const meuXp = posicao?.xpTotal;
+
   return (
-    <section>
-      <h1>Ranking</h1>
+    <main className="ranking-page">
+      <h1>Ranking de alunos</h1>
 
-      <h2>Minha posiÃ§Ã£o</h2>
-      <pre>{JSON.stringify(posicao, null, 2)}</pre>
+      <section className="ranking-card" aria-labelledby="minha-posicao">
+        <h2 id="minha-posicao">Minha posição</h2>
 
-      <h2>Melhores alunos</h2>
+        <p>
+          Posição:{" "}
+          <strong>
+            {minhaPosicao != null ? `${minhaPosicao}º lugar` : "Não disponível"}
+          </strong>
+        </p>
 
-      {ranking.length === 0 ? (
-        <p>Nenhum resultado retornado.</p>
-      ) : (
-        <ol>
-          {ranking.map((aluno, indice) => (
-            <li key={aluno.uid ?? aluno.id ?? indice}>
-              {aluno.nome ?? aluno.name ?? "Aluno"} â€”{" "}
-              {aluno.xp ?? 0} XP
-            </li>
-          ))}
-        </ol>
-      )}
-    </section>
+        <p>
+          XP total:{" "}
+          <strong>
+            {meuXp != null ? meuXp : "Não disponível"}
+          </strong>
+        </p>
 
+        {posicao?.totalAlunos != null && (
+          <p>Total de alunos: {posicao.totalAlunos}</p>
+        )}
+      </section>
 
+      <section aria-labelledby="melhores-alunos">
+        <h2 id="melhores-alunos">Classificação geral</h2>
 
+        {ranking.length === 0 ? (
+          <p>Nenhum aluno encontrado no ranking.</p>
+        ) : (
+          <ol className="ranking-list">
+            {ranking.map((aluno, indice) => {
+              const id =
+                aluno.alunoId ??
+                aluno.uid ??
+                aluno.id ??
+                indice;
+
+              const nome =
+                aluno.nome ??
+                aluno.name ??
+                aluno.displayName ??
+                "Aluno";
+
+              const xp = aluno.xpTotal ?? aluno.xp;
+              const pontuacao = aluno.pontuacaoTotal;
+
+              return (
+                <li key={id} className="ranking-item">
+                  <span className="ranking-student">
+                    <strong>{indice + 1}º</strong> {nome}
+                  </span>
+
+                  <span className="ranking-score">
+                    {xp != null ? `${xp} XP` : "XP indisponível"}
+
+                    {pontuacao != null && (
+                      <> · {pontuacao} pontos</>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </section>
+    </main>
   );
-
 }
