@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./HomeAluno.css";
-import Button from "../../components/Button/Button"
+import Button from "../../components/Button/Button";
 import { useAuth } from "../../contexts/AuthContext";
+import { buscarMinhaPosicao } from "../../services/rankingServices";
+
 function HomeAluno() {
- const { perfil, tipoPerfil, autenticado } = useAuth();
- const { logout } = useAuth();
-  console.log("Perfil:", perfil);
-  console.log("Tipo normalizado:", tipoPerfil);
-  console.log("Autenticado:", autenticado);
+  const { perfil, tipoPerfil, autenticado, logout } = useAuth();
+
+  const [dadosAluno, setDadosAluno] = useState(null);
+  const [erroRanking, setErroRanking] = useState("");
+
   const licoes = [
     {
       icon: "▣",
@@ -29,9 +31,54 @@ function HomeAluno() {
     },
   ];
 
+  useEffect(() => {
+    let ativo = true;
+
+    async function carregarDados() {
+      try {
+        const dados = await buscarMinhaPosicao();
+
+        if (ativo) {
+          console.log("Dados reais do ranking:", dados);
+          setDadosAluno(dados);
+          setErroRanking("");
+        }
+      } catch (error) {
+        console.error("Erro ao carregar pontuação e XP:", error);
+
+        if (ativo) {
+          setErroRanking("Não foi possível carregar os pontos.");
+        }
+      }
+    }
+
+    carregarDados();
+
+    return () => {
+      ativo = false;
+    };
+  }, []);
+
+  const dados =
+    dadosAluno?.aluno ??
+    dadosAluno?.usuario ??
+    dadosAluno;
+
+  const pontuacao =
+    dados?.pontuacaoTotal ??
+    dados?.pontuacao ??
+    dados?.pontos;
+
+  const xp =
+    dados?.xpTotal ??
+    dados?.xp;
+
+  console.log("Perfil:", perfil);
+  console.log("Tipo normalizado:", tipoPerfil);
+  console.log("Autenticado:", autenticado);
+
   return (
     <div className="home-aluno">
-      {/* CabeÃ§alho */}
       <header className="home-header">
         <div className="logo-area">
           <div className="logo-icon">◆</div>
@@ -39,37 +86,35 @@ function HomeAluno() {
         </div>
 
         <div className="header-icons">
-          <Button className="header-button" aria-label="Notificações">
+          <Button
+            className="header-button"
+            aria-label="Notificações"
+          >
             🔔
           </Button>
 
-          <Button className="profile-button" aria-label="Perfil">
+          <Button
+            className="profile-button"
+            aria-label="Perfil"
+          >
             👤
           </Button>
         </div>
       </header>
 
-      {/* ConteÃºdo */}
       <main className="home-content">
-
-        {/* SaudaÃ§Ã£o */}
         <section className="welcome-section">
-          <div className="avatar">
-            👤
-          </div>
+          <div className="avatar">👤</div>
 
           <div>
-            <h1>Olá, João!</h1>
+            <h1>Olá, {perfil?.nome ?? "aluno"}!</h1>
             <p>Continue firme nos seus objetivos!</p>
           </div>
         </section>
 
-        {/* Cards de resumo */}
         <section className="summary-cards">
-
           <div className="summary-card green-card">
             <div className="summary-icon">▣</div>
-
             <div>
               <span>Lições</span>
               <strong>5/10</strong>
@@ -77,47 +122,55 @@ function HomeAluno() {
           </div>
 
           <div className="summary-card blue-card">
-            <div className="summary-icon">&#127942;</div>
-
+            <div className="summary-icon">🏆</div>
             <div>
-              <span>Ranking/Pontos</span>
-              <strong>320</strong>
+              <span>Pontuação</span>
+              <strong>
+                {pontuacao ?? (erroRanking ? "Indisponível" : "—")}
+              </strong>
             </div>
           </div>
 
           <div className="summary-card purple-card">
-            <div className="summary-icon">&#9827;</div>
+            <div className="summary-icon">⭐</div>
+            <div>
+              <span>XP</span>
+              <strong>
+                {xp ?? (erroRanking ? "Indisponível" : "—")}
+              </strong>
+            </div>
+          </div>
 
+          <div className="summary-card purple-card">
+            <div className="summary-icon">♣</div>
             <div>
               <span>Cursos</span>
               <strong>2</strong>
             </div>
           </div>
-
         </section>
 
-        {/* Minhas lições */}
-        <section className="lessons-section">
+        {erroRanking && (
+          <p role="alert">{erroRanking}</p>
+        )}
 
+        <section className="lessons-section">
           <div className="section-title">
             <h2>Minhas lições</h2>
 
-            <button className="view-all">
+            <button className="view-all" type="button">
               Ver todas →
             </button>
           </div>
 
           <div className="lessons-list">
-
             {licoes.map((licao, index) => (
               <div className="lesson" key={index}>
-
                 <div className={`lesson-icon ${licao.classe}`}>
                   {licao.icon}
                 </div>
 
                 <div className="lesson-content">
-
                   <div className="lesson-info">
                     <span>{licao.titulo}</span>
                     <strong>{licao.progresso}%</strong>
@@ -126,25 +179,22 @@ function HomeAluno() {
                   <div className="progress-background">
                     <div
                       className="progress-bar"
-                      style={{ width: `${licao.progresso}%` }}
+                      style={{
+                        width: `${licao.progresso}%`,
+                      }}
                     />
                   </div>
-
                 </div>
-
               </div>
             ))}
-
           </div>
         </section>
-
       </main>
 
-      {/* Menu inferior */}
       <nav className="bottom-navigation">
         <Button className="nav-item active">
-          <span>&#8962;</span>
-          <small>In&#237;cio</small>
+          <span>⌂</span>
+          <small>Início</small>
         </Button>
 
         <Button className="nav-item">
@@ -158,7 +208,7 @@ function HomeAluno() {
         </Button>
 
         <Button className="nav-item">
-          <span>&#127942;</span>
+          <span>🏆</span>
           <small>Ranking</small>
         </Button>
 
@@ -166,12 +216,12 @@ function HomeAluno() {
           <span>👤</span>
           <small>Perfil</small>
         </Button>
-        <button onClick={logout}>
+
+        <button type="button" onClick={logout}>
           Sair da conta
         </button>
       </nav>
     </div>
-
   );
 }
 
