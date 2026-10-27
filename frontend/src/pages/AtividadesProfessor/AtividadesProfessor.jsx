@@ -10,6 +10,7 @@ import {
 
 import { listarEntregas } from "../../services/entregaServices.js";
 import { corrigirEntrega } from "../../services/notaServices.js";
+import "./AtividadesProfessor.css";
 
 const ATIVIDADES_POR_PAGINA = 5;
 
@@ -403,9 +404,9 @@ function AtividadesProfessor() {
 
   return (
     <main
-      className={`criar-licao-container ${
-        modoIndividual ? "atividade-individual-mode" : ""
-      }`}
+      className={`criar-licao-container atividades-professor-container ${
+      modoIndividual ? "atividade-individual-mode" : ""
+    }`}
     >
       <h1>
         {modoDetalhes
