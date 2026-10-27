@@ -24,6 +24,21 @@ function HomeAdm() {
     licoes: null,
   });
 
+
+  async function handleLogout() {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Erro ao sair da conta:", error);
+
+      setErroDashboard(
+        "Não foi possível encerrar a sessão."
+      );
+    }
+  }
+
+
   const [atividades, setAtividades] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -274,7 +289,7 @@ function HomeAdm() {
           </span>
 
           <Button aria-label="Perfil do usuário">
-            ●
+            👤
           </Button>
         </div>
       </header>
@@ -445,9 +460,7 @@ function HomeAdm() {
             )}
 
           <p className="activities-note">
-            A lista reúne registros existentes, não um histórico
-            completo de ações. As datas são exibidas quando
-            estão disponíveis nos dados da API.
+            A lista reúne registros existentes.
           </p>
         </section>
       </main>
@@ -464,36 +477,26 @@ function HomeAdm() {
         <Button
           className="menu-item"
           onClick={() => {
-            window.location.href = "/cursos";
+            window.location.href = "/cadastro";
           }}
         >
-          <span>◫</span>
-          <small>Cursos</small>
+          <span>♙</span>
+          <small>Cadastro</small>
         </Button>
 
-        <Button
-          className="menu-item"
-          onClick={() => {
-            window.location.href = "/relatorios";
-          }}
+        
+
+        
+        <button
+        type="button"
+        className="menu-item"
+        onClick={handleLogout}
         >
-          <span>▤</span>
-          <small>Relatórios</small>
-        </Button>
+        <span aria-hidden="true">↪</span>
+        <small>Sair</small>
+        </button>
 
-        <Button
-          className="menu-item"
-          onClick={() => {
-            window.location.href = "/configuracoes";
-          }}
-        >
-          <span>⚙</span>
-          <small>Configurações</small>
-        </Button>
 
-        <Button onClick={logout}>
-          Sair da conta
-        </Button>
       </nav>
     </div>
   );
