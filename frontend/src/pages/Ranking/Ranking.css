@@ -1,426 +1,308 @@
 
+/* =========================
+   PÁGINA DE RANKING
+========================= */
+
 .ranking-page {
   width: 100%;
-  min-height: 100vh;
-  padding: 36px clamp(18px, 4vw, 56px);
-  background: #f5f7fa;
-  color: #263449;
+  max-width: 900px;
+  min-height: 700px;
+  margin: 20px auto;
+  padding: 30px 35px;
+
   box-sizing: border-box;
+
+  background-color: #f8fafb;
+  border: 1px solid #dce5e8;
+  border-radius: 12px;
+
   font-family: Arial, sans-serif;
+  color: #263238;
 }
 
-.ranking-page * {
-  box-sizing: border-box;
+/* =========================
+   TÍTULOS
+========================= */
+
+.ranking-page > h1 {
+  margin: 0 0 25px;
+  padding-bottom: 16px;
+
+  color: #087f5b;
+  font-size: 26px;
+  font-weight: 700;
+
+  border-bottom: 1px solid #dce9e1;
 }
 
-.ranking-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 32px;
+.ranking-page h2 {
+  margin: 0 0 18px;
+
+  color: #263238;
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.ranking-etiqueta {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: #16834a;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.3px;
-}
-
-.ranking-header h1 {
-  margin: 0;
-  color: #183b2b;
-  font-size: clamp(28px, 4vw, 38px);
-}
-
-.ranking-header p,
-.ranking-secao-titulo p {
-  margin: 10px 0 0;
-  color: #6b7788;
-  line-height: 1.6;
-}
-
-.ranking-total {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 125px;
-  padding: 20px;
-  border: 1px solid #e3e9e5;
-  border-radius: 16px;
-  background: #fff;
-}
-
-.ranking-total span {
-  color: #6b7788;
-  font-size: 13px;
-}
-
-.ranking-total strong {
-  margin-top: 6px;
-  color: #16834a;
-  font-size: 28px;
-}
-
-.ranking-minha-posicao {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 36px;
-  padding: 24px 28px;
-  border: 1px solid #b9e4ca;
-  border-radius: 18px;
-  background: #e9f8ee;
-}
-
-.ranking-minha-posicao h2 {
-  margin: 0;
-  color: #185b36;
-  font-size: clamp(19px, 3vw, 25px);
-}
-
-.ranking-meus-xp {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
-}
-
-.ranking-meus-xp strong {
-  color: #16834a;
-  font-size: 25px;
-}
-
-.ranking-meus-xp span {
-  color: #527361;
-  font-size: 13px;
-}
-
-.ranking-secao-titulo {
-  margin-bottom: 22px;
-}
-
-.ranking-secao-titulo h2 {
-  margin: 0;
-  color: #24364b;
-  font-size: 23px;
-}
-
-.ranking-podio {
-  margin-bottom: 42px;
-}
-
-.ranking-podio-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 20px;
-}
+/* =========================
+   MINHA POSIÇÃO
+========================= */
 
 .ranking-card {
-  position: relative;
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 18px;
-  border: 1px solid #e5e9ee;
-  border-radius: 20px;
-  background: #fff;
-  text-align: center;
-  box-shadow: 0 5px 18px rgb(30 50 70 / 4%);
-}
+  margin-bottom: 30px;
+  padding: 22px 24px;
 
-.ranking-card-1 {
-  border: 2px solid #e8c85b;
-  background: linear-gradient(180deg, #fffdf3 0%, #fff 65%);
-}
-
-.ranking-card-2 {
-  border-color: #cbd5e1;
-}
-
-.ranking-card-3 {
-  border-color: #e6c3a5;
-}
-
-.ranking-medalha {
-  margin-bottom: 14px;
-  font-size: 34px;
-}
-
-.ranking-avatar {
-  display: flex;
-  width: 76px;
-  height: 76px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-  border-radius: 50%;
-  background: #dff4e6;
-  color: #176b3b;
-  font-size: 30px;
-  font-weight: 800;
-}
-
-.ranking-colocacao {
-  color: #16834a;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.ranking-card h3 {
-  margin: 10px 0 0;
-  overflow-wrap: anywhere;
-  color: #25364a;
-  font-size: 19px;
-}
-
-.ranking-turma {
-  margin-top: 8px;
-  color: #778396;
-  font-size: 13px;
-}
-
-.ranking-xp {
-  margin-top: 20px;
-  color: #16834a;
-  font-size: 24px;
-}
-
-.ranking-pontos {
-  margin-top: 6px;
-  color: #788495;
-  font-size: 13px;
-}
-
-.ranking-lista {
-  padding: 26px;
-  border: 1px solid #e6ebef;
-  border-radius: 20px;
-  background: #fff;
-}
-
-.ranking-tabela {
-  width: 100%;
-}
-
-.ranking-linha {
-  display: grid;
-  grid-template-columns: 100px minmax(150px, 1fr) 110px 130px;
-  align-items: center;
-  gap: 16px;
-  min-height: 76px;
-  padding: 12px 16px;
-  border-bottom: 1px solid #edf0f3;
-}
-
-.ranking-linha:last-child {
-  border-bottom: none;
-}
-
-.ranking-cabecalho {
-  min-height: 48px;
+  background-color: #f0faf6;
+  border: 1px solid #c9ebdd;
   border-radius: 10px;
-  background: #f4f7f5;
-  color: #687789;
-  font-size: 12px;
-  font-weight: 700;
 }
 
-.ranking-numero {
-  color: #405168;
-  font-weight: 700;
+.ranking-card h2 {
+  color: #087f5b;
 }
 
-.ranking-aluno {
+.ranking-card p {
   display: flex;
-  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin: 0;
+  padding: 12px 0;
+
+  color: #52635a;
+  font-size: 14px;
+
+  border-bottom: 1px solid #dcefe5;
+}
+
+.ranking-card p:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ranking-card strong {
+  color: #087f5b;
+  font-size: 15px;
+  text-align: right;
+}
+
+/* =========================
+   CLASSIFICAÇÃO GERAL
+========================= */
+
+.ranking-page section[aria-labelledby="melhores-alunos"] {
+  margin-top: 10px;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+  counter-reset: ranking;
+}
+
+/* =========================
+   ITEM DO RANKING
+========================= */
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  min-height: 64px;
+  padding: 15px 18px;
+
+  box-sizing: border-box;
+
+  background-color: #ffffff;
+  border: 1px solid #e1e9e3;
+  border-radius: 8px;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.ranking-item:hover {
+  background-color: #f0faf6;
+  border-color: #c9ebdd;
+}
+
+/* Nome e posição do aluno */
+
+.ranking-student {
+  display: flex;
   align-items: center;
   gap: 12px;
-}
 
-.ranking-aluno > div:last-child {
-  display: flex;
   min-width: 0;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 5px 8px;
-}
 
-.ranking-aluno strong {
-  overflow-wrap: anywhere;
-  color: #29394d;
+  color: #34483c;
   font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
-.ranking-aluno span {
-  color: #8490a0;
-  font-size: 12px;
-}
+.ranking-student strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-.ranking-avatar-pequeno {
-  width: 42px;
-  height: 42px;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 5px;
+
+  box-sizing: border-box;
+
+  background-color: #e5f5ed;
+  border: 1px solid #c9ebdd;
+  border-radius: 8px;
+
+  color: #087f5b;
+  font-size: 13px;
   flex-shrink: 0;
-  margin: 0;
-  font-size: 17px;
 }
 
-.ranking-voce {
-  padding: 4px 8px;
-  border-radius: 20px;
-  background: #dff4e6;
-  color: #176b3b !important;
-  font-weight: 700;
+/* XP e pontuação */
+
+.ranking-score {
+  flex-shrink: 0;
+
+  color: #087f5b;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
 }
 
-.ranking-xp-lista {
-  color: #16834a;
-  white-space: nowrap;
-}
+/* =========================
+   MENSAGENS E ESTADOS
+========================= */
 
-.ranking-linha-atual {
-  background: #f0faf3;
-}
-
-.ranking-vazio,
-.ranking-mensagem {
-  padding: 38px 24px;
-  border: 1px solid #e2e9e4;
-  border-radius: 18px;
-  background: #fff;
-  text-align: center;
-}
-
-.ranking-vazio h2,
-.ranking-mensagem h2 {
-  color: #244c35;
-}
-
-.ranking-vazio p,
-.ranking-mensagem p {
-  color: #687789;
+.ranking-page > p {
+  margin: 15px 0;
+  color: #667781;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.ranking-status {
-  padding: 40px 0;
-  color: #526476;
-  text-align: center;
+.ranking-page p[role="alert"] {
+  padding: 14px 16px;
+
+  background-color: #fff0f0;
+  border: 1px solid #f0cccc;
+  border-radius: 8px;
+
+  color: #a52828;
+  overflow-wrap: anywhere;
 }
 
-.ranking-botao {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 9px;
-  background: #16834a;
-  color: white;
-  font-weight: 700;
+/* =========================
+   BOTÃO TENTAR NOVAMENTE
+========================= */
+
+.ranking-page button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+  margin-top: 10px;
+  padding: 10px 18px;
+
+  background-color: #087f5b;
+  border: 1px solid #087f5b;
+  border-radius: 8px;
+
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.ranking-botao:hover {
-  background: #116b3b;
+.ranking-page button:hover {
+  background-color: #056b4a;
+  border-color: #056b4a;
 }
 
-@media (max-width: 760px) {
+.ranking-page button:focus-visible {
+  outline: 3px solid #70bd9b;
+  outline-offset: 3px;
+}
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 768px) {
   .ranking-page {
-    padding: 24px 16px;
+    min-height: 0;
+    margin: 15px auto;
+    padding: 24px 20px;
   }
 
-  .ranking-header {
-    align-items: flex-start;
-  }
-
-  .ranking-total {
-    min-width: 95px;
-    padding: 14px;
-  }
-
-  .ranking-podio-grid {
-    grid-template-columns: 1fr;
+  .ranking-page > h1 {
+    font-size: 23px;
   }
 
   .ranking-card {
-    padding: 24px 16px;
+    padding: 18px;
   }
 
-  .ranking-linha {
-    grid-template-columns: 48px minmax(0, 1fr) 72px;
-    gap: 10px;
-    padding: 12px 6px;
-  }
-
-  .ranking-cabecalho {
-    grid-template-columns: 48px minmax(0, 1fr) 72px;
-    font-size: 10px;
-  }
-
-  .ranking-cabecalho span:nth-child(4) {
-    display: none;
-  }
-
-  .ranking-linha > span:nth-child(3) {
-    text-align: right;
-  }
-
-  .ranking-linha > span:nth-child(4) {
-    grid-column: 2 / 4;
-    padding-left: 54px;
-    font-size: 13px;
-  }
-
-  .ranking-linha.ranking-cabecalho > span:nth-child(3) {
-    text-align: right;
-  }
-
-  .ranking-lista {
-    padding: 18px 12px;
-  }
-
-  .ranking-minha-posicao {
-    align-items: flex-start;
-    padding: 20px;
-  }
-
-  .ranking-meus-xp strong {
-    font-size: 20px;
+  .ranking-item {
+    gap: 12px;
+    padding: 13px;
   }
 }
 
-@media (max-width: 430px) {
-  .ranking-header {
-    flex-direction: column;
+@media (max-width: 480px) {
+  .ranking-page {
+    margin: 10px auto;
+    padding: 20px 14px;
+    border-radius: 10px;
   }
 
-  .ranking-total {
-    width: 100%;
-    flex-direction: row;
-    gap: 12px;
+  .ranking-page > h1 {
+    font-size: 21px;
   }
 
-  .ranking-minha-posicao {
-    flex-direction: column;
+  .ranking-page h2 {
+    font-size: 16px;
   }
 
-  .ranking-meus-xp {
+  .ranking-card {
+    padding: 15px;
+  }
+
+  .ranking-card p {
     align-items: flex-start;
+    font-size: 12px;
   }
 
-  .ranking-linha {
-    grid-template-columns: 35px minmax(0, 1fr) 65px;
-    gap: 7px;
+  .ranking-card strong {
+    font-size: 13px;
   }
 
-  .ranking-avatar-pequeno {
-    width: 34px;
-    height: 34px;
-    font-size: 14px;
+  .ranking-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ranking-student {
+    font-size: 13px;
+  }
+
+  .ranking-score {
+    align-self: flex-end;
+    font-size: 11px;
   }
 }
