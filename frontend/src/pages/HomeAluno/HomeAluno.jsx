@@ -1,245 +1,363 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import "./HomeAluno.css";
 import Button from "../../components/Button/Button";
 import { useAuth } from "../../contexts/AuthContext";
-import { buscarMinhaPosicao } from "../../services/rankingServices";
-import { useNavigate } from "react-router-dom";
 
+import { buscarCursos } from "../../services/cursoServices";
+import { buscarMinhaPosicao } from "../../services/rankingServices";
+import { buscarLicoes } from "../../services/licaoServices";
 
 function HomeAluno() {
   const { perfil, tipoPerfil, autenticado, logout } = useAuth();
-
-  const [dadosAluno, setDadosAluno] = useState(null);
-  const [erroRanking, setErroRanking] = useState("");
   const navigate = useNavigate();
 
-  const licoes = [
-    {
-      icon: "▣",
-      titulo: "Introdução ao HTML",
-      progresso: 80,
-      classe: "verde",
-    },
-    {
-      icon: "▤",
-      titulo: "CSS na prática",
-      progresso: 50,
-      classe: "azul",
-    },
-    {
-      icon: "</>",
-      titulo: "JavaScript básico",
-      progresso: 0,
-      classe: "azul",
-    },
-  ];
+  const [cursos, setCursos] = useState([]);
+  const [licoes, setLicoes] = useState([]);
+  const [ranking, setRanking] = useState(null);
 
-  useEffect(() => {
-    let ativo = true;
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+  const [erroLogout, setErroLogout] = useState("");
 
-    async function carregarDados() {
-      try {
-        const dados = await buscarMinhaPosicao();
+  const nomeAluno =
+    perfil?.nome ||
+    perfil?.nomeCompleto ||
+    perfil?.displayName ||
+    perfil?.usuario?.nome ||
+    "Estudante";
 
-        if (ativo) {
-          console.log("Dados reais do ranking:", dados);
-          setDadosAluno(dados);
-          setErroRanking("");
-        }
-      } catch (error) {
-        console.error("Erro ao carregar pontuação e XP:", error);
+  const primeiroNome = nomeAluno.trim().split(/\s+/)[0];
 
-        if (ativo) {
-          setErroRanking("Não foi possível carregar os pontos.");
-        }
+  const carregarDashboard = useCallback(async () => {
+    setCarregando(true);
+    setErro("");
+
+    try {
+      const resultados = await Promise.allSettled([
+        buscarCursos(),
+        buscarLicoes(),
+        buscarMinhaPosicao(),
+      ]);
+
+      const [resultadoCursos, resultadoLicoes, resultadoRanking] =
+        resultados;
+
+      if (resultadoCursos.status === "fulfilled") {
+        const dados = resultadoCursos.value;
+
+        setCursos(
+          Array.isArray(dados)
+            ? dados
+            : dados?.cursos || []
+        );
+      } else {
+        setCursos([]);
+        console.error("Erro ao carregar cursos:", resultadoCursos.reason);
       }
+
+      if (resultadoLicoes.status === "fulfilled") {
+        const dados = resultadoLicoes.value;
+
+        setLicoes(
+          Array.isArray(dados)
+            ? dados
+            : dados?.licoes || dados?.lições || []
+        );
+      } else {
+        setLicoes([]);
+        console.error("Erro ao carregar lições:", resultadoLicoes.reason);
+      }
+
+      if (resultadoRanking.status === "fulfilled") {
+        setRanking(resultadoRanking.value);
+      } else {
+        setRanking(null);
+        console.error("Erro ao carregar ranking:", resultadoRanking.reason);
+      }
+
+      if (resultados.every((resultado) => resultado.status === "rejected")) {
+        setErro("Não foi possível carregar os dados do dashboard.");
+      }
+    } catch (error) {
+      console.error("Erro ao carregar dashboard:", error);
+      setErro("Ocorreu um erro ao carregar suas informações.");
+    } finally {
+      setCarregando(false);
     }
-
-    carregarDados();
-
-    return () => {
-      ativo = false;
-    };
   }, []);
 
-  const dados =
-    dadosAluno?.aluno ??
-    dadosAluno?.usuario ??
-    dadosAluno;
+  useEffect(() => {
+    carregarDashboard();
+  }, [carregarDashboard]);
+
+  async function handleLogout() {
+    setErroLogout("");
+
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Erro ao sair da conta:", error);
+      setErroLogout("Não foi possível encerrar a sessão.");
+    }
+  }
 
   const pontuacao =
-    dados?.pontuacaoTotal ??
-    dados?.pontuacao ??
-    dados?.pontos;
+    ranking?.xpTotal ??
+    ranking?.pontuacaoTotal ??
+    ranking?.pontuacao ??
+    ranking?.pontos ??
+    ranking?.xp ??
+    null;
 
-  const xp =
-    dados?.xpTotal ??
-    dados?.xp;
+  const posicao = ranking?.posicao ?? ranking?.posicaoRanking ?? null;
 
-  console.log("Perfil:", perfil);
-  console.log("Tipo normalizado:", tipoPerfil);
-  console.log("Autenticado:", autenticado);
+  const cursosAtivos = cursos.filter(
+    (curso) => curso.ativo !== false
+  );
+
+  const licoesAtivas = licoes.filter(
+    (licao) => licao.ativa !== false
+  );
+
+  const licoesRecentes = licoesAtivas.slice(0, 3);
+
+  if (!autenticado) {
+    return (
+      <main className="home-aluno estado-acesso">
+        <section className="estado-card">
+          <span className="estado-icon" aria-hidden="true">🔐</span>
+          <h1>Entre na sua conta</h1>
+          <p>Faça login para acessar seu aprendizado.</p>
+          <Button
+            type="button"
+            className="primary-button"
+            onClick={() => navigate("/login")}
+          >
+            Ir para o login
+          </Button>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <div className="home-aluno">
       <header className="home-header">
-        <div className="logo-area">
-          <div className="logo-icon">◆</div>
-          <span>Aprender</span>
-        </div>
+        <Link to="/homeAluno" className="logo-area" aria-label="Alfabits, início">
+          
+         
+        </Link>
 
         <div className="header-icons">
-          <Button
-            className="header-button"
-            aria-label="Notificações"
-          >
-            🔔
-          </Button>
 
-          <Button
+          <Link
+            to="/perfilAluno"
             className="profile-button"
-            aria-label="Perfil"
+            aria-label="Meu perfil"
+            title="Meu perfil"
           >
             👤
-          </Button>
+          </Link>
         </div>
       </header>
 
       <main className="home-content">
         <section className="welcome-section">
-          <div className="avatar">👤</div>
+          <div className="avatar" aria-hidden="true">
+            <p>👤</p>
+          </div>
 
-          <div>
-            <h1>Olá, {perfil?.nome ?? "aluno"}!</h1>
-            <p>Continue firme nos seus objetivos!</p>
+          <div className="welcome-text">
+            <h1>Olá, {primeiroNome}!</h1>
+            
           </div>
         </section>
 
-        <section className="summary-cards">
-          <div className="summary-card green-card">
-            <div className="summary-icon">▣</div>
-            <div>
-              <span>Lições</span>
-              <strong>5/10</strong>
-            </div>
+        {erro && (
+          <div className="dashboard-alert" role="alert">
+            <span>{erro}</span>
+            <Button
+              type="button"
+              className="retry-button"
+              onClick={carregarDashboard}
+            >
+              Tentar novamente
+            </Button>
           </div>
-
-          <div className="summary-card blue-card">
-            <div className="summary-icon">🏆</div>
-            <div>
-              <span>Pontuação</span>
-              <strong>
-                {pontuacao ?? (erroRanking ? "Indisponível" : "—")}
-              </strong>
-            </div>
-          </div>
-
-          <div className="summary-card purple-card">
-            <div className="summary-icon">⭐</div>
-            <div>
-              <span>XP</span>
-              <strong>
-                {xp ?? (erroRanking ? "Indisponível" : "—")}
-              </strong>
-            </div>
-          </div>
-
-          <div className="summary-card purple-card">
-            <div className="summary-icon">♣</div>
-            <div>
-              <span>Cursos</span>
-              <strong>2</strong>
-            </div>
-          </div>
-        </section>
-
-        {erroRanking && (
-          <p role="alert">{erroRanking}</p>
         )}
+
+        {erroLogout && (
+          <p className="dashboard-alert" role="alert">
+            {erroLogout}
+          </p>
+        )}
+
+        <section className="summary-cards" aria-label="Resumo do aprendizado">
+          <article className="summary-card green-card">
+            <div className="summary-icon" aria-hidden="true">▤</div>
+            <div className="summary-info">
+              <span>Lições disponíveis</span>
+              <strong>
+                {carregando ? "…" : licoesAtivas.length}
+              </strong>
+              
+            </div>
+          </article>
+
+          <article className="summary-card blue-card">
+            <div className="summary-icon" aria-hidden="true">🏆</div>
+            <div className="summary-info">
+              <span>Minha pontuação</span>
+              <strong>
+                {carregando ? "…" : pontuacao ?? "—"}
+              </strong>
+              <small>
+                {posicao != null
+                  ? `${posicao}º lugar no ranking`
+                  : "Consulte sua classificação"}
+              </small>
+            </div>
+          </article>
+
+          <article className="summary-card purple-card">
+            <div className="summary-icon" aria-hidden="true">▣</div>
+            <div className="summary-info">
+              <span>Cursos disponíveis</span>
+              <strong>
+                {carregando ? "…" : cursosAtivos.length}
+              </strong>
+              
+            </div>
+          </article>
+        </section>
 
         <section className="lessons-section">
           <div className="section-title">
-            <h2>Minhas lições</h2>
+            <div>
+              
+              <h2>Minhas lições</h2>
+            </div>
 
-            <button className="view-all" type="button">
-              Ver todas →
-            </button>
+            <Link to="/licaoAluno" className="view-all">
+              Ver todas <span aria-hidden="true">→</span>
+            </Link>
           </div>
 
-          <div className="lessons-list">
-            {licoes.map((licao, index) => (
-              <div className="lesson" key={index}>
-                <div className={`lesson-icon ${licao.classe}`}>
-                  {licao.icon}
-                </div>
-
-                <div className="lesson-content">
-                  <div className="lesson-info">
-                    <span>{licao.titulo}</span>
-                    <strong>{licao.progresso}%</strong>
+          {carregando ? (
+            <div className="dashboard-state" role="status">
+              Carregando suas lições...
+            </div>
+          ) : licoesRecentes.length > 0 ? (
+            <div className="lessons-list">
+              {licoesRecentes.map((licao, index) => (
+                <article
+                  className="lesson"
+                  key={licao.id || index}
+                >
+                  <div
+                    className={`lesson-icon ${index % 2 === 0 ? "verde" : "azul"}`}
+                    aria-hidden="true"
+                  >
+                    {index + 1}
                   </div>
 
-                  <div className="progress-background">
-                    <div
-                      className="progress-bar"
-                      style={{
-                        width: `${licao.progresso}%`,
-                      }}
-                    />
+                  <div className="lesson-content">
+                    <div className="lesson-info">
+                      <h3>{licao.titulo || "Lição sem título"}</h3>
+                      <span className="lesson-status">
+                        Disponível
+                      </span>
+                    </div>
+
+                    {licao.descricao && (
+                      <p className="lesson-description">
+                        {licao.descricao}
+                      </p>
+                    )}
+
+                    <div className="lesson-actions">
+                      <Button
+                        type="button"
+                        className="lesson-button"
+                        onClick={() => {
+                          const cursoId =
+                            typeof licao.cursoId === "string"
+                              ? licao.cursoId
+                              : licao.cursoId?.id;
+
+                          const destino = cursoId
+                            ? `/licaoAluno?cursoId=${encodeURIComponent(cursoId)}`
+                            : "/licaoAluno";
+
+                          navigate(destino);
+                        }}
+                      >
+                        Acessar lições
+                        <span aria-hidden="true"> →</span>
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="dashboard-state empty-state">
+              <span aria-hidden="true">📚</span>
+              <h3>Nenhuma lição disponível</h3>
+              
+              <Link to="/cursos" className="empty-state-link">
+                Explorar cursos
+              </Link>
+            </div>
+          )}
         </section>
+
+       
+          
+           
+
+       
       </main>
 
-      <nav className="bottom-navigation">
-        <Button
-          className="nav-item active"
-          onClick={() => navigate("/homeAluno")}
-        >
-          <span>⌂</span>
+      <nav className="bottom-navigation" aria-label="Menu principal">
+        <Link to="/homeAluno" className="nav-item active" aria-current="page">
+          <span aria-hidden="true">⌂</span>
           <small>Início</small>
-        </Button>
+        </Link>
 
-        <Button
-          className="nav-item"
-          onClick={() => navigate("/licaoAluno")}
-        >
-          <span>▣</span>
+        <Link to="/licaoAluno" className="nav-item">
+          <span aria-hidden="true">▤</span>
           <small>Lições</small>
-        </Button>
+        </Link>
 
-        <Button
-          className="nav-item"
-          onClick={() => navigate("/cursos")}
-        >
-          <span>▤</span>
+        <Link to="/cursos" className="nav-item">
+          <span aria-hidden="true">▣</span>
           <small>Cursos</small>
-        </Button>
+        </Link>
 
-        <Button
-          className="nav-item"
-          onClick={() => navigate("/ranking")}
-        >
-          <span>🏆</span>
+        <Link to="/ranking" className="nav-item">
+          <span aria-hidden="true">🏆</span>
           <small>Ranking</small>
-        </Button>
+        </Link>
 
-        <Button
-          className="nav-item"
-          onClick={() => navigate("/perfilAluno")}
-        >
-          <span>👤</span>
+        <Link to="/perfilAluno" className="nav-item">
+          <span aria-hidden="true">👤</span>
           <small>Perfil</small>
-        </Button>
+        </Link>
 
-        <button type="button" onClick={logout}>
-          Sair da conta
+        <button
+          type="button"
+          className="nav-item logout-item"
+          onClick={handleLogout}
+        >
+          <span aria-hidden="true">↪</span>
+          <small>Sair</small>
         </button>
       </nav>
-      
     </div>
   );
 }
