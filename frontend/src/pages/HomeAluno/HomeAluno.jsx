@@ -3,12 +3,15 @@ import "./HomeAluno.css";
 import Button from "../../components/Button/Button";
 import { useAuth } from "../../contexts/AuthContext";
 import { buscarMinhaPosicao } from "../../services/rankingServices";
+import { useNavigate } from "react-router-dom";
+
 
 function HomeAluno() {
   const { perfil, tipoPerfil, autenticado, logout } = useAuth();
 
   const [dadosAluno, setDadosAluno] = useState(null);
   const [erroRanking, setErroRanking] = useState("");
+  const navigate = useNavigate();
 
   const licoes = [
     {
@@ -192,27 +195,42 @@ function HomeAluno() {
       </main>
 
       <nav className="bottom-navigation">
-        <Button className="nav-item active">
+        <Button
+          className="nav-item active"
+          onClick={() => navigate("/homeAluno")}
+        >
           <span>⌂</span>
           <small>Início</small>
         </Button>
 
-        <Button className="nav-item">
+        <Button
+          className="nav-item"
+          onClick={() => navigate("/licaoAluno")}
+        >
           <span>▣</span>
           <small>Lições</small>
         </Button>
 
-        <Button className="nav-item">
+        <Button
+          className="nav-item"
+          onClick={() => navigate("/cursos")}
+        >
           <span>▤</span>
           <small>Cursos</small>
         </Button>
 
-        <Button className="nav-item">
+        <Button
+          className="nav-item"
+          onClick={() => navigate("/ranking")}
+        >
           <span>🏆</span>
           <small>Ranking</small>
         </Button>
 
-        <Button className="nav-item">
+        <Button
+          className="nav-item"
+          onClick={() => navigate("/perfilAluno")}
+        >
           <span>👤</span>
           <small>Perfil</small>
         </Button>
@@ -221,6 +239,7 @@ function HomeAluno() {
           Sair da conta
         </button>
       </nav>
+      
     </div>
   );
 }
