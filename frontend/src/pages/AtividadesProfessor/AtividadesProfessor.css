@@ -1,0 +1,560 @@
+/* =========================================
+    ATIVIDADES DO PROFESSOR
+   Identidade visual: verde, azul e cinza
+   ========================================= */
+
+.atividades-professor-container {
+  --atividade-verde: #218653;
+  --atividade-verde-escuro: #17663e;
+  --atividade-verde-claro: #e8f5ed;
+  --atividade-azul: #2875c7;
+  --atividade-azul-escuro: #1d5ca0;
+  --atividade-fundo: #f4f7f5;
+  --atividade-branco: #ffffff;
+  --atividade-texto: #26352d;
+  --atividade-texto-secundario: #66736b;
+  --atividade-borda: #dce5df;
+  --atividade-erro: #b42318;
+  --atividade-erro-fundo: #fff0ee;
+  --atividade-sucesso: #17663e;
+  --atividade-sucesso-fundo: #e8f5ed;
+
+   width: 100%;
+  max-width: 1200px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 36px clamp(18px, 4vw, 48px);
+
+  background: var(--atividade-fundo);
+  color: var(--atividade-texto);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+
+.atividades-professor-container *,
+.atividades-professor-container *::before,
+.atividades-professor-container *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   CABEÇALHO
+   ========================================= */
+
+.atividades-professor-container > h1 {
+  margin: 0 0 10px;
+  color: var(--atividade-verde-escuro);
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+}
+
+.atividades-professor-container > p {
+  color: var(--atividade-texto-secundario);
+}
+
+.atividades-professor-container > h1 + p {
+  margin: 0 0 24px;
+  max-width: 760px;
+  font-size: 1rem;
+}
+
+/* =========================================
+   BOTÕES
+   ========================================= */
+
+.atividades-professor-container button {
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid var(--atividade-verde);
+  border-radius: 9px;
+  background: var(--atividade-verde);
+  color: var(--atividade-branco);
+  font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 650;
+  line-height: 1.35;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.atividades-professor-container button:hover:not(:disabled) {
+  background: var(--atividade-verde-escuro);
+  border-color: var(--atividade-verde-escuro);
+  box-shadow: 0 3px 8px rgb(23 102 62 / 14%);
+}
+
+.atividades-professor-container button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.atividades-professor-container button:focus-visible,
+.atividades-professor-container a:focus-visible,
+.atividades-professor-container input:focus-visible,
+.atividades-professor-container textarea:focus-visible {
+  outline: 3px solid #80b7f0;
+  outline-offset: 3px;
+}
+
+.atividades-professor-container button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Botão para atualizar a listagem */
+
+.atividades-professor-container > button {
+  margin: 0 0 26px;
+}
+
+/* =========================================
+   MENSAGENS DE ERRO E SUCESSO
+   ========================================= */
+
+.atividades-professor-container [role="alert"] {
+  margin: 20px 0;
+  padding: 14px 17px;
+  border: 1px solid #f1b7b1;
+  border-left: 5px solid var(--atividade-erro);
+  border-radius: 8px;
+  background: var(--atividade-erro-fundo);
+  color: var(--atividade-erro);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container [role="status"] {
+  margin: 18px 0;
+  padding: 13px 16px;
+  border-radius: 8px;
+  background: var(--atividade-verde-claro);
+  color: var(--atividade-verde-escuro);
+  font-weight: 600;
+}
+
+.atividades-professor-container > p[role="status"] {
+  display: block;
+}
+
+.atividades-professor-container > p[role="status"]:not(:empty) {
+  max-width: 100%;
+}
+
+/* =========================================
+   LISTA DE ATIVIDADES
+   ========================================= */
+
+.atividades-professor-container section[aria-label="Lista de atividades"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 26px;
+  align-items: stretch;
+}
+
+/* Cartões da lista */
+
+.atividades-professor-container .atividade-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 25px;
+  border: 1px solid var(--atividade-borda);
+  border-top: 4px solid var(--atividade-verde);
+  border-radius: 14px;
+  background: var(--atividade-branco);
+  box-shadow: 0 3px 12px rgb(31 60 42 / 5%);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.atividades-professor-container .atividade-card:hover {
+  box-shadow: 0 8px 22px rgb(31 60 42 / 9%);
+  transform: translateY(-2px);
+}
+
+.atividades-professor-container .atividade-card h2 {
+  width: 100%;
+  margin: 0 0 12px;
+  color: var(--atividade-verde-escuro);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container .atividade-card p {
+  width: 100%;
+  margin: 0 0 12px;
+  color: var(--atividade-texto-secundario);
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container .atividade-card p strong {
+  color: var(--atividade-texto);
+}
+
+.atividades-professor-container .atividade-card button {
+  margin: 12px 8px 0 0;
+}
+
+.atividades-professor-container .atividade-card button:last-child {
+  margin-bottom: 0;
+}
+
+/* Segundo botão do cartão: ação secundária */
+
+.atividades-professor-container .atividade-card button + button {
+  border-color: var(--atividade-azul);
+  background: var(--atividade-azul);
+}
+
+.atividades-professor-container .atividade-card button + button:hover:not(:disabled) {
+  border-color: var(--atividade-azul-escuro);
+  background: var(--atividade-azul-escuro);
+}
+
+/* =========================================
+   DETALHES DA ATIVIDADE
+   ========================================= */
+
+.atividades-professor-container section[aria-label="Detalhes da atividade"],
+.atividades-professor-container section[aria-label="Entregas dos alunos"],
+.atividades-professor-container section[aria-label="Formulário de correção"] {
+  width: 100%;
+  max-width: 960px;
+  margin: 28px auto 0;
+  padding: clamp(20px, 4vw, 34px);
+  border: 1px solid var(--atividade-borda);
+  border-radius: 14px;
+  background: var(--atividade-branco);
+  box-shadow: 0 4px 16px rgb(31 60 42 / 5%);
+}
+
+.atividades-professor-container section[aria-label="Detalhes da atividade"] > h2,
+.atividades-professor-container section[aria-label="Entregas dos alunos"] > h2,
+.atividades-professor-container section[aria-label="Formulário de correção"] > h2 {
+  margin: 0 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--atividade-borda);
+  color: var(--atividade-verde-escuro);
+  font-size: 1.45rem;
+  font-weight: 750;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container section[aria-label="Detalhes da atividade"] p {
+  margin: 14px 0;
+  color: var(--atividade-texto-secundario);
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container section[aria-label="Detalhes da atividade"] p strong {
+  color: var(--atividade-texto);
+}
+
+.atividades-professor-container section[aria-label="Detalhes da atividade"] ul {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding-left: 24px;
+}
+
+.atividades-professor-container section[aria-label="Detalhes da atividade"] li {
+  padding: 12px 14px;
+  border: 1px solid var(--atividade-borda);
+  border-radius: 8px;
+  background: #f8faf8;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   ENTREGAS DOS ALUNOS
+   ========================================= */
+
+.atividades-professor-container section[aria-label="Entregas dos alunos"] article {
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid var(--atividade-borda);
+  border-radius: 11px;
+  background: #fbfcfb;
+}
+
+.atividades-professor-container section[aria-label="Entregas dos alunos"] article h3 {
+  margin: 0 0 16px;
+  color: var(--atividade-texto);
+  font-size: 1.08rem;
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container section[aria-label="Entregas dos alunos"] article p {
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container section[aria-label="Entregas dos alunos"] article p strong {
+  color: var(--atividade-texto);
+}
+
+.atividades-professor-container pre {
+  max-width: 100%;
+  margin: 10px 0 18px;
+  padding: 16px;
+  border: 1px solid var(--atividade-borda);
+  border-radius: 8px;
+  background: #f2f5f3;
+  color: #26352d;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-x: auto;
+}
+
+/* =========================================
+   FORMULÁRIO DE CORREÇÃO
+   ========================================= */
+
+.atividades-professor-container section[aria-label="Formulário de correção"] {
+  border-top: 4px solid var(--atividade-azul);
+}
+
+.atividades-professor-container section[aria-label="Formulário de correção"] > p {
+  margin: 12px 0;
+  color: var(--atividade-texto-secundario);
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container section[aria-label="Formulário de correção"] > p strong {
+  color: var(--atividade-texto);
+}
+
+.atividades-professor-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.atividades-professor-container .form-group label {
+  color: var(--atividade-texto);
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.atividades-professor-container .form-group input,
+.atividades-professor-container .form-group textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #bdcbc1;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--atividade-texto);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.atividades-professor-container .form-group input:focus,
+.atividades-professor-container .form-group textarea:focus {
+  border-color: var(--atividade-verde);
+  box-shadow: 0 0 0 3px rgb(33 134 83 / 12%);
+  outline: none;
+}
+
+.atividades-professor-container .form-group input:disabled,
+.atividades-professor-container .form-group textarea:disabled {
+  background: #eef1ef;
+  cursor: not-allowed;
+}
+
+.atividades-professor-container .form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.atividades-professor-container .form-group > p {
+  margin: 0;
+  color: var(--atividade-texto-secundario);
+  font-size: 0.88rem;
+}
+
+.atividades-professor-container section[aria-label="Formulário de correção"] form > button {
+  margin: 0 10px 8px 0;
+}
+
+.atividades-professor-container section[aria-label="Formulário de correção"] form > button + button {
+  border-color: #aab7af;
+  background: #fff;
+  color: var(--atividade-texto);
+}
+
+.atividades-professor-container section[aria-label="Formulário de correção"] form > button + button:hover:not(:disabled) {
+  border-color: #87988d;
+  background: #edf2ee;
+}
+
+/* =========================================
+   PAGINAÇÃO
+   ========================================= */
+
+.atividades-professor-container .pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 32px 0 12px;
+  padding: 18px;
+  border: 1px solid var(--atividade-borda);
+  border-radius: 12px;
+  background: var(--atividade-branco);
+}
+
+.atividades-professor-container .pagination span {
+  color: var(--atividade-texto);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.atividades-professor-container .pagination button {
+  min-width: 110px;
+}
+
+/* =========================================
+   ESTADOS VAZIOS
+   ========================================= */
+
+.atividades-professor-container > p:not([role="status"]) {
+  overflow-wrap: anywhere;
+}
+
+.atividades-professor-container section[aria-label="Entregas dos alunos"] > p {
+  padding: 18px;
+  border-radius: 8px;
+  background: #f4f7f5;
+  color: var(--atividade-texto-secundario);
+  text-align: center;
+}
+
+/* =========================================
+   RESPONSIVIDADE — TABLETS
+   ========================================= */
+
+@media (max-width: 900px) {
+  .atividades-professor-container {
+    padding: 28px 22px;
+  }
+
+  .atividades-professor-container section[aria-label="Lista de atividades"] {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .atividades-professor-container .atividade-card {
+    padding: 22px;
+  }
+}
+
+/* =========================================
+   RESPONSIVIDADE — CELULARES
+   ========================================= */
+
+@media (max-width: 600px) {
+  .atividades-professor-container {
+    padding: 22px 14px;
+  }
+
+  .atividades-professor-container > h1 {
+    font-size: 1.65rem;
+  }
+
+  .atividades-professor-container .atividade-card {
+    padding: 18px;
+  }
+
+  .atividades-professor-container .atividade-card h2 {
+    font-size: 1.12rem;
+  }
+
+  .atividades-professor-container .atividade-card button {
+    width: 100%;
+    margin: 10px 0 0;
+  }
+
+  .atividades-professor-container section[aria-label="Detalhes da atividade"],
+  .atividades-professor-container section[aria-label="Entregas dos alunos"],
+  .atividades-professor-container section[aria-label="Formulário de correção"] {
+    padding: 19px 15px;
+    border-radius: 10px;
+  }
+
+  .atividades-professor-container section[aria-label="Entregas dos alunos"] article {
+    padding: 16px;
+  }
+
+  .atividades-professor-container .pagination {
+    gap: 12px;
+    padding: 15px 10px;
+  }
+
+  .atividades-professor-container .pagination button {
+    flex: 1;
+    min-width: 0;
+    padding: 10px;
+  }
+
+  .atividades-professor-container .pagination span {
+    flex-basis: 100%;
+    order: -1;
+  }
+
+  .atividades-professor-container section[aria-label="Formulário de correção"] form > button {
+    width: 100%;
+    margin: 0 0 12px;
+  }
+
+  .atividades-professor-container pre {
+    padding: 12px;
+    font-size: 0.82rem;
+  }
+}
+
+/* =========================================
+   ACESSIBILIDADE — MOVIMENTO REDUZIDO
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .atividades-professor-container *,
+  .atividades-professor-container *::before,
+  .atividades-professor-container *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.atividades-professor-container > h1 + p {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto 24px;
+  text-align: center;
+}
