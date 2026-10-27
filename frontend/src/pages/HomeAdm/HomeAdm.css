@@ -273,7 +273,12 @@ section.activities{
   padding: 20px;
  height: 600px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  
+
+  margin-bottom: 36px;
 }
+
+
 
 .activities h2 {
   
@@ -418,3 +423,131 @@ div.activity-list{
   .bottom-menu .menu-item small {
     font-size: 0.7rem;
   }
+  
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  margin: 28px auto 80px !important;
+  padding: 16px 16px 40px;
+}
+
+/* Espaço adicional no final do conteúdo */
+.dashboard-content {
+  padding-bottom: 100px;
+}
+
+/* BOTÕES ANTERIOR E PRÓXIMA */
+.pagination-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-width: 120px;
+  min-height: 42px;
+  padding: 10px 18px;
+
+  border: 1px solid #198754;
+  border-radius: 10px;
+
+  background-color: #198754;
+  color: #ffffff;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* EFEITO AO PASSAR O MOUSE */
+.pagination-button:hover:not(:disabled) {
+  background-color: #146c43;
+  border-color: #146c43;
+  box-shadow: 0 4px 10px rgba(25, 135, 84, 0.2);
+  transform: translateY(-1px);
+}
+
+/* FOCO PELO TECLADO */
+.pagination-button:focus-visible {
+  outline: 3px solid #8bd5b5;
+  outline-offset: 3px;
+}
+
+/* BOTÕES DESABILITADOS */
+.pagination-button:disabled {
+  background-color: #e9ecef;
+  color: #8a9299;
+  border-color: #dee2e6;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.8;
+}
+
+/* INDICADOR DA PÁGINA ATUAL */
+.pagination-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+  padding: 8px 14px;
+
+  border-radius: 8px;
+  background-color: #f1f5f3;
+  color: #24543c;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 480px) {
+  .pagination {
+    gap: 10px;
+    padding: 12px 4px;
+  }
+
+  .pagination-button {
+    min-width: 0;
+    min-height: 40px;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .pagination-info {
+    order: -1;
+    width: 100%;
+    font-size: 13px;
+  }
+}
+
+/* RESPEITA A PREFERÊNCIA POR MENOS ANIMAÇÕES */
+@media (prefers-reduced-motion: reduce) {
+  .pagination-button {
+    transition: none;
+  }
+
+  .pagination-button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+
+
+
+
