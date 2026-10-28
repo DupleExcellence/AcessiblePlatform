@@ -594,3 +594,41 @@ body {
 .clean-response-mode .lessons-section {
   width: 100%;
 }
+
+.escuta-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.escuta-controles button,
+.escuta-botao {
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid #237a45;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #1b6337;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.escuta-controles button:hover,
+.escuta-botao:hover {
+  background-color: #eaf5ed;
+}
+
+.escuta-controles button:focus-visible,
+.escuta-botao:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.escuta-controles button:disabled,
+.escuta-botao:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
