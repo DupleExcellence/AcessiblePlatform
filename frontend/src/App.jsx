@@ -105,7 +105,7 @@ function App() {
         {/* Rotas inexistentes */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-       <EscutaGlobal />
+       {/* <EscutaGlobal /> */}
     </AuthProvider>
   );
 }
