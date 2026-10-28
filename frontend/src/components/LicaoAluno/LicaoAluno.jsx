@@ -21,6 +21,15 @@ import { buscarMinhaPosicao } from "../../services/rankingServices";
 
 const LICOES_POR_PAGINA = 5;
 
+import {
+  falarTexto,
+  pausarLeitura,
+  continuarLeitura,
+  pararLeitura,
+  verificarSuporteEscuta,
+} from "../../services/escutaService";
+
+
 function LicaoAluno() {
   const [searchParams] = useSearchParams();
   const navegar = useNavigate();
@@ -49,6 +58,61 @@ function LicaoAluno() {
   const [mensagemAtividades, setMensagemAtividades] = useState("");
   const [dadosRanking, setDadosRanking] = useState(null);
   const [erroRanking, setErroRanking] = useState("");
+
+  
+  const [itemEmLeitura, setItemEmLeitura] = useState(null);
+  const [estadoEscuta, setEstadoEscuta] = useState("parado");
+  const [erroEscuta, setErroEscuta] = useState("");
+
+  const suporteEscuta = verificarSuporteEscuta();
+
+  function ouvirTexto(texto, identificador) {
+    setErroEscuta("");
+    setItemEmLeitura(identificador);
+    setEstadoEscuta("carregando");
+
+    falarTexto(texto, {
+      onStart: () => {
+        setItemEmLeitura(identificador);
+        setEstadoEscuta("reproduzindo");
+      },
+      onEnd: () => {
+        setEstadoEscuta("parado");
+        setItemEmLeitura(null);
+      },
+      onError: (mensagem) => {
+        setErroEscuta(mensagem);
+        setEstadoEscuta("parado");
+        setItemEmLeitura(null);
+      },
+    });
+  }
+
+  function pausarTexto() {
+    pausarLeitura();
+    setEstadoEscuta("pausado");
+  }
+
+  function retomarTexto() {
+    continuarLeitura();
+    setEstadoEscuta("reproduzindo");
+  }
+
+  function interromperTexto() {
+    pararLeitura();
+    setEstadoEscuta("parado");
+    setItemEmLeitura(null);
+    setErroEscuta("");
+  }
+
+
+    
+  useEffect(() => {
+    return () => {
+      pararLeitura();
+    };
+  }, []);
+
 
   function normalizarId(valor) {
     if (typeof valor !== "string") return "";
@@ -452,6 +516,17 @@ function LicaoAluno() {
         <h1 className="page-title">
           {modoResposta ? "Responder lição" : "Lições do aluno"}
         </h1>
+        
+        {!suporteEscuta && (
+          <p role="status">
+            A leitura em voz alta não está disponível neste navegador.
+          </p>
+        )}
+
+        {erroEscuta && (
+          <p role="alert">{erroEscuta}</p>
+        )}
+
 
         <div className="content-grid">
           <section className="lessons-section">
@@ -586,6 +661,49 @@ function LicaoAluno() {
                       </p>
                     )}
                   </div>
+                  
+                <div className="escuta-controles" aria-label="Controles de leitura da lição">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      ouvirTexto(
+                        [
+                          licaoSelecionada.titulo,
+                          licaoSelecionada.descricao,
+                          licaoSelecionada.conteudo,
+                        ]
+                          .filter(Boolean)
+                          .join(". "),
+                        "licao"
+                      )
+                    }
+                    disabled={!suporteEscuta}
+                  >
+                    <span aria-hidden="true">🔊</span> Ouvir lição
+                  </button>
+
+                  {itemEmLeitura === "licao" &&
+                    estadoEscuta === "reproduzindo" && (
+                      <button type="button" onClick={pausarTexto}>
+                        Pausar
+                      </button>
+                    )}
+
+                  {itemEmLeitura === "licao" &&
+                    estadoEscuta === "pausado" && (
+                      <button type="button" onClick={retomarTexto}>
+                        Continuar
+                      </button>
+                    )}
+
+                  {itemEmLeitura === "licao" &&
+                    estadoEscuta !== "parado" && (
+                      <button type="button" onClick={interromperTexto}>
+                        Parar leitura
+                      </button>
+                    )}
+                </div>
+
                 </section>
 
                 <section
@@ -645,6 +763,59 @@ function LicaoAluno() {
                         >
                           <h4>{atividade.titulo}</h4>
                           <p>{atividade.descricao}</p>
+
+                            
+                          <button
+                            type="button"
+                            className="escuta-botao"
+                            disabled={!suporteEscuta}
+                            onClick={() => {
+                              const alternativas = (atividade.alternativas || [])
+                                .map((alternativa, index) => {
+                                  const texto =
+                                    alternativa.texto ?? String(alternativa);
+
+                                  return `Alternativa ${index + 1}: ${texto}`;
+                                })
+                                .join(". ");
+
+                              const texto = [
+                                atividade.titulo,
+                                atividade.descricao,
+                                alternativas,
+                              ]
+                                .filter(Boolean)
+                                .join(". ");
+
+                              ouvirTexto(texto, `atividade-${atividade.id}`);
+                            }}
+                          >
+                            <span aria-hidden="true">🔊</span>
+                            Ouvir atividade
+                          </button>
+
+                          {itemEmLeitura === `atividade-${atividade.id}` &&
+                            estadoEscuta === "reproduzindo" && (
+                              <button type="button" onClick={pausarTexto}>
+                                Pausar
+                              </button>
+                            )}
+
+                          {itemEmLeitura === `atividade-${atividade.id}` &&
+                            estadoEscuta === "pausado" && (
+                              <button type="button" onClick={retomarTexto}>
+                                Continuar
+                              </button>
+                            )}
+
+                          {itemEmLeitura === `atividade-${atividade.id}` &&
+                            estadoEscuta !== "parado" && (
+                              <button type="button" onClick={interromperTexto}>
+                                Parar leitura
+                              </button>
+                            )}
+
+
 
                           <p>
                             <strong>Tipo:</strong>{" "}
