@@ -22,6 +22,7 @@ import LicaoProfessorPage from "./pages/LicaoProfessor/LicaoProfessor";
 import AtividadeProfessor from "./pages/AtividadeProfessor/AtividadeProfessor";
 import AtividadesProfessor from "./pages/AtividadesProfessor/AtividadesProfessor";
 import EscutaGlobal from "./components/EscutaGlobal/EscutaGlobal";
+import PerfilAdm from "./components/PerfilAdm/PerfilAdm";
 
 function AppHomeRedirect() {
   const {
@@ -93,6 +94,7 @@ function App() {
         {/* Área administrativa */}
         <Route element={<ProtectedRoute perfisPermitidos={["administrador"]} />}>
           <Route path="/admin" element={<HomeAdm />} />
+          <Route path="/perfilAdm" element={<PerfilAdm/>}/>
         </Route>
 
         {/* Ranking: qualquer perfil autenticado */}

@@ -21,6 +21,7 @@
   color: #fff;
   padding: 22px 12px;
   box-sizing: border-box;
+  text-decoration: none;
 }
 
 .perfil-logo {
@@ -41,6 +42,7 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
+  text-decoration: none;
 }
 
 .perfil-menu-item {
@@ -58,6 +60,7 @@
   font-size: 13px;
   cursor: pointer;
   transition: background 0.2s ease;
+  text-decoration: none;
 }
 
 .perfil-menu-item:hover,
