@@ -1,5 +1,5 @@
 
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 
 export async function buscarNomeUsuario(usuarioId) {
@@ -21,4 +21,42 @@ export async function buscarNomeUsuario(usuarioId) {
     usuario.name ??
     null
   );
+}
+
+export async function atualizarPerfilUsuario(usuarioId, dados) {
+  if (!usuarioId) {
+    throw new Error("Usuário não autenticado.");
+  }
+
+  const atualizacao = {};
+
+  if (typeof dados.nome === "string") {
+    if (!dados.nome.trim()) {
+      throw new Error("Informe o nome.");
+    }
+
+    atualizacao.nome = dados.nome.trim();
+  }
+
+  if (typeof dados.telefone === "string") {
+    atualizacao.telefone = dados.telefone.trim();
+  }
+
+  if (typeof dados.dataNascimento === "string") {
+    atualizacao.dataNascimento = dados.dataNascimento.trim();
+  }
+
+  if (Object.keys(atualizacao).length === 0) {
+    throw new Error("Nenhum dado para atualizar.");
+  }
+
+  atualizacao.atualizadoEm = serverTimestamp();
+
+  const referencia = doc(db, "usuarios", usuarioId);
+
+  await updateDoc(referencia, atualizacao);
+
+  const resultado = await getDoc(referencia);
+
+  return resultado.data();
 }

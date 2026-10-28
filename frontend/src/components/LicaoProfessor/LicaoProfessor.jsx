@@ -14,6 +14,7 @@ import {
   buscarLicoes,
   criarLicao,
 } from "../../services/licaoServices";
+import { Link } from "react-router-dom";
 
 function LicaoProfessor() {
   
@@ -330,44 +331,39 @@ const formularioInicial = {
         </section>
       
           {/* MENU INFERIOR */}
-      <nav className="bottom-menu" aria-label="Menu principal">
+      
+    {/* MENU INFERIOR */}
+    <nav className="bottom-menu" aria-label="Menu principal">
+      <Link to="/homeProfessor" className="menu-item">
+        <span aria-hidden="true">⌂</span>
+        <small>Início</small>
+      </Link>
 
-        <a href="#" className="menu-item active">
-          <span>⌂</span>
-          <small>Início</small>
-        </a>
+      <Link
+        to="/licaoProfessor"
+        className="menu-item active"
+        aria-current="page"
+      >
+        <span aria-hidden="true">▣</span>
+        <small>Lições</small>
+      </Link>
 
-        <a href="#" className="menu-item">
-          <span>▣</span>
-          <small>Lições</small>
-        </a>
+      <Link to="/cursos" className="menu-item">
+        <span aria-hidden="true">▤</span>
+        <small>Cursos</small>
+      </Link>
 
-        <a href="#" className="menu-item">
-          <span>▤</span>
-          <small>Cursos</small>
-        </a>
+      <Link to="/ranking" className="menu-item">
+        <span aria-hidden="true">🏆</span>
+        <small>Ranking</small>
+      </Link>
 
-        <a href="#" className="menu-item">
-          <span>♟</span>
-          <small>Alunos</small>
-        </a>
+      <Link to="/perfilProfessor" className="menu-item">
+        <span aria-hidden="true">♙</span>
+        <small>Perfil</small>
+      </Link>
+    </nav>
 
-        <a href="#" className="menu-item">
-          <span>🏆</span>
-          <small>Ranking</small>
-        </a>
-
-        <a href="#" className="menu-item">
-          <span>♙</span>
-          <small>Perfil</small>
-        </a>
-
-        <a href="#" className="menu-item">
-          <span>⚙</span>
-          <small>Configurações</small>
-        </a>
-
-      </nav>
     
     
 
