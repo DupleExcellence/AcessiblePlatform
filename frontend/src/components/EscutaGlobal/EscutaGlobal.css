@@ -1,0 +1,67 @@
+
+.escuta-global {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  width: min(320px, calc(100vw - 32px));
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1f2937;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+  font-family: Arial, sans-serif;
+}
+
+.escuta-global__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.escuta-global__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.escuta-global__acoes button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #176b45;
+  border-radius: 7px;
+  background: #176b45;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.escuta-global__acoes button:hover:not(:disabled) {
+  background: #105536;
+}
+
+.escuta-global__acoes button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.escuta-global__acoes button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.escuta-global__status {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .escuta-global {
+    right: 8px;
+    bottom: 8px;
+    width: calc(100vw - 16px);
+  }
+}
