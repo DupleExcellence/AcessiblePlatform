@@ -1,71 +1,209 @@
 
 import React, { useState } from "react";
+
 import Form from "../../components/Form/Form";
 import Label from "../../components/Label/Label";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import Radio from "../../components/Radio/Radio";
-import "../Cadastro/Cadastro.css";
 import Formgroup from "../../components/Formgroup/Formgroup";
+
+import "../Cadastro/Cadastro.css";
 
 import { apiPost } from "../../services/api";
 import { useAuth } from "../../contexts/AuthContext";
 
+// ===============================
+// FUNÇÕES DE VALIDAÇÃO
+// ===============================
+
+function validarNome(nome) {
+  const nomeLimpo = nome.trim();
+
+  return (
+    nomeLimpo.length >= 3 &&
+    /^[\p{L}\s'-]+$/u.test(nomeLimpo)
+  );
+}
+
+function validarEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validarSenha(senha) {
+  return (
+    senha.length >= 8 &&
+    /[A-Z]/.test(senha) &&
+    /[a-z]/.test(senha) &&
+    /\d/.test(senha)
+  );
+}
+
+function validarDataNascimento(data) {
+  if (!data) return false;
+
+  const nascimento = new Date(`${data}T00:00:00`);
+  const hoje = new Date();
+
+  hoje.setHours(0, 0, 0, 0);
+
+  return (
+    !Number.isNaN(nascimento.getTime()) &&
+    nascimento <= hoje
+  );
+}
+
+function calcularIdade(data) {
+  const nascimento = new Date(`${data}T00:00:00`);
+  const hoje = new Date();
+
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+
+  const aindaNaoFezAniversario =
+    hoje.getMonth() < nascimento.getMonth() ||
+    (hoje.getMonth() === nascimento.getMonth() &&
+      hoje.getDate() < nascimento.getDate());
+
+  if (aindaNaoFezAniversario) {
+    idade--;
+  }
+
+  return idade;
+}
+
+function validarTelefone(telefone) {
+  if (!telefone.trim()) return true;
+
+  const digitos = telefone.replace(/\D/g, "");
+
+  return digitos.length === 10 || digitos.length === 11;
+}
+
+// ===============================
+// COMPONENTE CADASTRO
+// ===============================
+
 function Cadastro() {
-  const { login } = useAuth();
+  const { user, autenticado, tipoPerfil, loading } = useAuth();
 
   const [perfil, setPerfil] = useState("aluno");
   const [carregando, setCarregando] = useState(false);
+
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
+  const [errosCampos, setErrosCampos] = useState({});
+
+  // ===============================
+  // ENVIO DO FORMULÁRIO
+  // ===============================
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const formularioElement = event.currentTarget;
 
     setErro("");
     setSucesso("");
-    setCarregando(true);
+    setErrosCampos({});
 
-    const formulario = new FormData(event.currentTarget);
+    // Verificação de acesso no frontend
+    if (
+      !user ||
+      !autenticado ||
+      tipoPerfil !== "administrador"
+    ) {
+      setErro(
+        "Apenas administradores autenticados podem cadastrar usuários."
+      );
+      return;
+    }
 
-    const nome = String(formulario.get("nome") || "").trim();
-    const email = String(formulario.get("email") || "")
-      .trim()
-      .toLowerCase();
-    const senha = String(formulario.get("senha") || "");
+    const formularioElement = event.currentTarget;
+    const formulario = new FormData(formularioElement);
+
+    const nome = String(
+      formulario.get("nome") || ""
+    ).trim();
+
+    const email = String(
+      formulario.get("email") || ""
+    ).trim().toLowerCase();
+
+    const senha = String(
+      formulario.get("senha") || ""
+    );
+
     const dataNascimento = String(
       formulario.get("dataNascimento") || ""
     );
-    const telefone = String(formulario.get("telefone") || "").trim();
 
-    // Calcula a idade a partir da data de nascimento.
-    let idade = null;
+    const telefone = String(
+      formulario.get("telefone") || ""
+    ).trim();
 
-    if (dataNascimento) {
-      const nascimento = new Date(`${dataNascimento}T00:00:00`);
-      const hoje = new Date();
+    // ===============================
+    // VALIDAÇÃO DOS CAMPOS
+    // ===============================
 
-      idade = hoje.getFullYear() - nascimento.getFullYear();
+    const novosErros = {};
 
-      const aindaNaoFezAniversario =
-        hoje.getMonth() < nascimento.getMonth() ||
-        (hoje.getMonth() === nascimento.getMonth() &&
-          hoje.getDate() < nascimento.getDate());
-
-      if (aindaNaoFezAniversario) {
-        idade--;
-      }
-
-      if (idade < 0 || nascimento > hoje) {
-        setErro("Informe uma data de nascimento válida.");
-        setCarregando(false);
-        return;
-      }
+    if (!nome) {
+      novosErros.nome = "O nome completo é obrigatório.";
+    } else if (!validarNome(nome)) {
+      novosErros.nome =
+        "Informe um nome com pelo menos 3 caracteres, usando apenas letras, espaços, apóstrofos ou hífens.";
     }
 
+    if (!email) {
+      novosErros.email = "O e-mail é obrigatório.";
+    } else if (!validarEmail(email)) {
+      novosErros.email =
+        "Informe um endereço de e-mail válido.";
+    }
+
+    if (!senha) {
+      novosErros.senha = "A senha é obrigatória.";
+    } else if (!validarSenha(senha)) {
+      novosErros.senha =
+        "A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.";
+    }
+
+    if (!dataNascimento) {
+      novosErros.dataNascimento =
+        "A data de nascimento é obrigatória.";
+    } else if (!validarDataNascimento(dataNascimento)) {
+      novosErros.dataNascimento =
+        "Informe uma data válida que não seja futura.";
+    }
+
+    if (!validarTelefone(telefone)) {
+      novosErros.telefone =
+        "Informe um telefone com DDD, contendo 10 ou 11 dígitos.";
+    }
+
+    const perfisValidos = [
+      "aluno",
+      "professor",
+      "administrador",
+    ];
+
+    if (!perfisValidos.includes(perfil)) {
+      novosErros.perfil = "Selecione um perfil válido.";
+    }
+
+    if (Object.keys(novosErros).length > 0) {
+      setErrosCampos(novosErros);
+      setErro("Corrija os campos destacados antes de continuar.");
+      return;
+    }
+
+    const idade = calcularIdade(dataNascimento);
+
+    // ===============================
+    // ENVIO PARA A API
+    // ===============================
+
+    setCarregando(true);
+
     try {
-      // 1. Cria a conta e os documentos complementares no backend.
       await apiPost("/api/auth/cadastro", {
         nome,
         email,
@@ -76,20 +214,13 @@ function Cadastro() {
         telefone,
       });
 
-      // 2. Autentica a conta criada usando o Firebase Client SDK.
-      try {
-        await login(email, senha);
-        setSucesso("Cadastro realizado com sucesso!");
-      } catch (erroLogin) {
-        console.error("Erro ao iniciar sessão:", erroLogin);
-
-        setSucesso(
-          "Cadastro realizado! Não foi possível iniciar a sessão automaticamente. Tente entrar pela tela de login."
-        );
-      }
+      setSucesso(
+        `Usuário ${nome} cadastrado com sucesso! Sua sessão administrativa foi mantida.`
+      );
 
       formularioElement.reset();
       setPerfil("aluno");
+      setErrosCampos({});
     } catch (erroCadastro) {
       console.error("Erro no cadastro:", erroCadastro);
 
@@ -102,153 +233,251 @@ function Cadastro() {
     }
   }
 
+  // ===============================
+  // VALIDAÇÃO DE ACESSO
+  // ===============================
+
+  if (loading) {
+    return <p>Validando autenticação...</p>;
+  }
+
+  if (
+    !user ||
+    !autenticado ||
+    tipoPerfil !== "administrador"
+  ) {
+    return (
+      <main className="cadastro-page">
+        <section className="cadastro-container">
+          <h1>Acesso restrito</h1>
+
+          <p>
+            Somente administradores autenticados podem
+            cadastrar usuários.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  // ===============================
+  // INTERFACE
+  // ===============================
+
   return (
     <main className="cadastro-page">
       <section className="cadastro-container">
         <header className="header-cadastro">
-          <h1 className="cadastro-title">Cadastro</h1>
+          <h1 className="cadastro-title">
+            Cadastro
+          </h1>
+
           <p className="cadastro-subtitle">
-            Preencha os dados para criar a conta
+            Preencha os dados para criar uma conta no Alfabits.
           </p>
         </header>
 
-        {/* Formulário */}
         <Form
           className="cadastro-form"
           onSubmit={handleSubmit}
         >
-          {/* Nome */}
+          {/* NOME */}
           <Formgroup>
-            <Label htmlFor="nome">Nome</Label>
+            <Label htmlFor="nome">
+              Nome completo
+            </Label>
+
             <Input
-              type="text"
               id="nome"
               name="nome"
-              placeholder="Insira o nome"
+              type="text"
               required
+              minLength={3}
+              autoComplete="name"
+              placeholder="Digite o nome completo"
+              aria-invalid={Boolean(errosCampos.nome)}
             />
+
+            {errosCampos.nome && (
+              <p className="mensagem-erro" role="alert">
+                {errosCampos.nome}
+              </p>
+            )}
           </Formgroup>
 
-          {/* E-mail */}
+          {/* E-MAIL */}
           <Formgroup>
-            <Label htmlFor="email">E-mail</Label>
+            <Label htmlFor="email">
+              E-mail
+            </Label>
+
             <Input
-              type="email"
               id="email"
               name="email"
-              placeholder="Insira o e-mail"
+              type="email"
               required
+              autoComplete="email"
+              placeholder="Digite o e-mail"
+              aria-invalid={Boolean(errosCampos.email)}
             />
+
+            {errosCampos.email && (
+              <p className="mensagem-erro" role="alert">
+                {errosCampos.email}
+              </p>
+            )}
           </Formgroup>
 
-          {/* Senha */}
+          {/* SENHA */}
           <Formgroup>
-            <Label htmlFor="senha">Senha</Label>
+            <Label htmlFor="senha">
+              Senha
+            </Label>
 
-            <div className="input-password">
-              <Input
-                type="password"
-                id="senha"
-                name="senha"
-                placeholder="Insira a senha"
-                required
-                minLength={6}
-              />
+            <Input
+              id="senha"
+              name="senha"
+              type="password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+              placeholder="Crie uma senha"
+              aria-invalid={Boolean(errosCampos.senha)}
+            />
 
-              <Button
-                type="button"
-                className="toggle-password"
-                aria-label="Mostrar senha"
-              >
-                👁
-              </Button>
-            </div>
+            <small>
+              Mínimo de 8 caracteres, incluindo maiúscula,
+              minúscula e número.
+            </small>
+
+            {errosCampos.senha && (
+              <p className="mensagem-erro" role="alert">
+                {errosCampos.senha}
+              </p>
+            )}
           </Formgroup>
 
-          {/* Data de nascimento */}
+          {/* DATA DE NASCIMENTO */}
           <Formgroup>
             <Label htmlFor="dataNascimento">
               Data de nascimento
             </Label>
 
             <Input
-              type="date"
               id="dataNascimento"
               name="dataNascimento"
+              type="date"
               required
+              max={new Date().toLocaleDateString("en-CA")}
+              aria-invalid={Boolean(
+                errosCampos.dataNascimento
+              )}
             />
+
+            {errosCampos.dataNascimento && (
+              <p className="mensagem-erro" role="alert">
+                {errosCampos.dataNascimento}
+              </p>
+            )}
           </Formgroup>
 
-          {/* Telefone */}
+          {/* TELEFONE */}
           <Formgroup>
-            <Label htmlFor="telefone">Telefone</Label>
+            <Label htmlFor="telefone">
+              Telefone (opcional)
+            </Label>
 
             <Input
-              type="tel"
               id="telefone"
               name="telefone"
-              placeholder="Insira o telefone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="DDD + número"
+              aria-invalid={Boolean(errosCampos.telefone)}
             />
+
+            {errosCampos.telefone && (
+              <p className="mensagem-erro" role="alert">
+                {errosCampos.telefone}
+              </p>
+            )}
           </Formgroup>
 
-          {/* Perfil */}
-          <div className="login-perfis">
-            <Radio
-              id="aluno"
-              name="perfil"
-              value="aluno"
-              checked={perfil === "aluno"}
-              onChange={(event) => setPerfil(event.target.value)}
-              required
-            >
-              Aluno
-            </Radio>
+          {/* PERFIL */}
+          <fieldset className="login-perfis">
+            <legend>Perfil do usuário</legend>
 
-            <Radio
-              id="professor"
-              name="perfil"
-              value="professor"
-              checked={perfil === "professor"}
-              onChange={(event) => setPerfil(event.target.value)}
-              required
-            >
-              Professor
-            </Radio>
-            
-            <Radio
-              id="adm"
-              name="perfil"
-              value="administrador"
-              checked={perfil === "administrador"}
-              onChange={(event) => setPerfil(event.target.value)}
-              required
-            >
-              ADM
-            </Radio>
+            <div className="radio-opcao">
+              <Radio
+                id="perfil-aluno"
+                name="perfil"
+                value="aluno"
+                checked={perfil === "aluno"}
+                onChange={() => setPerfil("aluno")}
+              />
 
-          </div>
+              <Label htmlFor="perfil-aluno">
+                Aluno
+              </Label>
+            </div>
 
-          {/* Mensagens de resultado */}
+            <div className="radio-opcao">
+              <Radio
+                id="perfil-professor"
+                name="perfil"
+                value="professor"
+                checked={perfil === "professor"}
+                onChange={() => setPerfil("professor")}
+              />
+
+              <Label htmlFor="perfil-professor">
+                Professor
+              </Label>
+            </div>
+
+            <div className="radio-opcao">
+              <Radio
+                id="perfil-administrador"
+                name="perfil"
+                value="administrador"
+                checked={perfil === "administrador"}
+                onChange={() => setPerfil("administrador")}
+              />
+
+              <Label htmlFor="perfil-administrador">
+                Administrador
+              </Label>
+            </div>
+
+            {errosCampos.perfil && (
+              <p className="mensagem-erro" role="alert">
+                {errosCampos.perfil}
+              </p>
+            )}
+          </fieldset>
+
+          {/* MENSAGENS GERAIS */}
           {erro && (
-            <p className="cadastro-mensagem erro" role="alert">
+            <p className="mensagem-erro" role="alert">
               {erro}
             </p>
           )}
 
           {sucesso && (
-            <p className="cadastro-mensagem sucesso" role="status">
+            <p className="mensagem-sucesso" role="status">
               {sucesso}
             </p>
           )}
 
-          {/* Botão */}
-          <button
+          {/* BOTÃO */}
+          <Button
             type="submit"
-            className="btn-cadastrar"
             disabled={carregando}
           >
-            {carregando ? "Cadastrando..." : "Cadastrar"}
-          </button>
+            {carregando
+              ? "Cadastrando..."
+              : "Cadastrar usuário"}
+          </Button>
         </Form>
       </section>
     </main>
