@@ -102,3 +102,6 @@ Sugestão de legendas (padrão ABNT):
 ---
 
 **Última atualização:** 2026-10-14
+
+
+

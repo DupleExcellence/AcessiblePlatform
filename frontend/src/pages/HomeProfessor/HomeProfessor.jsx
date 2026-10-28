@@ -335,7 +335,7 @@ function HomeProfessor() {
             type="button"
             className="profile-button"
             aria-label="Abrir perfil do professor"
-            onClick={() => navigate("/PerfilProfessor")}
+            onClick={() => navigate("/perfilProfessor")}
           >
             👤
           </button>
@@ -494,6 +494,10 @@ function HomeProfessor() {
         >
           <span aria-hidden="true">▣</span>
           <small>Criar Lições</small>
+        </button>
+        <button type="button" className="menu-item" onClick={() => navigate("/atividadeProfessor")}>
+            <span aria-hidden="true">▣</span>
+            <small>Criar atividades</small>
         </button>
 
         <button
