@@ -2,6 +2,8 @@
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 
+
+
 export async function buscarNomeUsuario(usuarioId) {
   if (!usuarioId) return null;
 
@@ -59,4 +61,27 @@ export async function atualizarPerfilUsuario(usuarioId, dados) {
   const resultado = await getDoc(referencia);
 
   return resultado.data();
+}
+
+
+
+
+export async function buscarPerfilUsuario(usuarioId) {
+  if (!usuarioId) {
+    throw new Error("O ID do usuário é obrigatório.");
+  }
+
+  const referencia = doc(db, "usuarios", usuarioId);
+  const resultado = await getDoc(referencia);
+
+  if (!resultado.exists()) {
+    throw new Error(
+      "Perfil não encontrado no cadastro do usuário."
+    );
+  }
+
+  return {
+    id: resultado.id,
+    ...resultado.data(),
+  };
 }
