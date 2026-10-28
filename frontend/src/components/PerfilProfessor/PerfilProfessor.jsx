@@ -124,13 +124,22 @@ export default function PerfilProfessor() {
   const [carregandoNotificacoes, setCarregandoNotificacoes] = useState(false);
   const [erroNotificacoes, setErroNotificacoes] = useState("");
 
+  // Carrega os dados do perfil sem sobrescrever alterações em andamento.
   useEffect(() => {
-    if (loading) return;
+    if (loading || editando || !user?.uid) return;
 
     const dados = obterDadosPerfil(usuarioBackend, user);
+
     setFormData(dados);
     setDadosOriginais(dados);
-  }, [loading, usuarioBackend, user]);
+  }, [
+    loading,
+    editando,
+    user?.uid,
+    user?.email,
+    user?.displayName,
+    usuarioBackend,
+  ]);
 
   async function carregarNotificacoes() {
     setCarregandoNotificacoes(true);
@@ -186,6 +195,7 @@ export default function PerfilProfessor() {
       setNotificacoes(pendentes);
     } catch (erro) {
       console.error("Erro ao carregar notificações:", erro);
+
       setErroNotificacoes(
         erro instanceof Error
           ? erro.message
@@ -197,7 +207,7 @@ export default function PerfilProfessor() {
   }
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user?.uid) {
       carregarNotificacoes();
     }
   }, [loading, user?.uid]);
@@ -238,6 +248,22 @@ export default function PerfilProfessor() {
     setTipoMensagem("");
   }
 
+  function iniciarEdicao(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  console.log("Clique em Editar perfil");
+  console.log("Antes:", {
+    editando,
+    caminho: window.location.pathname,
+  });
+
+  setMensagem("");
+  setTipoMensagem("");
+  setDadosOriginais({ ...formData });
+  setEditando(true);
+  }
+
   function cancelarEdicao() {
     setFormData({ ...dadosOriginais });
     setEditando(false);
@@ -245,57 +271,47 @@ export default function PerfilProfessor() {
     setTipoMensagem("");
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  
+async function handleSubmit(event) {
+  event.preventDefault();
 
-    if (!user?.uid) {
-      setMensagem("Não foi possível identificar o usuário autenticado.");
-      setTipoMensagem("erro");
-      return;
-    }
-
-    if (!formData.nome.trim()) {
-      setMensagem("O nome é obrigatório.");
-      setTipoMensagem("erro");
-      return;
-    }
-
+  try {
     setSalvando(true);
     setMensagem("");
     setTipoMensagem("");
 
-    try {
-      await atualizarPerfilUsuario(user.uid, {
-        nome: formData.nome.trim(),
-        telefone: formData.telefone.trim(),
-        dataNascimento: formData.dataNascimento,
-      });
+    const dadosAtualizados = {
+      nome: formData.nome,
+      telefone: formData.telefone,
+      dataNascimento: formData.dataNascimento,
+    };
 
-      const dadosAtualizados = {
-        ...formData,
-        nome: formData.nome.trim(),
-        telefone: formData.telefone.trim(),
-      };
+    console.log("UID do usuário:", user?.uid);
+    console.log("Dados para salvar:", dadosAtualizados);
 
-      setFormData(dadosAtualizados);
-      setDadosOriginais(dadosAtualizados);
-      setEditando(false);
-      setMensagem("Perfil atualizado com sucesso!");
-      setTipoMensagem("sucesso");
-    } catch (erro) {
-      console.error("Erro ao atualizar perfil:", erro);
+   const resultado = await atualizarPerfilUsuario(
+      user.uid,
+      dadosAtualizados
+    );
 
-      setMensagem(
-        erro.code === "permission-denied"
-          ? "O Firestore não permitiu a alteração. Verifique as regras de segurança."
-          : erro.message || "Não foi possível salvar as alterações."
-      );
+    const dadosSalvos = {
+      ...formData,
+      nome: resultado.nome ?? dadosAtualizados.nome,
+      telefone: resultado.telefone ?? dadosAtualizados.telefone,
+      dataNascimento:
+        resultado.dataNascimento ?? dadosAtualizados.dataNascimento,
+    };
 
-      setTipoMensagem("erro");
-    } finally {
-      setSalvando(false);
+    setFormData(dadosSalvos);
+    setDadosOriginais(dadosSalvos);
+    setEditando(false);
+    setMensagem("Perfil atualizado com sucesso!");
+    setTipoMensagem("sucesso");
+      } finally {
+        setSalvando(false);
+      }
     }
-  }
+
 
   return (
     <div className="perfil-professor">
@@ -346,7 +362,11 @@ export default function PerfilProfessor() {
               )}
             </button>
 
-            <button type="button" className="avatar-pequeno" aria-label="Minha conta">
+            <button
+              type="button"
+              className="avatar-pequeno"
+              aria-label="Minha conta"
+            >
               👤
             </button>
           </div>
@@ -358,13 +378,14 @@ export default function PerfilProfessor() {
             >
               <div className="cabecalho-notificacoes">
                 <h2>Entregas pendentes</h2>
+
                 <button
                   type="button"
                   className="atualizar-notificacoes"
                   onClick={carregarNotificacoes}
                   disabled={carregandoNotificacoes}
                 >
-                  Atualizar
+                  {carregandoNotificacoes ? "Atualizando..." : "Atualizar"}
                 </button>
               </div>
 
@@ -386,14 +407,13 @@ export default function PerfilProfessor() {
                         <span className="ponto-notificacao" aria-hidden="true">
                           ●
                         </span>
+
                         <span className="texto-notificacao">
                           <strong>{notificacao.titulo}</strong>
                           <span>
                             Aluno: {notificacao.alunoId || "Não identificado"}
                           </span>
-                          <span>
-                            Status: {notificacao.status}
-                          </span>
+                          <span>Status: {notificacao.status}</span>
                           <small>Abrir entregas para corrigir</small>
                         </span>
                       </button>
@@ -437,7 +457,10 @@ export default function PerfilProfessor() {
                 </p>
               )}
 
-              <form className="formulario-perfil" onSubmit={handleSubmit}>
+              <form
+                className="formulario-perfil"
+                onSubmit={handleSubmit}
+              >
                 <div className="campo-perfil">
                   <label htmlFor="nome-professor">Nome</label>
                   <input
@@ -496,12 +519,8 @@ export default function PerfilProfessor() {
                     <button
                       type="button"
                       className="botao-editar-perfil"
-                      onClick={() => {
-                        setMensagem("");
-                        setTipoMensagem("");
-                        setDadosOriginais({ ...formData });
-                        setEditando(true);
-                      }}
+                      onClick={iniciarEdicao}
+                      disabled={salvando}
                     >
                       Editar perfil
                     </button>

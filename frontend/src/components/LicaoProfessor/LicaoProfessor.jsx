@@ -353,10 +353,7 @@ const formularioInicial = {
         <small>Cursos</small>
       </Link>
 
-      <Link to="/ranking" className="menu-item">
-        <span aria-hidden="true">🏆</span>
-        <small>Ranking</small>
-      </Link>
+     
 
       <Link to="/perfilProfessor" className="menu-item">
         <span aria-hidden="true">♙</span>
