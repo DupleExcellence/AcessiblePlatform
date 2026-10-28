@@ -21,6 +21,7 @@ import LicaoAlunoPage from "./pages/LicaoAluno/LicaoAluno";
 import LicaoProfessorPage from "./pages/LicaoProfessor/LicaoProfessor";
 import AtividadeProfessor from "./pages/AtividadeProfessor/AtividadeProfessor";
 import AtividadesProfessor from "./pages/AtividadesProfessor/AtividadesProfessor";
+import EscutaGlobal from "./components/EscutaGlobal/EscutaGlobal";
 
 function AppHomeRedirect() {
   const {
@@ -102,6 +103,7 @@ function App() {
         {/* Rotas inexistentes */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+       <EscutaGlobal />
     </AuthProvider>
   );
 }
