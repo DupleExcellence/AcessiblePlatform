@@ -1,206 +1,414 @@
-import { useState } from "react";
+
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./PerfilAdm.css";
 
+import { useAuth } from "../../contexts/AuthContext";
+
+import {
+  atualizarPerfilUsuario,
+  buscarPerfilUsuario,
+} from "../../services/usuarioServices";
+
+function obterDadosPerfil(perfil, usuarioBackend, user) {
+  const dados = {
+    ...(usuarioBackend || {}),
+    ...(perfil || {}),
+  };
+
+  return {
+    nome:
+      dados.nome ||
+      dados.nomeCompleto ||
+      dados.displayName ||
+      user?.displayName ||
+      "",
+    email: dados.email || user?.email || "",
+    dataNascimento: dados.dataNascimento || dados.nascimento || "",
+    telefone: dados.telefone || "",
+  };
+}
+
+function normalizarData(data) {
+  if (!data) return "";
+
+  const valor = String(data);
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+    return valor;
+  }
+
+  const brasileira = valor.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+  if (brasileira) {
+    return `${brasileira[3]}-${brasileira[2]}-${brasileira[1]}`;
+  }
+
+  return "";
+}
+
 export default function PerfilAdm() {
+  const { user, perfil, usuarioBackend } = useAuth();
+
+  const dadosIniciais = obterDadosPerfil(
+    perfil,
+    usuarioBackend,
+    user
+  );
+
+  const [administrador, setAdministrador] = useState(dadosIniciais);
+  const [dadosOriginais, setDadosOriginais] = useState(dadosIniciais);
+
   const [editando, setEditando] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [carregandoPerfil, setCarregandoPerfil] = useState(true);
+  const [mensagem, setMensagem] = useState("");
 
-  const [aluno, setAluno] = useState({
-    nome: "João Silva",
-    email: "joao@email.com",
-    nascimento: "2008-05-15",
-    telefone: "(11) 98765-4321",
-  });
+  useEffect(() => {
+    if (!user?.uid) {
+      setCarregandoPerfil(false);
+      return;
+    }
 
-  const atualizarCampo = (e) => {
-    setAluno({
-      ...aluno,
-      [e.target.name]: e.target.value,
-    });
+    let ativo = true;
+
+    async function carregarPerfil() {
+      setCarregandoPerfil(true);
+      setMensagem("");
+
+      try {
+        const dados = await buscarPerfilUsuario(user.uid);
+
+        if (!ativo) return;
+
+        const dadosCarregados = {
+          nome:
+            dados?.nome ||
+            dados?.nomeCompleto ||
+            dados?.displayName ||
+            perfil?.nome ||
+            perfil?.nomeCompleto ||
+            usuarioBackend?.nome ||
+            usuarioBackend?.nomeCompleto ||
+            user.displayName ||
+            "",
+          email:
+            dados?.email ||
+            perfil?.email ||
+            usuarioBackend?.email ||
+            user.email ||
+            "",
+          dataNascimento: normalizarData(
+            dados?.dataNascimento ||
+              dados?.nascimento ||
+              perfil?.dataNascimento ||
+              usuarioBackend?.dataNascimento ||
+              ""
+          ),
+          telefone:
+            dados?.telefone ||
+            perfil?.telefone ||
+            usuarioBackend?.telefone ||
+            "",
+        };
+
+        setAdministrador(dadosCarregados);
+        setDadosOriginais(dadosCarregados);
+      } catch (erro) {
+        console.error("Erro ao carregar perfil do administrador:", erro);
+
+        if (ativo) {
+          setMensagem(
+            erro?.message ||
+              "Não foi possível carregar os dados do perfil."
+          );
+        }
+      } finally {
+        if (ativo) {
+          setCarregandoPerfil(false);
+        }
+      }
+    }
+
+    carregarPerfil();
+
+    return () => {
+      ativo = false;
+    };
+  }, [user?.uid, user?.email, user?.displayName]);
+
+  const atualizarCampo = (evento) => {
+    const { name, value } = evento.target;
+
+    setAdministrador((atual) => ({
+      ...atual,
+      [name]: value,
+    }));
+  };
+
+  const iniciarEdicao = (evento) => {
+    evento?.preventDefault();
+    evento?.stopPropagation();
+
+    setDadosOriginais({ ...administrador });
+    setMensagem("");
+    setEditando(true);
+  };
+
+  const cancelarEdicao = () => {
+    setAdministrador({ ...dadosOriginais });
+    setMensagem("");
+    setEditando(false);
+  };
+
+  const salvarPerfil = async (evento) => {
+    evento.preventDefault();
+
+    if (salvando) return;
+
+    setMensagem("");
+
+    if (!user?.uid) {
+      setMensagem(
+        "Sua sessão não foi identificada. Entre novamente."
+      );
+      return;
+    }
+
+    if (!administrador.nome.trim()) {
+      setMensagem("Informe o nome do administrador.");
+      return;
+    }
+
+    try {
+      setSalvando(true);
+
+      const dadosAtualizados = await atualizarPerfilUsuario(
+        user.uid,
+        {
+          nome: administrador.nome.trim(),
+          telefone: administrador.telefone.trim(),
+          dataNascimento: administrador.dataNascimento.trim(),
+        }
+      );
+
+      const dadosSalvos = {
+        ...administrador,
+        nome:
+          dadosAtualizados?.nome ??
+          dadosAtualizados?.nomeCompleto ??
+          administrador.nome.trim(),
+        telefone:
+          dadosAtualizados?.telefone ??
+          administrador.telefone.trim(),
+        dataNascimento: normalizarData(
+          dadosAtualizados?.dataNascimento ??
+            administrador.dataNascimento
+        ),
+      };
+
+      setAdministrador(dadosSalvos);
+      setDadosOriginais(dadosSalvos);
+      setEditando(false);
+      setMensagem("Perfil atualizado com sucesso!");
+    } catch (erro) {
+      console.error("Erro ao salvar perfil:", erro);
+
+      setMensagem(
+        erro?.message ||
+          "Não foi possível salvar as alterações."
+      );
+    } finally {
+      setSalvando(false);
+    }
   };
 
   const menu = [
-    { icone: "⌂", texto: "Home" },
-    { icone: "▣", texto: "Cadastro" },
-    { icone: "▤", texto: "Cursos" },,
-    { icone: "●", texto: "Perfil" },
+    { icone: "⌂", texto: "Início", rota: "/HomeAdm" },
+    { icone: "▣", texto: "Cadastro", rota: "/cadastro" },
+    { icone: "●", texto: "Perfil", rota: "/PerfilAdm" },
   ];
 
   return (
     <main className="perfil-aluno">
-
-      {/* Menu lateral */}
       <aside className="perfil-sidebar">
         <div className="perfil-logo">
           <span className="logo-icone">◈</span>
           <span>Aprender</span>
         </div>
 
-        <nav className="perfil-menu">
+        <nav className="perfil-menu" aria-label="Menu principal">
           {menu.map((item) => (
-            <button
-              type="button"
+            <Link
               key={item.texto}
+              to={item.rota}
               className={`perfil-menu-item ${
                 item.texto === "Perfil" ? "ativo" : ""
               }`}
-              onClick={() => {
-                if (item.texto !== "Perfil") {
-                  console.log(`Menu selecionado: ${item.texto}`);
-                }
-              }}
+              aria-current={
+                item.texto === "Perfil" ? "page" : undefined
+              }
             >
-              <span className="menu-icone">{item.icone}</span>
+              <span className="menu-icone" aria-hidden="true">
+                {item.icone}
+              </span>
               <span>{item.texto}</span>
-            </button>
+            </Link>
           ))}
         </nav>
       </aside>
 
-      {/* Área principal */}
       <section className="perfil-conteudo">
-
-        {/* Cabeçalho */}
         <header className="perfil-topbar">
-          <span className="perfil-notificacao" aria-label="Notificações">
-            🔔
-          </span>
+          <div>
+            <span>Área administrativa</span>
+          </div>
 
-          <div className="perfil-avatar-mini" aria-label="Avatar do aluno">
-           👤
+          <div
+            className="perfil-avatar-mini"
+            aria-label="Avatar do administrador"
+          >
+            👤
           </div>
         </header>
 
-        {/* Cartão do perfil */}
         <div className="perfil-card">
-          <h1>Perfil</h1>
+          <h1>Perfil do administrador</h1>
 
           <div className="perfil-foto-container">
-            <div className="perfil-foto" aria-label="Foto do aluno">
+            <div
+              className="perfil-foto"
+              aria-label="Foto do administrador"
+            >
               👤
             </div>
-
-            <button
-              type="button"
-              className="perfil-camera"
-              aria-label="Alterar foto do perfil"
-              title="Alterar foto do perfil"
-              onClick={() =>
-                document.getElementById("foto-aluno").click()
-              }
-            >
-              📷
-            </button>
-
-            <input
-              id="foto-aluno"
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => {
-                const arquivo = e.target.files?.[0];
-                if (arquivo) {
-                  alert(`Foto selecionada: ${arquivo.name}`);
-                }
-              }}
-            />
           </div>
 
           <h2>Dados pessoais</h2>
 
-          <form
-            className="perfil-formulario"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setEditando(false);
-              alert("Dados do perfil atualizados!");
-            }}
-          >
-            <div className="perfil-campo">
-              <label htmlFor="nome">Nome</label>
-              <input
-                id="nome"
-                name="nome"
-                type="text"
-                value={aluno.nome}
-                onChange={atualizarCampo}
-                readOnly={!editando}
-                required
-              />
-            </div>
+          {mensagem && (
+            <p
+              className="perfil-mensagem"
+              role="status"
+              aria-live="polite"
+            >
+              {mensagem}
+            </p>
+          )}
 
-            <div className="perfil-campo">
-              <label htmlFor="email">E-mail</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={aluno.email}
-                onChange={atualizarCampo}
-                readOnly={!editando}
-                required
-              />
-            </div>
-
-            <div className="perfil-campo">
-              <label htmlFor="nascimento">Data de nascimento</label>
-              <input
-                id="nascimento"
-                name="nascimento"
-                type={editando ? "date" : "text"}
-                value={
-                  editando
-                    ? aluno.nascimento
-                    : aluno.nascimento.split("-").reverse().join("/")
+          {carregandoPerfil ? (
+            <p role="status">Carregando dados do perfil...</p>
+          ) : (
+            <form
+              className="perfil-formulario"
+              onSubmit={salvarPerfil}
+              onKeyDown={(evento) => {
+                if (
+                  evento.key === "Enter" &&
+                  evento.target.tagName !== "TEXTAREA"
+                ) {
+                  evento.preventDefault();
                 }
-                onChange={atualizarCampo}
-                readOnly={!editando}
-                required
-              />
-            </div>
+              }}
+            >
+              <div className="perfil-campo">
+                <label htmlFor="nome">Nome</label>
+                <input
+                  id="nome"
+                  name="nome"
+                  type="text"
+                  value={administrador.nome}
+                  onChange={atualizarCampo}
+                  readOnly={!editando || salvando}
+                  required
+                />
+              </div>
 
-            <div className="perfil-campo">
-              <label htmlFor="telefone">Telefone</label>
-              <input
-                id="telefone"
-                name="telefone"
-                type="tel"
-                value={aluno.telefone}
-                onChange={atualizarCampo}
-                readOnly={!editando}
-                required
-              />
-            </div>
+              <div className="perfil-campo">
+                <label htmlFor="email">E-mail</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={administrador.email}
+                  readOnly
+                  aria-describedby="email-ajuda"
+                />
+                <small id="email-ajuda">
+                  O e-mail não pode ser alterado por este formulário.
+                </small>
+              </div>
 
-            <div className="perfil-acoes">
-              {editando && (
-                <button
-                  type="button"
-                  className="perfil-botao cancelar"
-                  onClick={() => {
-                    setAluno({
-                      nome: "João Silva",
-                      email: "joao@email.com",
-                      nascimento: "2008-05-15",
-                      telefone: "(11) 98765-4321",
-                    });
-                    setEditando(false);
-                  }}
-                >
-                  Cancelar
-                </button>
-              )}
+              <div className="perfil-campo">
+                <label htmlFor="dataNascimento">
+                  Data de nascimento
+                </label>
+                <input
+                  id="dataNascimento"
+                  name="dataNascimento"
+                  type={editando ? "date" : "text"}
+                  value={
+                    editando
+                      ? administrador.dataNascimento
+                      : administrador.dataNascimento
+                        ? administrador.dataNascimento
+                            .split("-")
+                            .reverse()
+                            .join("/")
+                        : ""
+                  }
+                  onChange={atualizarCampo}
+                  readOnly={!editando || salvando}
+                />
+              </div>
 
-              <button
-                type={editando ? "submit" : "button"}
-                className="perfil-botao"
-                onClick={() => {
-                  if (!editando) setEditando(true);
-                }}
-              >
-                {editando ? "Salvar alterações" : "Editar perfil"}
-              </button>
-            </div>
-          </form>
+              <div className="perfil-campo">
+                <label htmlFor="telefone">Telefone</label>
+                <input
+                  id="telefone"
+                  name="telefone"
+                  type="tel"
+                  value={administrador.telefone}
+                  onChange={atualizarCampo}
+                  readOnly={!editando || salvando}
+                />
+              </div>
+
+              <div className="perfil-acoes">
+                {editando && (
+                  <button
+                    type="button"
+                    className="perfil-botao cancelar"
+                    onClick={cancelarEdicao}
+                    disabled={salvando}
+                  >
+                    Cancelar
+                  </button>
+                )}
+
+                {!editando ? (
+                  <button
+                    type="button"
+                    className="perfil-botao"
+                    onClick={iniciarEdicao}
+                    disabled={salvando || carregandoPerfil}
+                  >
+                    Editar perfil
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="perfil-botao"
+                    disabled={salvando}
+                  >
+                    {salvando
+                      ? "Salvando..."
+                      : "Salvar alterações"}
+                  </button>
+                )}
+              </div>
+            </form>
+          )}
         </div>
       </section>
     </main>
