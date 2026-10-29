@@ -57,6 +57,7 @@ SCHEMA = {
             "descricao": "string",
             "ativo": "boolean",
             "criadoEm": "timestamp",
+            "criadoPor": "string (UID do usuario que criou)",
         },
         "obrigatorios": ["titulo"],
     },
