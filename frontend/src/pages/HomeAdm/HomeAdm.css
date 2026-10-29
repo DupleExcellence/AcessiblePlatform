@@ -547,7 +547,15 @@ div.activity-list{
   }
 }
 
-
-
-
-
+button.button-primary:hover {
+  background-color: #a8dfc3 !important;
+  border-color: #a8dfc3 !important;
+  color: #24543c !important;
+  box-shadow: none !important;
+}
+button.button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}

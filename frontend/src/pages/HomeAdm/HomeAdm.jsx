@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-
+import { Navigate } from "react-router-dom";
 import "../HomeAdm/HomeAdm.css";
 import Button from "../../components/Button/Button";
 import { useAuth } from "../../contexts/AuthContext";
@@ -288,7 +288,9 @@ function HomeAdm() {
             {nomeUsuario}
           </span>
 
-          <Button aria-label="Perfil do usuário">
+          <Button aria-label="Perfil do usuário" onClick={() => {
+            window.location.href = "/perfilAdm";
+          }}>
             👤
           </Button>
         </div>
@@ -482,6 +484,18 @@ function HomeAdm() {
         >
           <span>♙</span>
           <small>Cadastro</small>
+        </Button>
+
+
+
+        <Button
+          className="menu-item"
+          onClick={() => {
+            window.location.href = "/cadastro-curso";
+          }}
+        >
+          <span aria-hidden="true">＋</span>
+          <small>Cadastrar curso</small>
         </Button>
 
         

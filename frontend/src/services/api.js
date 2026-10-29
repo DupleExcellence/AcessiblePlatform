@@ -1,9 +1,9 @@
 
- 
 import { auth } from "./firebase";
-const API_URL = import.meta.env.VITE_API_URL;
-export async function apiRequest(
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+export async function apiRequest(
   caminho,
   {
     method = "GET",
@@ -12,10 +12,11 @@ export async function apiRequest(
     token,
     ...opcoes
   } = {}
-  
 ) {
   if (!API_URL) {
-    throw new Error("Configure VITE_API_URL no arquivo .env");
+    throw new Error(
+      "Configure VITE_API_URL no arquivo .env"
+    );
   }
 
   const cabecalhos = {
@@ -39,11 +40,9 @@ export async function apiRequest(
     cabecalhos.Authorization = `Bearer ${idToken}`;
   }
 
-  
   const baseURL = API_URL.replace(/\/+$/, "");
   const endpoint = caminho.replace(/^\/+/, "");
   const url = `${baseURL}/${endpoint}`;
-
 
   let resposta;
 

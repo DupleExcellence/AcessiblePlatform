@@ -24,7 +24,8 @@ import LicaoProfessorPage from "./pages/LicaoProfessor/LicaoProfessor";
 import AtividadeProfessor from "./pages/AtividadeProfessor/AtividadeProfessor";
 import AtividadesProfessor from "./pages/AtividadesProfessor/AtividadesProfessor";
 import PerfilAdm from "./components/PerfilAdm/PerfilAdm";
-
+import CadastroCurso from "./pages/CadastroCurso/CadastroCurso";
+import VincularProfessorCurso from "./pages/VincularProfessorCurso/VincularProfessorCurso";
 function AppHomeRedirect() {
   const { user, loading, autenticado, tipoPerfil } = useAuth();
 
@@ -149,6 +150,11 @@ function App() {
           <Route path="/admin" element={<HomeAdm />} />
           <Route path="/perfilAdm" element={<PerfilAdm />} />
           <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/cadastro-curso" element={<CadastroCurso />} />
+          <Route
+            path="/vincular-professor-curso"
+            element={<VincularProfessorCurso />}
+          />
         </Route>
 
         {/* Ranking: qualquer usuário autenticado */}

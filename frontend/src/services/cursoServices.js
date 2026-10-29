@@ -1,3 +1,4 @@
+
 import { apiRequest } from "./api";
 
 export async function buscarCursos() {
@@ -16,4 +17,21 @@ export async function buscarCursoPorId(id) {
   }
 
   return apiRequest(`/api/cursos/${encodeURIComponent(id)}`);
+}
+
+export async function criarCurso(dados) {
+  const titulo = dados?.titulo?.trim();
+
+  if (!titulo) {
+    throw new Error("O título do curso é obrigatório.");
+  }
+
+  return apiRequest("/api/cursos", {
+    method: "POST",
+    body: {
+      titulo,
+      descricao: dados.descricao?.trim() || "",
+      ativo: dados.ativo ?? true,
+    },
+  });
 }
