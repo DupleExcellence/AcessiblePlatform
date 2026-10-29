@@ -1,0 +1,196 @@
+
+.notas-aluno {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  color: #24343d;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.notas-aluno__cabecalho {
+  margin-bottom: 28px;
+}
+
+.notas-aluno__cabecalho h1 {
+  margin: 0 0 10px;
+  color: #247447;
+  font-size: 28px;
+}
+
+.notas-aluno__cabecalho p {
+  margin: 0;
+  color: #53636c;
+  line-height: 1.6;
+}
+
+.notas-aluno__resumo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.notas-aluno__indicador {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e0e8e3;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgb(36 52 61 / 5%);
+}
+
+.notas-aluno__indicador span {
+  display: block;
+  margin-bottom: 10px;
+  color: #53636c;
+  font-size: 14px;
+}
+
+.notas-aluno__indicador strong {
+  color: #247447;
+  font-size: 26px;
+}
+
+.notas-aluno__lista {
+  display: grid;
+  gap: 18px;
+}
+
+.notas-aluno__card,
+.notas-aluno__vazio,
+.notas-aluno__estado {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e0e8e3;
+  border-radius: 12px;
+}
+
+.notas-aluno__card-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notas-aluno__card h2 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+
+.notas-aluno__identificador {
+  margin: 0;
+  color: #667780;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.notas-aluno__status {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  color: #21683e;
+  background: #e5f4e9;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.notas-aluno__pontuacao {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.notas-aluno__pontuacao strong {
+  color: #247447;
+  font-size: 24px;
+}
+
+.notas-aluno__pontuacao span {
+  color: #53636c;
+  font-size: 14px;
+}
+
+.notas-aluno__barra {
+  height: 9px;
+  margin-top: 12px;
+  overflow: hidden;
+  background: #e7eeea;
+  border-radius: 10px;
+}
+
+.notas-aluno__barra-preenchimento {
+  height: 100%;
+  background: #4b9b68;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.notas-aluno__feedback {
+  margin-top: 22px;
+  padding: 16px;
+  background: #f5f8fa;
+  border-radius: 8px;
+}
+
+.notas-aluno__feedback h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.notas-aluno__feedback p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.notas-aluno__vazio h2 {
+  margin-top: 0;
+  font-size: 19px;
+}
+
+.notas-aluno__vazio p,
+.notas-aluno__estado {
+  color: #53636c;
+  line-height: 1.6;
+}
+
+.notas-aluno__estado--erro {
+  border-color: #e6b9b9;
+  color: #a52a2a;
+}
+
+.notas-aluno__botao {
+  padding: 10px 16px;
+  color: #fff;
+  background: #247447;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.notas-aluno__botao:hover {
+  background: #1c5d38;
+}
+
+.notas-aluno__botao:focus-visible {
+  outline: 3px solid #83bd96;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .notas-aluno {
+    padding: 24px 16px;
+  }
+
+  .notas-aluno__resumo {
+    grid-template-columns: 1fr;
+  }
+
+  .notas-aluno__card-topo {
+    flex-direction: column;
+  }
+}

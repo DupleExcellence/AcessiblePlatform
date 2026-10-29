@@ -1,0 +1,162 @@
+
+.progresso-aluno {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  color: #24343d;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.progresso-aluno__cabecalho {
+  margin-bottom: 28px;
+}
+
+.progresso-aluno__cabecalho h1 {
+  margin: 0 0 10px;
+  color: #247447;
+  font-size: 28px;
+}
+
+.progresso-aluno__cabecalho p {
+  margin: 0;
+  color: #53636c;
+  line-height: 1.6;
+}
+
+.progresso-aluno__indicadores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.progresso-aluno__card {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e0e8e3;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgb(36 52 61 / 5%);
+}
+
+.progresso-aluno__card span {
+  display: block;
+  margin-bottom: 12px;
+  color: #53636c;
+  font-size: 14px;
+}
+
+.progresso-aluno__card strong {
+  display: block;
+  color: #247447;
+  font-size: 30px;
+}
+
+.progresso-aluno__card p {
+  margin: 10px 0 0;
+  color: #667780;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.progresso-aluno__detalhes {
+  margin-top: 24px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e0e8e3;
+  border-radius: 12px;
+}
+
+.progresso-aluno__detalhes-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.progresso-aluno__detalhes h2 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+
+.progresso-aluno__detalhes p {
+  color: #53636c;
+  line-height: 1.6;
+}
+
+.progresso-aluno__detalhes-topo > strong {
+  color: #247447;
+  font-size: 28px;
+}
+
+.progresso-aluno__barra {
+  height: 12px;
+  margin-top: 18px;
+  overflow: hidden;
+  background: #e7eeea;
+  border-radius: 10px;
+}
+
+.progresso-aluno__barra-preenchimento {
+  height: 100%;
+  background: #4b9b68;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.progresso-aluno__legenda {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.progresso-aluno__vazio,
+.progresso-aluno__estado {
+  margin-top: 24px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e0e8e3;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+.progresso-aluno__vazio h2 {
+  margin-top: 0;
+  font-size: 19px;
+}
+
+.progresso-aluno__estado--erro {
+  color: #a52a2a;
+  border-color: #e6b9b9;
+}
+
+.progresso-aluno__botao {
+  padding: 10px 16px;
+  color: #fff;
+  background: #247447;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.progresso-aluno__botao:hover {
+  background: #1c5d38;
+}
+
+.progresso-aluno__botao:focus-visible {
+  outline: 3px solid #83bd96;
+  outline-offset: 3px;
+}
+
+@media (max-width: 650px) {
+  .progresso-aluno {
+    padding: 24px 16px;
+  }
+
+  .progresso-aluno__indicadores {
+    grid-template-columns: 1fr;
+  }
+
+  .progresso-aluno__detalhes-topo {
+    align-items: flex-start;
+  }
+}
