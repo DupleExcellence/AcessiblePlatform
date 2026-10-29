@@ -1,0 +1,149 @@
+
+.cadastro-curso {
+  width: 100%;
+  min-height: 70vh;
+  padding: 32px 20px;
+  background: #f5f8fa;
+  color: #24343d;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cadastro-curso__container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #e1e8eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgb(36 52 61 / 6%);
+}
+
+.cadastro-curso__header {
+  margin-bottom: 28px;
+}
+
+.cadastro-curso__header h1 {
+  margin: 0 0 10px;
+  color: #246b45;
+  font-size: 1.8rem;
+}
+
+.cadastro-curso__header p {
+  margin: 0;
+  color: #5b6b73;
+  line-height: 1.6;
+}
+
+.cadastro-curso__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.cadastro-curso__campo label {
+  font-weight: 600;
+}
+
+.cadastro-curso__campo input,
+.cadastro-curso__campo textarea,
+.cadastro-curso__campo select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd6db;
+  border-radius: 7px;
+  background: #fff;
+  color: #24343d;
+  font: inherit;
+}
+
+.cadastro-curso__campo textarea {
+  resize: vertical;
+}
+
+.cadastro-curso__campo input:focus,
+.cadastro-curso__campo textarea:focus,
+.cadastro-curso__campo select:focus {
+  outline: 2px solid #9bd7b2;
+  outline-offset: 2px;
+  border-color: #38875a;
+}
+
+.cadastro-curso__mensagem {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border-radius: 7px;
+  line-height: 1.5;
+}
+
+.cadastro-curso__mensagem--erro {
+  color: #8b1e1e;
+  background: #fff0f0;
+  border: 1px solid #efcaca;
+}
+
+.cadastro-curso__mensagem--sucesso {
+  color: #205d38;
+  background: #edf8f0;
+  border: 1px solid #bfe2ca;
+}
+
+.cadastro-curso__acoes {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.cadastro-curso__botao {
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 7px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cadastro-curso__botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cadastro-curso__botao--primario {
+  background: #28784a;
+  color: #fff;
+}
+
+.cadastro-curso__botao--primario:hover:not(:disabled) {
+  background: #1e6039;
+}
+
+.cadastro-curso__botao--secundario {
+  background: #e8efeb;
+  color: #294d39;
+}
+
+.cadastro-curso__botao--secundario:hover:not(:disabled) {
+  background: #d7e9dc;
+}
+
+@media (max-width: 600px) {
+  .cadastro-curso {
+    padding: 20px 12px;
+  }
+
+  .cadastro-curso__container {
+    padding: 22px 16px;
+  }
+
+  .cadastro-curso__acoes {
+    flex-direction: column-reverse;
+  }
+
+  .cadastro-curso__botao {
+    width: 100%;
+  }
+}

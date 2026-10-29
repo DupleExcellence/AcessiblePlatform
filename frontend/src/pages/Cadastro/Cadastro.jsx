@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Form from "../../components/Form/Form";
 import Label from "../../components/Label/Label";
@@ -11,6 +11,7 @@ import Formgroup from "../../components/Formgroup/Formgroup";
 import "../Cadastro/Cadastro.css";
 
 import { apiPost } from "../../services/api";
+import { buscarCursos } from "../../services/cursoServices";
 import { useAuth } from "../../contexts/AuthContext";
 
 // ===============================
@@ -87,14 +88,82 @@ function Cadastro() {
   const { user, autenticado, tipoPerfil, loading } = useAuth();
 
   const [perfil, setPerfil] = useState("aluno");
-  const [carregando, setCarregando] = useState(false);
+  const [cursoId, setCursoId] = useState("");
+  const [cursos, setCursos] = useState([]);
+  const [carregandoCursos, setCarregandoCursos] = useState(false);
+  const [erroCursos, setErroCursos] = useState("");
 
+  const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
   const [errosCampos, setErrosCampos] = useState({});
 
   // ===============================
-  // ENVIO DO FORMULÁRIO
+  // CARREGAR CURSOS
+  // ===============================
+
+  useEffect(() => {
+    let ativo = true;
+
+    async function carregarListaCursos() {
+      setCarregandoCursos(true);
+      setErroCursos("");
+
+      try {
+        const resultado = await buscarCursos();
+
+        if (ativo) {
+          setCursos(resultado);
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar cursos:", erro);
+
+        if (ativo) {
+          setErroCursos(
+            "Não foi possível carregar os cursos. Tente novamente."
+          );
+        }
+      } finally {
+        if (ativo) {
+          setCarregandoCursos(false);
+        }
+      }
+    }
+
+    if (
+      !loading &&
+      user &&
+      autenticado &&
+      tipoPerfil === "administrador"
+    ) {
+      carregarListaCursos();
+    }
+
+    return () => {
+      ativo = false;
+    };
+  }, [loading, user, autenticado, tipoPerfil]);
+
+  // ===============================
+  // ALTERAR PERFIL
+  // ===============================
+
+  function handlePerfilChange(novoPerfil) {
+    setPerfil(novoPerfil);
+    setCursoId("");
+    setErro("");
+    setSucesso("");
+
+    setErrosCampos((anteriores) => {
+      const novos = { ...anteriores };
+      delete novos.perfil;
+      delete novos.cursoId;
+      return novos;
+    });
+  }
+
+  // ===============================
+  // ENVIAR FORMULÁRIO
   // ===============================
 
   async function handleSubmit(event) {
@@ -104,7 +173,6 @@ function Cadastro() {
     setSucesso("");
     setErrosCampos({});
 
-    // Verificação de acesso no frontend
     if (
       !user ||
       !autenticado ||
@@ -119,29 +187,17 @@ function Cadastro() {
     const formularioElement = event.currentTarget;
     const formulario = new FormData(formularioElement);
 
-    const nome = String(
-      formulario.get("nome") || ""
-    ).trim();
-
-    const email = String(
-      formulario.get("email") || ""
-    ).trim().toLowerCase();
-
-    const senha = String(
-      formulario.get("senha") || ""
-    );
-
+    const nome = String(formulario.get("nome") || "").trim();
+    const email = String(formulario.get("email") || "")
+      .trim()
+      .toLowerCase();
+    const senha = String(formulario.get("senha") || "");
     const dataNascimento = String(
       formulario.get("dataNascimento") || ""
     );
-
     const telefone = String(
       formulario.get("telefone") || ""
     ).trim();
-
-    // ===============================
-    // VALIDAÇÃO DOS CAMPOS
-    // ===============================
 
     const novosErros = {};
 
@@ -149,14 +205,13 @@ function Cadastro() {
       novosErros.nome = "O nome completo é obrigatório.";
     } else if (!validarNome(nome)) {
       novosErros.nome =
-        "Informe um nome com pelo menos 3 caracteres, usando apenas letras, espaços, apóstrofos ou hífens.";
+        "Informe um nome com pelo menos 3 caracteres, usando letras, espaços, apóstrofos ou hífens.";
     }
 
     if (!email) {
       novosErros.email = "O e-mail é obrigatório.";
     } else if (!validarEmail(email)) {
-      novosErros.email =
-        "Informe um endereço de e-mail válido.";
+      novosErros.email = "Informe um endereço de e-mail válido.";
     }
 
     if (!senha) {
@@ -189,6 +244,18 @@ function Cadastro() {
       novosErros.perfil = "Selecione um perfil válido.";
     }
 
+    if (perfil === "professor") {
+      if (!cursoId) {
+        novosErros.cursoId =
+          "Selecione o curso que será vinculado ao professor.";
+      } else if (
+        !cursos.some((curso) => curso.id === cursoId)
+      ) {
+        novosErros.cursoId =
+          "O curso selecionado não está disponível. Atualize a lista.";
+      }
+    }
+
     if (Object.keys(novosErros).length > 0) {
       setErrosCampos(novosErros);
       setErro("Corrija os campos destacados antes de continuar.");
@@ -196,10 +263,6 @@ function Cadastro() {
     }
 
     const idade = calcularIdade(dataNascimento);
-
-    // ===============================
-    // ENVIO PARA A API
-    // ===============================
 
     setCarregando(true);
 
@@ -212,14 +275,22 @@ function Cadastro() {
         idade,
         dataNascimento,
         telefone,
+
+        // Enviado quando o perfil selecionado é professor.
+        // A API precisa aceitar e persistir este campo
+        // para que o vínculo seja efetivamente salvo.
+        ...(perfil === "professor" ? { cursoId } : {}),
       });
 
       setSucesso(
-        `Usuário ${nome} cadastrado com sucesso! Sua sessão administrativa foi mantida.`
+        perfil === "professor"
+          ? `Usuário ${nome} cadastrado. O curso selecionado foi enviado na solicitação; confirme a persistência do vínculo antes de considerá-lo concluído.`
+          : `Usuário ${nome} cadastrado com sucesso! Sua sessão administrativa foi mantida.`
       );
 
       formularioElement.reset();
       setPerfil("aluno");
+      setCursoId("");
       setErrosCampos({});
     } catch (erroCadastro) {
       console.error("Erro no cadastro:", erroCadastro);
@@ -250,7 +321,6 @@ function Cadastro() {
       <main className="cadastro-page">
         <section className="cadastro-container">
           <h1>Acesso restrito</h1>
-
           <p>
             Somente administradores autenticados podem
             cadastrar usuários.
@@ -268,9 +338,7 @@ function Cadastro() {
     <main className="cadastro-page">
       <section className="cadastro-container">
         <header className="header-cadastro">
-          <h1 className="cadastro-title">
-            Cadastro
-          </h1>
+          <h1 className="cadastro-title">Cadastro</h1>
 
           <p className="cadastro-subtitle">
             Preencha os dados para criar uma conta no Alfabits.
@@ -283,9 +351,7 @@ function Cadastro() {
         >
           {/* NOME */}
           <Formgroup>
-            <Label htmlFor="nome">
-              Nome completo
-            </Label>
+            <Label htmlFor="nome">Nome completo</Label>
 
             <Input
               id="nome"
@@ -307,9 +373,7 @@ function Cadastro() {
 
           {/* E-MAIL */}
           <Formgroup>
-            <Label htmlFor="email">
-              E-mail
-            </Label>
+            <Label htmlFor="email">E-mail</Label>
 
             <Input
               id="email"
@@ -330,9 +394,7 @@ function Cadastro() {
 
           {/* SENHA */}
           <Formgroup>
-            <Label htmlFor="senha">
-              Senha
-            </Label>
+            <Label htmlFor="senha">Senha</Label>
 
             <Input
               id="senha"
@@ -413,12 +475,10 @@ function Cadastro() {
                 name="perfil"
                 value="aluno"
                 checked={perfil === "aluno"}
-                onChange={() => setPerfil("aluno")}
+                onChange={() => handlePerfilChange("aluno")}
               />
 
-              <Label htmlFor="perfil-aluno">
-                Aluno
-              </Label>
+              <Label htmlFor="perfil-aluno">Aluno</Label>
             </div>
 
             <div className="radio-opcao">
@@ -427,7 +487,7 @@ function Cadastro() {
                 name="perfil"
                 value="professor"
                 checked={perfil === "professor"}
-                onChange={() => setPerfil("professor")}
+                onChange={() => handlePerfilChange("professor")}
               />
 
               <Label htmlFor="perfil-professor">
@@ -441,7 +501,9 @@ function Cadastro() {
                 name="perfil"
                 value="administrador"
                 checked={perfil === "administrador"}
-                onChange={() => setPerfil("administrador")}
+                onChange={() =>
+                  handlePerfilChange("administrador")
+                }
               />
 
               <Label htmlFor="perfil-administrador">
@@ -456,7 +518,71 @@ function Cadastro() {
             )}
           </fieldset>
 
-          {/* MENSAGENS GERAIS */}
+          {/* CURSO DO PROFESSOR */}
+          {perfil === "professor" && (
+            <Formgroup>
+              <Label htmlFor="cursoId">
+                Curso vinculado ao professor
+              </Label>
+
+              <select
+                id="cursoId"
+                name="cursoId"
+                value={cursoId}
+                onChange={(event) => {
+                  setCursoId(event.target.value);
+
+                  setErrosCampos((anteriores) => {
+                    const novos = { ...anteriores };
+                    delete novos.cursoId;
+                    return novos;
+                  });
+                }}
+                disabled={
+                  carregandoCursos ||
+                  Boolean(erroCursos) ||
+                  cursos.length === 0
+                }
+                required
+                aria-invalid={Boolean(errosCampos.cursoId)}
+                aria-describedby="curso-ajuda"
+              >
+                <option value="">
+                  {carregandoCursos
+                    ? "Carregando cursos..."
+                    : erroCursos
+                      ? "Erro ao carregar cursos"
+                      : cursos.length === 0
+                        ? "Nenhum curso disponível"
+                        : "Selecione um curso"}
+                </option>
+
+                {cursos.map((curso) => (
+                  <option key={curso.id} value={curso.id}>
+                    {curso.titulo}
+                  </option>
+                ))}
+              </select>
+
+              <small id="curso-ajuda">
+                Selecione o curso que deseja associar ao professor.
+              </small>
+
+              {erroCursos && (
+                <p className="mensagem-erro" role="alert">
+                  {erroCursos}
+                </p>
+              )}
+
+              {errosCampos.cursoId && (
+                <p className="mensagem-erro" role="alert">
+                  {errosCampos.cursoId}
+                </p>
+              )}
+            </Formgroup>
+          )}
+
+          {/* MENSAGENS */}
           {erro && (
             <p className="mensagem-erro" role="alert">
               {erro}
@@ -472,7 +598,13 @@ function Cadastro() {
           {/* BOTÃO */}
           <Button
             type="submit"
-            disabled={carregando}
+            disabled={
+              carregando ||
+              (perfil === "professor" &&
+                (carregandoCursos ||
+                  Boolean(erroCursos) ||
+                  cursos.length === 0))
+            }
           >
             {carregando
               ? "Cadastrando..."
