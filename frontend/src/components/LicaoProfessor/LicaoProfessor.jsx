@@ -308,29 +308,8 @@ const formularioInicial = {
           </div>
         </Form>
 
-        <section aria-labelledby="lista-licoes">
-          <h2 id="lista-licoes">Lições cadastradas</h2>
-
-          {carregando && <p role="status">Carregando...</p>}
-
-          {!carregando && licoes.length === 0 && (
-            <p>Nenhuma lição cadastrada.</p>
-          )}
-
-          {!carregando && licoes.length > 0 && (
-            <ul>
-              {licoes.map((licao) => (
-                <li key={licao.id}>
-                  <strong>{licao.titulo}</strong>
-                  {" — "}
-                  {licao.descricao || "Sem descrição"}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
       
-          {/* MENU INFERIOR */}
+         
       
     {/* MENU INFERIOR */}
     <nav className="bottom-menu" aria-label="Menu principal">
