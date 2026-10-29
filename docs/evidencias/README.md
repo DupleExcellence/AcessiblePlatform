@@ -103,5 +103,85 @@ Sugestão de legendas (padrão ABNT):
 
 **Última atualização:** 2026-10-14
 
+---
+### Testes Funcionais — Front-end
 
 
+## 2. Escopo dos testes
+
+Foram avaliados os seguintes componentes e funcionalidades:
+
+- Autenticação, login e logout.
+- Persistência de sessão.
+- Proteção de rotas por perfil.
+- Dashboards de aluno, professor e administrador.
+- Listagem e paginação de cursos, alunos, lições e atividades.
+- Criação e persistência de lições.
+- Associação entre cursos, lições e atividades.
+- Envio e consulta de atividades.
+- Visualização e correção de entregas.
+- Validação de respostas e pontuações.
+- Persistência de notas e status.
+- Atualização e consistência do XP e ranking.
+- Histórico de atividades do aluno.
+- Integridade dos dados após atualizar a página.
+
+---
+
+| Teste | Cenário | Resultado |
+|---:|---|---|
+| 1–24 | Testes funcionais anteriores | Aprovados; detalhamento individual não disponível neste registro. |
+| 25 | Integridade e isolamento dos dados do aluno | Aprovado |
+| 26 | Criação e persistência de lição | Aprovado |
+| 27 | Exclusão de lição | Não aplicável — opção inexistente na interface. |
+| 28 | Edição de lição | Não aplicável — opção inexistente na interface. |
+| 29 | Validação de título obrigatório da lição | Aprovado |
+| 30 | Validação de conteúdo obrigatório da lição | Aprovado |
+| 31 | Seleção obrigatória de curso para criar lição | Aprovado |
+| 32 | Acesso do aluno à lição | Aprovado |
+| 33 | Associação entre atividade e lição | Aprovado |
+| 34 | Prevenção de envio duplicado de atividade | Aprovado na interface |
+| 35 | Recorreção de entrega já corrigida | Não aplicável — opção inexistente na interface. |
+| 36 | Identificação de entregas pendentes | Aprovado |
+| 37 | Atualização do status após correção | Aprovado |
+| 38 | Validação da pontuação máxima da atividade | Aprovado |
+| 39 | Consistência do XP entre perfil e ranking | Aprovado |
+| 40 | Ordenação do ranking por XP | Aprovado |
+| 41 | Empate no ranking | Aprovado com ressalva — regra de desempate a confirmar. |
+| 42 | Atualização da quantidade de alunos após cadastro | Aprovado |
+| 43 | Consistência dos indicadores administrativos de cursos e lições | Aprovado |
+| 44 | Paginação da lista de alunos | Aprovado |
+| 45 | Pesquisa ou filtro de alunos | Funcionalidade ausente — não há campo de pesquisa/filtro. |
+| 46 | Paginação da lista de cursos | Aprovado |
+| 47 | Integridade dos cursos entre páginas | Aprovado |
+| 48 | Cadastro de cursos pelo dashboard administrativo | Não aplicável — formulário inexistente. |
+| 49 | Consistência dos cursos entre administração e professor | Aprovado |
+| 50 | Acesso do aluno aos cursos e lições | Aprovado |
+| 51 | Aluno acessa `/HomeAdm` diretamente | Aprovado — acesso bloqueado ou redirecionado. |
+| 52 | Aluno acessa `/AtividadesProfessor` diretamente | Aprovado — acesso bloqueado ou redirecionado. |
+| 53 | Professor acessa `/HomeAdm` diretamente | Aprovado — acesso bloqueado ou redirecionado. |
+| 54 | Professor acessa `/HomeAluno` diretamente | Aprovado — acesso bloqueado ou redirecionado. |
+| 55 | Persistência da sessão do aluno após atualizar a página | Aprovado |
+| 56 | Persistência da sessão do professor após atualizar a página | Aprovado |
+| 57 | Persistência da sessão do administrador após atualizar a página | Aprovado |
+| 58 | Botão Voltar após logout administrativo | Aprovado — dashboard permaneceu protegido. |
+| 59 | Acesso do aluno à rota protegida após logout | Aprovado — acesso bloqueado ou redirecionado. |
+| 60 | Acesso do professor à rota protegida após logout | Aprovado — acesso bloqueado ou redirecionado. |
+| 61 | Acesso do administrador à rota protegida após logout | Aprovado — acesso bloqueado ou redirecionado. |
+| 62 | Consistência da lista e quantidade de alunos após atualização | Aprovado |
+| 63 | Consistência da lista e quantidade de lições após atualização | Aprovado |
+| 64 | Consistência da lista e quantidade de atividades após atualização | Aprovado |
+| 65 | Persistência do histórico, status e notas do aluno | Aprovado |
+| 66 | Persistência do XP e posição após novo login | Aprovado |
+| 67 | Ordenação do histórico de atividades | Aprovado com ressalva — regra exata de ordenação a confirmar. |
+| 68 | Envio de atividade sem selecionar alternativa | Aprovado — envio bloqueado com mensagem clara. |
+| 69 | Novo envio de atividade já respondida | Aprovado — novo envio impedido na interface. |
+| 70 | Correção de resposta incorreta | Aprovado |
+| 71 | Correção de resposta correta | Aprovado |
+| 72 | Registro de nota zero para resposta incorreta | Aprovado |
+| 73 | Consistência do XP após correção com zero pontos | Aprovado |
+| 74 | Tentativa de atribuir nota acima do máximo | Aprovado — sistema impediu a operação. |
+| 75 | Correção sem informar pontuação | Aprovado — operação bloqueada com mensagem clara. |
+| Complementar | Persistência da correção após atualizar a página | Aprovado — nota e status permaneceram corretos. |
+
+**Última atualização:** 2026-10-29
