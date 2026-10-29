@@ -503,3 +503,38 @@ button.nav-item span {
 }
 
 
+.bottom-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bottom-navigation .nav-item {
+  min-width: 64px;
+  flex: 1 1 64px;
+  text-align: center;
+}
+
+.bottom-navigation .nav-item small {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .bottom-navigation {
+    justify-content: center;
+    gap: 8px 4px;
+  }
+
+  .bottom-navigation .nav-item {
+    flex: 0 1 22%;
+    min-width: 60px;
+    padding: 8px 2px;
+  }
+
+  .bottom-navigation .nav-item small {
+    font-size: 11px;
+  }
+}
+

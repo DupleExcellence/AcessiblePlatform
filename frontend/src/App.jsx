@@ -25,7 +25,8 @@ import AtividadeProfessor from "./pages/AtividadeProfessor/AtividadeProfessor";
 import AtividadesProfessor from "./pages/AtividadesProfessor/AtividadesProfessor";
 import PerfilAdm from "./components/PerfilAdm/PerfilAdm";
 import CadastroCurso from "./pages/CadastroCurso/CadastroCurso";
-import VincularProfessorCurso from "./pages/VincularProfessorCurso/VincularProfessorCurso";
+import NotasAluno from "./pages/NotasAluno/NotasAluno";
+import ProgressoAluno from "./pages/ProgressoAluno/ProgressoAluno";
 function AppHomeRedirect() {
   const { user, loading, autenticado, tipoPerfil } = useAuth();
 
@@ -108,12 +109,16 @@ function App() {
         {/* Redirecionamento inicial */}
         <Route path="/" element={<AppHomeRedirect />} />
 
+        
         {/* Área do aluno */}
         <Route element={<ProtectedRoute perfisPermitidos={["aluno"]} />}>
           <Route path="/homeAluno" element={<HomeAluno />} />
           <Route path="/perfilAluno" element={<PerfilAlunoPage />} />
           <Route path="/licaoAluno" element={<LicaoAlunoPage />} />
+          <Route path="/notasAluno" element={<NotasAluno />} />
+          <Route path="/progressoAluno" element={<ProgressoAluno />} />
         </Route>
+
 
         {/* Cursos: aluno, professor e administrador */}
         <Route
@@ -151,10 +156,6 @@ function App() {
           <Route path="/perfilAdm" element={<PerfilAdm />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/cadastro-curso" element={<CadastroCurso />} />
-          <Route
-            path="/vincular-professor-curso"
-            element={<VincularProfessorCurso />}
-          />
         </Route>
 
         {/* Ranking: qualquer usuário autenticado */}

@@ -323,8 +323,13 @@ function HomeAluno() {
        
       </main>
 
+      
       <nav className="bottom-navigation" aria-label="Menu principal">
-        <Link to="/homeAluno" className="nav-item active" aria-current="page">
+        <Link
+          to="/homeAluno"
+          className="nav-item active"
+          aria-current="page"
+        >
           <span aria-hidden="true">⌂</span>
           <small>Início</small>
         </Link>
@@ -337,6 +342,16 @@ function HomeAluno() {
         <Link to="/cursos" className="nav-item">
           <span aria-hidden="true">▣</span>
           <small>Cursos</small>
+        </Link>
+
+        <Link to="/notasAluno" className="nav-item">
+          <span aria-hidden="true">📝</span>
+          <small>Notas</small>
+        </Link>
+
+        <Link to="/progressoAluno" className="nav-item">
+          <span aria-hidden="true">📈</span>
+          <small>Progresso</small>
         </Link>
 
         <Link to="/ranking" className="nav-item">
@@ -358,6 +373,7 @@ function HomeAluno() {
           <small>Sair</small>
         </button>
       </nav>
+
     </div>
   );
 }
