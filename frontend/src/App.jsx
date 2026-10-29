@@ -27,6 +27,7 @@ import PerfilAdm from "./components/PerfilAdm/PerfilAdm";
 import CadastroCurso from "./pages/CadastroCurso/CadastroCurso";
 import NotasAluno from "./pages/NotasAluno/NotasAluno";
 import ProgressoAluno from "./pages/ProgressoAluno/ProgressoAluno";
+import EscutaGlobal from "./components/EscutaGlobal/EscutaGlobal";
 function AppHomeRedirect() {
   const { user, loading, autenticado, tipoPerfil } = useAuth();
 
@@ -166,6 +167,7 @@ function App() {
         {/* Endereços inexistentes */}
         <Route path="*" element={<PaginaNaoEncontrada />} />
       </Routes>
+     <EscutaGlobal />
     </AuthProvider>
   );
 }
