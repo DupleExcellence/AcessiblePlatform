@@ -3,7 +3,7 @@
 .escuta-global {
   position: fixed;
   right: 16px;
-  bottom: 16px;
+  bottom: 90px;
   z-index: 1000;
 
   width: min(320px, calc(100vw - 32px));
