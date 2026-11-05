@@ -12,7 +12,7 @@ SCHEMA = {
             "id": "string (UID do Firebase Auth)",
             "nome": "string",
             "email": "string",
-            "perfil": "referência para perfis",
+            "perfil": "DocumentReference para perfis",
             "ativo": "boolean",
             "criadoEm": "timestamp",
             "atualizadoEm": "timestamp",
@@ -31,12 +31,12 @@ SCHEMA = {
     "alunos": {
         "campos": {
             "id": "string",
-            "usuarioId": "referência para usuarios",
+            "usuarioId": "DocumentReference para usuarios",
             "idade": "number",
             "turma": "string",
-            "professorId": "referência para professores",
+            "professorId": "DocumentReference para professores",
             "pontuacaoTotal": "number",
-            "xpTotal": "number",  # ← campo novo da gamificação
+            "xpTotal": "number",
             "criadoEm": "timestamp",
         },
         "obrigatorios": ["usuarioId", "idade", "pontuacaoTotal", "xpTotal"],
@@ -44,7 +44,7 @@ SCHEMA = {
     "professores": {
         "campos": {
             "id": "string",
-            "usuarioId": "referência para usuarios",
+            "usuarioId": "DocumentReference para usuarios",
             "disciplina": "string",
             "criadoEm": "timestamp",
         },
@@ -57,43 +57,48 @@ SCHEMA = {
             "descricao": "string",
             "ativo": "boolean",
             "criadoEm": "timestamp",
+            "criadoPor": "string (UID do usuario que criou)",
         },
         "obrigatorios": ["titulo"],
     },
-    "licoes": {
+        "licoes": {
         "campos": {
             "id": "string",
             "titulo": "string",
             "descricao": "string",
             "conteudo": "string",
-            "cursoId": "referência para cursos",
-            "professorId": "referência para professores",
+            "cursoId": "DocumentReference para cursos",
+            "professorId": "DocumentReference para professores",
             "ordem": "number",
+            "gabarito": "string",
+            "arquivo": "string",
             "ativa": "boolean",
             "criadoEm": "timestamp",
             "atualizadoEm": "timestamp",
         },
         "obrigatorios": ["titulo", "conteudo", "professorId"],
     },
+    
     "atividades": {
         "campos": {
             "id": "string",
-            "licaoId": "referência para licoes",
+            "licaoId": "DocumentReference para licoes",
             "titulo": "string",
             "descricao": "string",
             "tipo": "string (multipla_escolha | resposta_aberta | verdadeiro_falso)",
-            "alternativas": "array de objetos",
+            "alternativas": "array de objetos ({id, texto, correta})",
             "pontuacaoMaxima": "number",
             "prazo": "timestamp",
             "criadoEm": "timestamp",
+            "criadoPor": "DocumentReference para usuarios (professor)",
         },
-        "obrigatorios": ["licaoId", "titulo", "tipo", "pontuacaoMaxima"],
+        "obrigatorios": ["licaoId", "titulo", "descricao", "tipo", "pontuacaoMaxima"],
     },
     "entregas": {
         "campos": {
             "id": "string",
-            "atividadeId": "referência para atividades",
-            "alunoId": "referência para alunos",
+            "atividadeId": "DocumentReference para atividades",
+            "alunoId": "DocumentReference para alunos",
             "resposta": "string ou array",
             "status": "string (pendente | enviada | corrigida)",
             "enviadoEm": "timestamp",
@@ -103,16 +108,16 @@ SCHEMA = {
     "notas": {
         "campos": {
             "id": "string",
-            "entregaId": "referência para entregas",
-            "alunoId": "referência para alunos",
-            "atividadeId": "referência para atividades",
+            "entregaId": "DocumentReference para entregas",
+            "alunoId": "DocumentReference para alunos",
+            "atividadeId": "DocumentReference para atividades",
             "pontuacao": "number",
             "pontuacaoMaxima": "number",
             "feedback": "string",
-            "corrigidoPor": "referência para professores",
+            "corrigidoPor": "DocumentReference para professores",
             "corrigidoEm": "timestamp",
         },
-        "obrigatorios": ["entregaId", "alunoId", "atividadeId", "pontuacao"],
+        "obrigatorios": ["entregaId", "alunoId", "atividadeId", "pontuacao", "pontuacaoMaxima"],
     },
 }
 

@@ -39,7 +39,22 @@ class Atividade:
 
         if dados["tipo"] == "multipla_escolha":
             alternativas = dados.get("alternativas") or []
-            if len(alternativas) < 2:
-                raise ValueError("Atividades de multipla escolha exigem ao menos 2 alternativas.")
-            if not any(a.get("correta") for a in alternativas):
-                raise ValueError("E necessario marcar ao menos uma alternativa correta.")
+        if len(alternativas) < 2:
+            raise ValueError("Atividades de multipla escolha exigem ao menos 2 alternativas.")
+
+        # Normaliza: aceita tanto strings ("a") quanto objetos ({id, texto, correta})
+        def _get_correta(alt):
+            if isinstance(alt, dict):
+                return bool(alt.get("correta"))
+            return False  # string simples não tem como marcar correta
+
+        def _get_texto(alt):
+            if isinstance(alt, dict):
+                return alt.get("texto", "")
+            return str(alt)
+
+        if not any(_get_correta(a) for a in alternativas):
+            raise ValueError(
+                "E necessario marcar ao menos uma alternativa correta "
+                "(envie o campo 'correta': true em uma das alternativas)."
+            )

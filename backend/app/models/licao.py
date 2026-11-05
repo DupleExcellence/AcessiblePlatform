@@ -2,18 +2,19 @@
 Modelo de Lição.
 """
 
-
 class Licao:
     COLECAO = "licoes"
 
     CAMPOS = {
         "id": str,
+        "cursoId": "DocumentReference", # Padronizado
         "titulo": str,
         "descricao": str,
         "conteudo": str,
-        "cursoId": str,
-        "professorId": str,
         "ordem": int,
+        "gabarito": str,
+        "arquivo": str,
+        "professorId": "DocumentReference", # Padronizado
         "ativa": bool,
         "criadoEm": "timestamp",
         "atualizadoEm": "timestamp",
